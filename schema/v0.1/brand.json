@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schema.brandcontextprotocol.dev/v0.1/brand.json",
+  "title": "Brand Context Protocol",
+  "description": "Schema for BCP v0.1 brand.md root files.",
+  "type": "object",
+  "properties": {
+    "bcp_version": {
+      "type": "string",
+      "description": "Version of the BCP specification used (e.g., '0.1').",
+      "enum": ["0.1"]
+    },
+    "brand_name": {
+      "type": "string",
+      "description": "The name humans call your brand."
+    },
+    "file_type": {
+      "type": "string",
+      "const": "root",
+      "description": "Specifies this is the root brand.md file."
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date",
+      "description": "ISO 8601 date of last update (YYYY-MM-DD)."
+    },
+    "tree_version": {
+      "type": "string",
+      "description": "Semantic version of this brand's specific BCP tree."
+    },
+    "daughter_files": {
+      "type": "object",
+      "description": "Registry of available daughter spec files.",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^/.*\\.md$"
+      }
+    }
+  },
+  "required": ["bcp_version", "brand_name", "file_type", "last_updated"]
+}
