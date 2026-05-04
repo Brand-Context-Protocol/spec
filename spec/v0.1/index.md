@@ -354,7 +354,7 @@ For consumer agents answering "what is X" prompts, the load is simpler: fetch br
 
 ## The Registry
 
-To solve discovery and verification at scale, we maintain the BCP Registry at registry.encodedbrands.com (v0.1 live). The registry serves three purposes:
+To solve discovery and verification at scale, we maintain the BCP Registry at registry.brandcontextprotocol.dev (v0.1 live). The registry serves three purposes:
 
 - Canonical Discovery: Platforms like Webflow, Shopify, or Canva can query a single API to ask "Does this domain have a BCP?" instead of crawling the whole web themselves.
 - Trust & Verification: We verify that a BCP is actually served from the brand's domain and follows the current spec, providing a "Verified Publisher" trust signal for agents.
@@ -395,5 +395,5 @@ You've read the spec. The fastest way to produce your first BCP is to copy our a
 Start authoring →
 
 
-> **Contribute:** Found a gap in the spec? Open an issue or PR atgithub.com/Bruiserhq/encodedbrands.com. We maintain the spec in public. Every v0.x commit is a design decision with a named author.
+> **Contribute:** Found a gap in the spec? Open an issue or PR atgithub.com/Brand-Context-Protocol/spec. We maintain the spec in public. Every v0.x commit is a design decision with a named author.
 

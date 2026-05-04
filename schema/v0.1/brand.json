@@ -28,12 +28,46 @@
       "type": "string",
       "description": "Semantic version of this brand's specific BCP tree."
     },
+    "revision": {
+      "type": "string",
+      "description": "Git commit hash or custom revision identifier."
+    },
+    "domain": {
+      "type": "string",
+      "description": "Canonical domain for disambiguation."
+    },
+    "category": {
+      "type": "string",
+      "description": "Business category (IAB Content Taxonomy preferred)."
+    },
+    "tagline": {
+      "type": "string",
+      "description": "Public-facing tagline."
+    },
+    "default_locale": {
+      "type": "string",
+      "description": "Default locale (e.g., en-US)."
+    },
+    "supported_locales": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "List of supported locales."
+    },
+    "contact": {
+      "type": "string",
+      "format": "email",
+      "description": "Contact email for BCP questions."
+    },
+    "license": {
+      "type": "string",
+      "description": "License for the brand's BCP content."
+    },
     "daughter_files": {
       "type": "object",
       "description": "Registry of available daughter spec files.",
       "additionalProperties": {
         "type": "string",
-        "pattern": "^/.*\\.md$"
+        "pattern": "^/.*\\\\.md$"
       }
     }
   },
