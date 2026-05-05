@@ -1,18 +1,15 @@
-# Brand Context Protocol (BCP)
+# Brand Context Protocol™ (BCP)
 
-Brand Context Protocol is an open standard for encoding brand identity in a machine-readable format. It enables AI agents, vendor platforms, and consumer tools to automatically fetch and adhere to a brand's strategy, voice, and constraints.
+The open standard for encoding brand identity in a machine-readable format.
 
-## Getting Started
-- **Read the Site:** [brandcontextprotocol.dev](https://brandcontextprotocol.dev)
-- **Create your BCP:** [authoring/llm-prompt.md](authoring/llm-prompt.md) (20 minutes with any LLM)
-- **View the Schema:** [schema/v0.1/brand.json](schema/v0.1/brand.json)
+AI agents generate content about your brand every day. Without a machine-readable source of truth, they guess. BCP gives them the answer.
 
-## Repository Structure
+## Repository Layout
 - `spec/`: The normative specification text.
-- `authoring/`: Tools and prompts for creating BCP files.
-- `schema/`: JSON Schema for validation.
+- `schema/`: JSON Schema definitions for v0.1 validation.
+- `authoring/`: The LLM interviewer prompt.
 - `examples/`: Reference implementations.
 
 ## License
-- Spec: CC BY 4.0
-- Code: MIT
+Specification: CC-BY-4.0
+Schema & Code: MIT
