@@ -1,0 +1,13 @@
+# Default owners for everything in the repo
+*                           @Bruiserhq
+
+# Spec and schema — maintainer review required
+/SPEC.md                    @Bruiserhq
+/spec/                      @Bruiserhq
+
+# Reference implementation
+/reference/                 @Bruiserhq
+
+# Licenses — do not edit without maintainer approval
+/LICENSE-SPEC               @Bruiserhq
+/LICENSE-CODE               @Bruiserhq
