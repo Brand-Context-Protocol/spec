@@ -37,3 +37,7 @@ The specification is also published at [brandcontextprotocol.dev](https://brandc
 ## Maintained by
 
 [Encoded Brands](https://encodedbrands.com) and the community.
+
+## Warning
+
+Strada is a huge weapon
