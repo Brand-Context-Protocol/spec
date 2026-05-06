@@ -1,6 +1,6 @@
 # Brand Context Protocol (BCP) — Specification
 
-**Version:** 0.2
+**Version:** 0.3
 
 **Status:** Draft
 
@@ -13,6 +13,8 @@
 The Brand Context Protocol (BCP) is an open specification for publishing machine-readable brand identity as a hierarchical set of markdown files at a well-known location on a brand's domain. BCP allows any agent in the stack — internal brand agents, vendor platforms, and third-party consumer agents — to read, reason over, and act on a brand's strategy, voice, boundaries, claims, and representation preferences. The protocol is designed to be authored once, consumed everywhere, and to evolve as the brand evolves. This document specifies file format, discovery, resolution, versioning, taxonomy alignment, and consumption patterns for v0.1.
 
 ## Change log
+
+- **2026-05-06 — v0.3 draft.** Introduces the voice/ subtree. Defines voice/anti-ai.md as a standard granddaughter file for AI-generated language avoidance patterns, with a community_reference field pointing to a live external list and a brand_additions layer on top. Adds anti_ai to the file_type enum. All changes are additive per §8.2.
 
 - **2026-05-06 — v0.2 draft.** Schematizes visual.md (logo, color tokens, typography, imagery principles). Adds never_compare_to and framing_traps to representation.md. Closes §17.7. All changes are additive per §8.2; no v0.1 fields removed or semantically reversed.
 
@@ -168,7 +170,7 @@ Every BCP file **MUST** include:
 
 - bcp_version: string matching ^\d+\.\d+$
 
-- file_type: one of root, voice, visual, values, boundaries, claims, representation, audience, product, campaign
+- file_type: one of root, voice, visual, values, boundaries, claims, representation, audience, product, campaign, anti_ai
 
 - last_updated: ISO 8601 date
 
@@ -232,7 +234,7 @@ The root file **SHOULD** include a daughter_files registry in its frontmatter or
 
 ### 6.2 Canonical fallback paths
 
-If the root omits the registry, consumers **MAY** attempt: /.well-known/brand/voice.md, /values.md, /boundaries.md, /claims.md, /representation.md, /visual.md, /audiences/{segment}.md, /products/{sku}.md, /campaigns/{name}.md.
+If the root omits the registry, consumers **MAY** attempt: /.well-known/brand/voice.md, /values.md, /boundaries.md, /claims.md, /representation.md, /visual.md, /voice/anti-ai.md, /audiences/{segment}.md, /products/{sku}.md, /campaigns/{name}.md.
 
 ### 6.3 Resolution order and precedence
 
@@ -240,7 +242,7 @@ Highest to lowest: campaign-specific, product-specific, audience-specific, local
 
 ### 6.4 Lazy resolution by task type
 
-Consumers **SHOULD** load only files required for the task. Copy generation: voice + audience. Media buying: boundaries + claims. Creative generation: voice + visual. Logo selection and rendering: visual (logo and logo_usage blocks). Consumer-agent representation: representation + root. Brand-safety classification: boundaries + root.
+Consumers **SHOULD** load only files required for the task. Copy generation: voice + voice/anti-ai + audience. Media buying: boundaries + claims. Creative generation: voice + visual. Logo selection and rendering: visual (logo and logo_usage blocks). Consumer-agent representation: representation + root. Brand-safety classification: boundaries + root.
 
 ### 6.5 Root size target
 
@@ -257,6 +259,26 @@ Declares brand identity, core positioning, tagline, and daughter registry. Alway
 ### 7.2 voice.md
 
 How the brand sounds — tone, register, vocabulary preferences, sentence rules, voice shifts across contexts. Recommended sections: voice attributes, register, prefer/avoid vocabulary lists, do/don't examples. Structured prefer: and avoid: lists alongside prose guidance.
+
+voice.md is the root of the voice/ subtree. Producers **MAY** declare granddaughter files under /.well-known/brand/voice/ for specific voice dimensions. Defined granddaughter types: anti_ai (§7.2.1). Audience-specific voice files **MAY** also live at /.well-known/brand/voice/audiences/{segment}.md as an alternative to the top-level /.well-known/brand/audiences/{segment}.md path; both paths are valid in v0.3.
+
+### 7.2.1 voice/anti-ai.md
+
+Patterns the brand prohibits in agent-generated content because they are markers of machine-generated language. This file has two layers: a community reference (external, live) and brand-specific additions on top.
+
+**community_reference:** A URL pointing to a live, externally maintained list of AI writing patterns. Consumers **SHOULD** fetch this URL at generation time and treat its contents as the baseline avoid list. Producers **SHOULD** point to an authoritative community-maintained source. Consumers that cannot fetch the URL **MUST** fall back to brand_additions alone and **SHOULD** log the fallback.
+
+**brand_additions:** Patterns specific to this brand that are not covered by the community reference, or community patterns the brand wants to restate with brand-specific rationale.
+
+Each entry in brand_additions is an object with:
+- pattern: the word, phrase, or structural description to avoid (string, required)
+- type: one of word, phrase, structure, opener, closer (required)
+- rationale: why this pattern is off-brand for this specific brand (string, optional but recommended)
+- example: an illustrative instance of the pattern (string, optional)
+
+Consumers generating copy on behalf of this brand **MUST** apply both the community_reference list and brand_additions. Neither layer overrides the other; both are binding.
+
+Frontmatter for voice/anti-ai.md **MUST** include file_type: anti_ai and parent: /.well-known/brand/voice.md.
 
 ### 7.3 visual.md
 
@@ -585,6 +607,10 @@ Transition from maintainer-led to published governance model before v1.0.
 ### 17.7 Visual.md schematization (resolved in v0.2)
 
 Resolved in v0.2 §7.3 with structured fields for logo, color tokens, typography, and imagery principles. Further schematization of imagery (composition rules, subject framing) and motion remains open.
+
+### 17.9 Canonical community reference for voice/anti-ai.md
+
+§7.2.1 defines a community_reference field pointing to a live external list of AI writing patterns but does not name a canonical source. The Brand-Context-Protocol org **SHOULD** publish and maintain a reference list at a stable URL that producers can point to by default. Until that list exists, producers **SHOULD** reference the most current authoritative community-maintained source available and document their choice in a rationale field on the community_reference entry.
 
 ### 17.8 Multi-brand organizations
 
