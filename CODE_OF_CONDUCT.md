@@ -1,0 +1,1 @@
+Standard Contributor Covenant applies. Be professional, be direct, and focus on the technical integrity of the protocol.

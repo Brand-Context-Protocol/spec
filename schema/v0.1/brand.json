@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schema.brandcontextprotocol.dev/v0.1/brand.json",
+  "title": "Brand Context Protocol",
+  "description": "Schema for BCP v0.1 brand.md root files.",
+  "type": "object",
+  "properties": {
+    "bcp_version": {
+      "type": "string",
+      "description": "Version of the BCP specification used (e.g., '0.1').",
+      "enum": ["0.1"]
+    },
+    "brand_name": {
+      "type": "string",
+      "description": "The name humans call your brand."
+    },
+    "file_type": {
+      "type": "string",
+      "const": "root",
+      "description": "Specifies this is the root brand.md file."
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date",
+      "description": "ISO 8601 date of last update (YYYY-MM-DD)."
+    },
+    "tree_version": {
+      "type": "string",
+      "description": "Semantic version of this brand's specific BCP tree."
+    },
+    "revision": {
+      "type": "string",
+      "description": "Git commit hash or custom revision identifier."
+    },
+    "domain": {
+      "type": "string",
+      "description": "Canonical domain for disambiguation."
+    },
+    "category": {
+      "type": "string",
+      "description": "Business category (IAB Content Taxonomy preferred)."
+    },
+    "tagline": {
+      "type": "string",
+      "description": "Public-facing tagline."
+    },
+    "default_locale": {
+      "type": "string",
+      "description": "Default locale (e.g., en-US)."
+    },
+    "supported_locales": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "List of supported locales."
+    },
+    "contact": {
+      "type": "string",
+      "format": "email",
+      "description": "Contact email for BCP questions."
+    },
+    "license": {
+      "type": "string",
+      "description": "License for the brand's BCP content."
+    },
+    "daughter_files": {
+      "type": "object",
+      "description": "Registry of available daughter spec files.",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^/.*\\\\.md$"
+      }
+    }
+  },
+  "required": ["bcp_version", "brand_name", "file_type", "last_updated"]
+}
