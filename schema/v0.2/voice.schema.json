@@ -1,0 +1,327 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schema.brandcontextprotocol.dev/v0.2/voice.schema.json",
+  "title": "Brand Context Protocol — voice.md",
+  "description": "Schema for BCP v0.2 voice.md daughter files. v0.2 adds essence, traits, vocabulary.substitutions, forbidden_topics, naming, messaging_tiers, topic_templates, and audience_modulation to the v0.1 field set. All new fields are optional. A v0.1 voice.md with no new fields is a valid v0.2 document.",
+  "type": "object",
+  "properties": {
+    "bcp_version": {
+      "type": "string",
+      "enum": ["0.1", "0.2"],
+      "description": "Version of the BCP specification this file conforms to."
+    },
+    "file_type": {
+      "type": "string",
+      "const": "voice"
+    },
+    "parent": {
+      "type": "string",
+      "description": "Path to the root brand.md file, typically /.well-known/brand.md."
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date",
+      "description": "ISO 8601 date of the last meaningful change to this file."
+    },
+    "essence": {
+      "type": "object",
+      "description": "One-liner positioning statements. Each key is optional. Values must be single sentences.",
+      "properties": {
+        "mission":       { "type": "string", "description": "Why the brand exists." },
+        "vision":        { "type": "string", "description": "The future the brand is working toward." },
+        "purpose":       { "type": "string", "description": "The benefit the brand creates for people." },
+        "tagline":       { "type": "string", "description": "The public-facing tagline." },
+        "brand_promise": { "type": "string", "description": "The commitment the brand makes to its customers." }
+      },
+      "additionalProperties": false
+    },
+    "traits": {
+      "type": "array",
+      "description": "Bipartite voice trait list defining what the voice is and what it refuses to be.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "is": {
+            "type": "string",
+            "description": "The positive trait. Agents should apply this as a style target."
+          },
+          "not": {
+            "type": "string",
+            "description": "The negative trait. Agents should treat this as a disqualifier."
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional authoring guidance explaining the distinction."
+          }
+        },
+        "required": ["is"],
+        "additionalProperties": false
+      }
+    },
+    "vocabulary": {
+      "type": "object",
+      "description": "Preferred and avoided terms, plus explicit substitution pairs.",
+      "properties": {
+        "prefer": {
+          "type": "array",
+          "description": "Terms agents must use. Each entry carries a word and optional usage note.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "word": { "type": "string" },
+              "use":  { "type": "string", "description": "When and how to use this term." }
+            },
+            "required": ["word"],
+            "additionalProperties": false
+          }
+        },
+        "avoid": {
+          "type": "array",
+          "description": "Terms agents must not use.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "word": { "type": "string" },
+              "why":  { "type": "string", "description": "Why this term is off-brand." }
+            },
+            "required": ["word"],
+            "additionalProperties": false
+          }
+        },
+        "substitutions": {
+          "type": "array",
+          "description": "Explicit preferred-term to avoided-term mappings with optional example sentences. New in v0.2.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "prefer":  { "type": "string", "description": "The term agents must use." },
+              "avoid":   { "type": "string", "description": "The term agents must not use." },
+              "example": { "type": "string", "description": "A sentence demonstrating correct usage." }
+            },
+            "required": ["prefer", "avoid"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "forbidden_topics": {
+      "type": "array",
+      "description": "Topics the brand does not associate with. New in v0.2.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "description": "The subject or category to avoid."
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["never", "avoid"],
+            "description": "'never' means agents MUST NOT associate the brand with this topic. 'avoid' means agents SHOULD NOT associate the brand with this topic absent explicit instruction."
+          }
+        },
+        "required": ["topic"],
+        "additionalProperties": false
+      }
+    },
+    "naming": {
+      "type": "object",
+      "description": "How the brand name is written. Consumers must use canonical and must not use any forbidden_variant. New in v0.2.",
+      "properties": {
+        "canonical": {
+          "type": "string",
+          "description": "The correct form of the brand name. Consumers must use this form."
+        },
+        "abbreviation": {
+          "type": "string",
+          "description": "Accepted abbreviation, if any."
+        },
+        "capitalization": {
+          "type": "string",
+          "description": "Plain-language capitalization rule."
+        },
+        "forbidden_variants": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Incorrectly formed name variants. Consumers must not use these."
+        },
+        "sub_brands": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name":  { "type": "string" },
+              "notes": { "type": "string" }
+            },
+            "required": ["name"],
+            "additionalProperties": false
+          },
+          "description": "Sub-brand names with optional usage notes."
+        },
+        "acronym_rules": {
+          "type": "string",
+          "description": "Rules for how abbreviations and acronyms are handled."
+        }
+      },
+      "required": ["canonical"],
+      "additionalProperties": false
+    },
+    "messaging_tiers": {
+      "type": "array",
+      "description": "The same message at multiple lengths. Agents select the tier appropriate to the surface. New in v0.2.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "description": "The subject this tier set covers."
+          },
+          "blunt": {
+            "type": "string",
+            "description": "The shortest possible version. Use for character-constrained surfaces."
+          },
+          "short": {
+            "type": "string",
+            "description": "One to two sentence version."
+          },
+          "long": {
+            "type": "string",
+            "description": "Full explanatory version."
+          }
+        },
+        "required": ["topic"],
+        "minProperties": 2,
+        "additionalProperties": false
+      }
+    },
+    "topic_templates": {
+      "type": "array",
+      "description": "How the brand talks about specific recurring subjects. New in v0.2.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "topic": {
+            "type": "string",
+            "description": "The recurring subject."
+          },
+          "guidance": {
+            "type": "string",
+            "description": "Authoring guidance for this topic."
+          },
+          "example_good": {
+            "type": "string",
+            "description": "An example of on-brand copy for this topic."
+          },
+          "example_bad": {
+            "type": "string",
+            "description": "An example of off-brand copy for this topic."
+          }
+        },
+        "required": ["topic"],
+        "additionalProperties": false
+      }
+    },
+    "audience_modulation": {
+      "type": "array",
+      "description": "How voice shifts per audience segment. A lightweight alternative to full audiences/{segment}.md files. New in v0.2.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "audience": {
+            "type": "string",
+            "description": "Audience identifier. Should be one of: prospect, customer, lapsed_customer, developer, employee, investor, regulator, press. Custom values are permitted."
+          },
+          "tone_shift": {
+            "type": "string",
+            "description": "How tone changes for this audience."
+          },
+          "trait_overrides": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "is":  { "type": "string" },
+                "not": { "type": "string" }
+              },
+              "required": ["is"],
+              "additionalProperties": false
+            },
+            "description": "Trait overrides that replace or extend the root traits block for this audience."
+          },
+          "vocabulary_additions": {
+            "type": "object",
+            "properties": {
+              "prefer": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "word": { "type": "string" },
+                    "use":  { "type": "string" }
+                  },
+                  "required": ["word"],
+                  "additionalProperties": false
+                }
+              },
+              "avoid": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "word": { "type": "string" },
+                    "why":  { "type": "string" }
+                  },
+                  "required": ["word"],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required": ["audience"],
+        "additionalProperties": false
+      }
+    },
+    "rules": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Sentence-level writing rules. Each rule is a single imperative sentence."
+    },
+    "channels": {
+      "type": "object",
+      "description": "Do/don't examples per surface. Keys are channel names. Values carry surfaces and example copy.",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "surfaces": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "The surfaces or contexts this channel entry covers."
+          },
+          "shows_up_in": {
+            "type": "string",
+            "description": "Human-readable description of where this channel appears."
+          },
+          "good": {
+            "type": "string",
+            "description": "Example of on-brand copy for this channel."
+          },
+          "bad": {
+            "type": "string",
+            "description": "Example of off-brand copy for this channel."
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "extensions": {
+      "type": "object",
+      "description": "Brand-specific or vendor-specific fields not covered by this schema. Must use a namespaced key per §9.2.",
+      "additionalProperties": true
+    }
+  },
+  "required": ["bcp_version", "file_type", "parent", "last_updated"],
+  "additionalProperties": true
+}
