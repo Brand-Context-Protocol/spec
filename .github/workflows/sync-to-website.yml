@@ -1,0 +1,95 @@
+name: Sync spec to dependents
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'SPEC.md'
+      - 'CHANGELOG.md'
+      - 'schema/**'
+
+jobs:
+  sync-website:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout spec
+        uses: actions/checkout@v4
+        with:
+          path: spec
+
+      - name: Checkout website
+        uses: actions/checkout@v4
+        with:
+          repository: Brand-Context-Protocol/website
+          token: ${{ secrets.WEBSITE_SYNC_PAT }}
+          path: website
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Sync spec into website
+        run: node website/scripts/sync-spec.mjs --source spec/SPEC.md
+
+      - name: Commit and push if changed
+        working-directory: website
+        run: |
+          git config user.name "spec-sync[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/pages/spec/
+          if git diff --staged --quiet; then
+            echo "No changes — spec pages already current"
+          else
+            VERSION=$(grep '\*\*Version:\*\*' ../spec/SPEC.md | head -1 | sed 's/.*\*\*Version:\*\* //')
+            git commit -m "chore: sync spec v${VERSION} from canonical repo"
+            git push
+          fi
+
+  sync-encoder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout spec
+        uses: actions/checkout@v4
+        with:
+          path: spec
+
+      - name: Checkout encoder
+        uses: actions/checkout@v4
+        with:
+          repository: Encoded-Brands/encoder
+          token: ${{ secrets.ENCODER_SYNC_PAT }}
+          path: encoder
+
+      - name: Check for changes
+        id: diff
+        run: |
+          if diff -q spec/SPEC.md encoder/spec-snapshot/SPEC.md > /dev/null 2>&1; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            VERSION=$(grep '\*\*Version:\*\*' spec/SPEC.md | head -1 | sed 's/.*\*\*Version:\*\* //')
+            echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Copy spec verbatim
+        if: steps.diff.outputs.changed == 'true'
+        run: cp spec/SPEC.md encoder/spec-snapshot/SPEC.md
+
+      - name: Open PR on encoder
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.ENCODER_SYNC_PAT }}
+          path: encoder
+          commit-message: "chore: sync spec-snapshot to v${{ steps.diff.outputs.version }}"
+          branch: spec-sync/v${{ steps.diff.outputs.version }}
+          delete-branch: true
+          title: "chore: sync spec-snapshot to v${{ steps.diff.outputs.version }}"
+          body: |
+            Automated sync from [Brand-Context-Protocol/spec](https://github.com/Brand-Context-Protocol/spec).
+
+            **Spec version:** ${{ steps.diff.outputs.version }}
+
+            Review for any breaking changes that require updates to `prompt/encoder-v1.md` before merging.
+          labels: spec-sync
