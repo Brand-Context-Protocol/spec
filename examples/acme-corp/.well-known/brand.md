@@ -1,6 +1,6 @@
 ---
-bcp_version: "0.2"
-tree_version: 0.2.0
+bcp_version: "0.3"
+tree_version: 0.3.0
 brand_name: ACME Corporation
 file_type: root
 domain: acme.example.com
@@ -11,6 +11,7 @@ supported_locales: [en-US]
 last_updated: 2026-05-06
 daughter_files:
   voice: /.well-known/brand/voice.md
+    voice_anti_ai: /.well-known/brand/voice/anti-ai.md
     visual: /.well-known/brand/visual.md
       values: /.well-known/brand/values.md
         boundaries: /.well-known/brand/boundaries.md
@@ -36,6 +37,8 @@ daughter_files:
 
             ## Change log
 
-            - 2026-05-06 — tree_version 0.2.0. Added visual.md. Extended representation.md with never_compare_to and framing_traps. Conforms to BCP v0.2.
+            - 2026-05-30 — tree_version 0.3.0. Added voice/anti-ai.md. Conforms to BCP v0.3.
+
+- 2026-05-06 — tree_version 0.2.0. Added visual.md. Extended representation.md with never_compare_to and framing_traps. Conforms to BCP v0.2.
 
             - 2026-04-18 — tree_version 0.1.0. Initial publication.
