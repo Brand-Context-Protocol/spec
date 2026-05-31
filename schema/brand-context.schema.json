@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schema.brandcontextprotocol.dev/brand-context.schema.json",
+  "title": "Brand Context Protocol frontmatter",
+  "description": "Canonical schema entrypoint for BCP markdown frontmatter.",
+  "type": "object",
+  "properties": {
+    "bcp_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$"
+    },
+    "file_type": {
+      "type": "string",
+      "enum": [
+        "root",
+        "voice",
+        "visual",
+        "values",
+        "boundaries",
+        "claims",
+        "representation",
+        "audience",
+        "product",
+        "campaign",
+        "anti_ai"
+      ]
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date"
+    },
+    "brand_name": {
+      "type": "string"
+    },
+    "tree_version": {
+      "type": "string"
+    },
+    "parent": {
+      "type": "string",
+      "pattern": "^/.*\\.md$"
+    },
+    "daughter_files": {
+      "type": "object",
+      "properties": {
+        "voice": { "$ref": "#/$defs/markdownPath" },
+        "visual": { "$ref": "#/$defs/markdownPath" },
+        "values": { "$ref": "#/$defs/markdownPath" },
+        "boundaries": { "$ref": "#/$defs/markdownPath" },
+        "claims": { "$ref": "#/$defs/markdownPath" },
+        "representation": { "$ref": "#/$defs/markdownPath" }
+      },
+      "additionalProperties": { "$ref": "#/$defs/markdownPath" }
+    }
+  },
+  "required": ["bcp_version", "file_type", "last_updated"],
+  "allOf": [
+    {
+      "if": {
+        "properties": { "file_type": { "const": "root" } },
+        "required": ["file_type"]
+      },
+      "then": {
+        "required": ["brand_name", "tree_version"]
+      }
+    },
+    {
+      "if": {
+        "not": {
+          "properties": { "file_type": { "const": "root" } },
+          "required": ["file_type"]
+        }
+      },
+      "then": {
+        "required": ["parent"]
+      }
+    }
+  ],
+  "$defs": {
+    "markdownPath": {
+      "type": "string",
+      "pattern": "^/.*\\.md$"
+    }
+  }
+}

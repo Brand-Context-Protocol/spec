@@ -1,5 +1,5 @@
 ---
-bcp_version: "0.3"
+bcp_version: "0.4"
 file_type: anti_ai
 last_updated: 2026-05-30
 parent: /.well-known/brand/voice.md

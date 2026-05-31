@@ -1,6 +1,7 @@
 ---
 parent: /.well-known/brand.md
 file_type: claims
+bcp_version: "0.4"
 last_updated: 2026-05-05
 reviewed_by: legal@acme.example.com
 ---

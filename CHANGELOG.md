@@ -4,6 +4,20 @@ All notable changes to the Brand Context Protocol specification are documented h
 
 ---
 
+## v0.4 — 2026-05-30
+
+Promotes `visual.md` to a first-class standard daughter file alongside `voice.md`, `values.md`, `boundaries.md`, `claims.md`, and `representation.md`.
+
+- **Registered `visual` in the canonical daughter map.** Root files should declare `visual: /.well-known/brand/visual.md` when publishing visual identity guidance.
+
+- **Expanded visual.md coverage.** The visual daughter now explicitly covers logo, color, type, layout, and imagery principles.
+
+- **Added canonical schema entrypoint.** `schema/brand-context.schema.json` defines valid BCP frontmatter file types, including `visual`.
+
+All changes are additive per §8.2.
+
+---
+
 ## v0.2 — 2026-05-13
 
 ### voice.md schema update

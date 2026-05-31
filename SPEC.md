@@ -1,10 +1,10 @@
 # Brand Context Protocol (BCP) — Specification
 
-**Version:** 0.3
+**Version:** 0.4
 
 **Status:** Draft
 
-**Date:** 2026-05-06
+**Date:** 2026-05-30
 
 **License:** CC BY 4.0
 
@@ -13,6 +13,8 @@
 The Brand Context Protocol (BCP) is an open specification for publishing machine-readable brand identity as a hierarchical set of markdown files at a well-known location on a brand's domain. BCP allows any agent in the stack — internal brand agents, vendor platforms, and third-party consumer agents — to read, reason over, and act on a brand's strategy, voice, boundaries, claims, and representation preferences. The protocol is designed to be authored once, consumed everywhere, and to evolve as the brand evolves. This document specifies file format, discovery, resolution, versioning, taxonomy alignment, and consumption patterns for v0.1.
 
 ## Change log
+
+- **2026-05-30 — v0.4 draft.** Promotes visual.md to a first-class standard daughter file alongside voice.md, values.md, boundaries.md, claims.md, and representation.md. Defines layout guidance as part of visual.md. Registers visual in the canonical daughter_files map. All changes are additive per §8.2.
 
 - **2026-05-06 — v0.3 draft.** Introduces the voice/ subtree. Defines voice/anti-ai.md as a standard granddaughter file for AI-generated language avoidance patterns, with a community_reference field pointing to a live external list and a brand_additions layer on top. Adds anti_ai to the file_type enum. All changes are additive per §8.2.
 
@@ -256,6 +258,20 @@ Under 3 KB of body text plus frontmatter. Content exceeding this **SHOULD** move
 
 Declares brand identity, core positioning, tagline, and daughter registry. Always loaded. Required: brand name, positioning, daughter registry, all required frontmatter.
 
+The canonical daughter registry keys for standard BCP daughters are:
+
+```yaml
+daughter_files:
+  voice: /.well-known/brand/voice.md
+  visual: /.well-known/brand/visual.md
+  values: /.well-known/brand/values.md
+  boundaries: /.well-known/brand/boundaries.md
+  claims: /.well-known/brand/claims.md
+  representation: /.well-known/brand/representation.md
+```
+
+Producers **SHOULD** use these keys and paths when the corresponding daughter exists. Producers **MAY** declare granddaughter files, locale-specific files, audience files, product files, campaign files, and extensions in the same registry.
+
 ### 7.2 voice.md
 
 How the brand sounds — tone, register, vocabulary preferences, sentence rules, voice shifts across contexts. Recommended sections: voice attributes, register, prefer/avoid vocabulary lists, do/don't examples. Structured prefer: and avoid: lists alongside prose guidance.
@@ -282,7 +298,7 @@ Frontmatter for voice/anti-ai.md **MUST** include file_type: anti_ai and parent:
 
 ### 7.3 visual.md
 
-Defines the brand's visual identity in machine-consumable form. v0.2 schematizes four areas: logo, color, typography, and imagery principles. Producers **MAY** include any subset; consumers **MUST** ignore unrecognized fields and **MUST** tolerate the absence of any optional block.
+Defines the brand's visual identity in machine-consumable form. visual.md is a first-class standard daughter file for any consumer that renders, composes, adapts, or evaluates brand creative. v0.4 schematizes five areas: logo, color, typography, layout, and imagery principles. Producers **MAY** include any subset; consumers **MUST** ignore unrecognized fields and **MUST** tolerate the absence of any optional block.
 
 #### 7.3.1 Logo
 
@@ -328,11 +344,17 @@ typography.families is a map of family IDs to entries declaring family (CSS fami
 
 typography.roles maps usage roles display, body, ui, mono, code) to family IDs. Consumers generating typeset content **SHOULD** select the family whose role matches the context.
 
-#### 7.3.4 Imagery
+#### 7.3.4 Layout
+
+The layout: block carries composition rules for generated or adapted creative. It **MAY** include density, whitespace, grid, hierarchy, corner_radius, motion, and forbidden_compositions guidance. Layout guidance **SHOULD** be specific enough for agents to choose spacing, cropping, and hierarchy without copying a static design.
+
+Consumers generating visual assets **SHOULD** use layout guidance alongside logo_usage, color, and typography. Consumers **MUST NOT** generate layouts listed in forbidden_compositions when present.
+
+#### 7.3.5 Imagery
 
 The imagery: block carries prose principles for photographic_style, illustration_style, iconography_style, and a forbidden_treatments string array. v0.2 keeps imagery prose-primary; further schematization is deferred.
 
-#### 7.3.5 Extensions
+#### 7.3.6 Extensions
 
 Brand-specific or vendor-specific fields not covered by this section **MUST** be placed under a namespaced extensions: block per §9.2.
 
@@ -622,7 +644,7 @@ Handling parent companies with brand portfolios, candidate /brand/{brand-name}/ 
 
 ### Appendix A. JSON Schema
 
-Formal JSON Schemas at schema/v0.1/ and schema/v0.2/. v0.1 covers root frontmatter. v0.2 adds schemas for visual.md and the extended representation.md fields.
+Formal JSON Schemas at schema/ and versioned schemas at schema/v0.1/ and schema/v0.2/. v0.1 covers root frontmatter. v0.2 adds schemas for visual.md and the extended representation.md fields.
 
 ### Appendix B. Reference implementation
 

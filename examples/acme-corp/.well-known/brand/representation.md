@@ -1,7 +1,7 @@
 ---
 parent: /.well-known/brand.md
 file_type: representation
-bcp_version: "0.3"
+bcp_version: "0.4"
 last_updated: 2026-05-07
 consumer_agents: [ChatGPT, Claude, Perplexity, Gemini, agentic commerce]
 ---

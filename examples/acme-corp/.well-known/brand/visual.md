@@ -1,8 +1,8 @@
 ---
 parent: /.well-known/brand.md
 file_type: visual
-bcp_version: "0.3"
-last_updated: 2026-05-07
+bcp_version: "0.4"
+last_updated: 2026-05-30
 ---
 
 # Visual
@@ -189,6 +189,37 @@ typography:
     ui: body
     mono: mono
     code: mono
+```
+
+## Layout
+
+```yaml
+layout:
+  density: high
+  whitespace: "Compact, functional, and industrial. Preserve enough air around the logo for legibility, but avoid luxury-brand sparseness."
+  grid:
+    columns: 12
+    gutters: tight
+    alignment: "Hard left edges. Product imagery and technical diagrams may break the grid when showing motion or scale."
+  hierarchy:
+    headline: "Large, condensed, and direct. One impossible product promise per composition."
+    supporting_copy: "Short blocks, no centered paragraphs, no soft lifestyle captions."
+    callouts: "Use hazard-yellow labels, red rules, and black technical annotations."
+  corner_radius:
+    default_px: 0
+    maximum_px: 4
+    rationale: "ACME interfaces and packaging should feel stamped, bolted, or printed, not soft."
+  composition_principles:
+    - "Lead with the product, mechanism, or failure mode."
+    - "Use diagonal motion lines and technical callouts when they clarify function."
+    - "Prefer one bold visual idea over collage."
+    - "Keep legal and warranty references visually secondary."
+  forbidden_compositions:
+    - centered luxury-editorial layouts
+    - rounded app-card mosaics
+    - soft gradient hero panels
+    - lifestyle scenes where the product is incidental
+    - crowded sticker-sheet compositions
 ```
 
 ## Imagery
