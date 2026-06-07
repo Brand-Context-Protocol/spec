@@ -4,6 +4,18 @@ All notable changes to the Brand Context Protocol specification are documented h
 
 ---
 
+## v0.4 clarification — 2026-06-06
+
+Adds two canonical semantics without changing required fields:
+
+- **Rule tiers.** Structured entries may declare `tier: core`, `tier: default`, or `tier: contextual`. Consumers treat absent tiers as `default`. `core` entries are binding brand law; `contextual` entries apply only when their declared context matches the task.
+
+- **Exact claims.** `claims.md` entries may declare proof status, owner, validity windows, source hashes, `exact_text`, and `approved_language`. Consumers must not paraphrase entries marked `exact_text: true` and must not use `forbidden` or `expired` claims.
+
+These are additive clarifications. Existing v0.4 files remain valid.
+
+---
+
 ## v0.4 — 2026-05-30
 
 Promotes `visual.md` to a first-class standard daughter file alongside `voice.md`, `values.md`, `boundaries.md`, `claims.md`, and `representation.md`.

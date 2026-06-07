@@ -14,6 +14,8 @@ The Brand Context Protocol (BCP) is an open specification for publishing machine
 
 ## Change log
 
+- **2026-06-06 — v0.4 clarification.** Defines an optional per-item `tier` semantic (`core`, `default`, `contextual`) for tight-core/loose-edge behavior. Clarifies exact-language claim handling in claims.md with optional `exact_text`, `approved_language`, owner, validity, and hash fields. These are additive clarifications; files without these fields remain valid v0.4.
+
 - **2026-05-30 — v0.4 draft.** Promotes visual.md to a first-class standard daughter file alongside voice.md, values.md, boundaries.md, claims.md, and representation.md. Defines layout guidance as part of visual.md. Registers visual in the canonical daughter_files map. All changes are additive per §8.2.
 
 - **2026-05-06 — v0.3 draft.** Introduces the voice/ subtree. Defines voice/anti-ai.md as a standard granddaughter file for AI-generated language avoidance patterns, with a community_reference field pointing to a live external list and a brand_additions layer on top. Adds anti_ai to the file_type enum. All changes are additive per §8.2.
@@ -113,6 +115,8 @@ This specification uses normative language per RFC 2119. The keywords **MUST**, 
 **tree_version**: The brand's own semver version number for its published BCP tree.
 
 **bcp_version**: The version of this specification to which a BCP tree conforms.
+
+**Rule tier**: An optional per-item field that tells consumers how strongly to apply a rule, claim, or preference. Valid values are `core`, `default`, and `contextual`.
 
 ---
 
@@ -272,6 +276,18 @@ daughter_files:
 
 Producers **SHOULD** use these keys and paths when the corresponding daughter exists. Producers **MAY** declare granddaughter files, locale-specific files, audience files, product files, campaign files, and extensions in the same registry.
 
+### 7.1.1 Rule tiers
+
+Structured entries in daughter files **MAY** include a `tier` field. Valid values:
+
+- `core`: Binding brand law. Consumers **MUST NOT** override or paraphrase away the entry in normal generation. If a user request conflicts with a core entry, consumers **SHOULD** surface the conflict rather than comply silently.
+
+- `default`: The brand's normal preference. Consumers **SHOULD** apply the entry unless a more specific contextual rule, audience file, product file, campaign file, locale file, or explicit human instruction changes the task.
+
+- `contextual`: Applies only when its declared context matches the task. Producers **SHOULD** pair contextual entries with a context field such as audience, channel, market, product, campaign, regulatory regime, or lifecycle stage.
+
+If `tier` is absent, consumers **SHOULD** treat the entry as `default`. Producers **SHOULD** use `core` sparingly for invariants: legal claims, naming rules, hard boundaries, forbidden terms, and non-negotiable representation constraints.
+
 ### 7.2 voice.md
 
 How the brand sounds — tone, register, vocabulary preferences, sentence rules, voice shifts across contexts. Recommended sections: voice attributes, register, prefer/avoid vocabulary lists, do/don't examples. Structured prefer: and avoid: lists alongside prose guidance.
@@ -369,6 +385,22 @@ What the brand does and does not do. Primary file for brand-safety agents and ve
 ### 7.6 claims.md
 
 Approved marketing claims with supporting evidence. Required structured blocks: approved_at_launch, requires_caveat, forbidden. Agents generating copy **MUST NOT** introduce claims absent from this file.
+
+Claim entries **MAY** include:
+
+- id: stable claim identifier.
+- claim: human-readable claim text.
+- tier: one of `core`, `default`, or `contextual` per §7.1.1.
+- proof_status: one of `approved`, `requires_caveat`, `forbidden`, `expired`, `aspirational`, or `unknown`.
+- evidence: source URLs, document references, citations, or notes supporting the claim.
+- owner: team or person responsible for approving changes.
+- valid_from and valid_until: dates bounding use of the claim.
+- source_hash: content hash of the approving source when available.
+- exact_text: boolean. When true, consumers **MUST** reproduce `approved_language` verbatim if they use the claim.
+- approved_language: the exact wording to use when `exact_text` is true.
+- caveat: required qualifier or disclosure.
+
+Consumers **MUST NOT** use entries with proof_status `forbidden` or `expired`. Consumers **MUST NOT** paraphrase entries whose `exact_text` is true. Consumers **SHOULD** include the caveat when using a claim with proof_status `requires_caveat`. Producers **SHOULD** assign `tier: core` to legally exact or compliance-owned claims.
 
 ### 7.7 representation.md
 
