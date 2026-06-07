@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schema.brandcontextprotocol.dev/manifest.schema.json",
+  "title": "Brand Context Protocol package manifest",
+  "description": "Optional manifest for a package-enriched BCP. The manifest lists core files, extension files, assets, media types, and checksums. It is not required for core BCP conformance.",
+  "type": "object",
+  "properties": {
+    "bcp_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$"
+    },
+    "tree_version": {
+      "type": "string"
+    },
+    "brand_name": {
+      "type": "string"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "files": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/fileRecord" }
+    },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          { "$ref": "#/$defs/packagePath" },
+          {
+            "type": "array",
+            "items": { "$ref": "#/$defs/packagePath" }
+          }
+        ]
+      }
+    },
+    "signature": {
+      "type": "object",
+      "properties": {
+        "algorithm": { "type": "string" },
+        "key_id": { "type": "string" },
+        "value": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "required": ["bcp_version", "tree_version", "brand_name", "files"],
+  "additionalProperties": true,
+  "$defs": {
+    "fileRecord": {
+      "type": "object",
+      "properties": {
+        "path": { "$ref": "#/$defs/packagePath" },
+        "media_type": { "type": "string" },
+        "role": { "type": "string" },
+        "required": { "type": "boolean" },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": ["path", "media_type", "role", "required"],
+      "additionalProperties": true
+    },
+    "packagePath": {
+      "type": "string",
+      "pattern": "^/.+"
+    }
+  }
+}

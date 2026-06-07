@@ -50,6 +50,14 @@
         "representation": { "$ref": "#/$defs/markdownPath" }
       },
       "additionalProperties": { "$ref": "#/$defs/markdownPath" }
+    },
+    "package_manifest": {
+      "$ref": "#/$defs/jsonPath"
+    },
+    "extensions": {
+      "type": "object",
+      "description": "Optional package extension entrypoints. Extensions enrich a BCP package but are not required for core conformance.",
+      "additionalProperties": { "$ref": "#/$defs/packagePath" }
     }
   },
   "required": ["bcp_version", "file_type", "last_updated"],
@@ -79,6 +87,14 @@
     "markdownPath": {
       "type": "string",
       "pattern": "^/.*\\.md$"
+    },
+    "jsonPath": {
+      "type": "string",
+      "pattern": "^/.*\\.json$"
+    },
+    "packagePath": {
+      "type": "string",
+      "pattern": "^/.+"
     }
   }
 }

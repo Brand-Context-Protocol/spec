@@ -4,6 +4,22 @@ All notable changes to the Brand Context Protocol specification are documented h
 
 ---
 
+## v0.4 package clarification — 2026-06-07
+
+Clarifies BCP as a portable brand context package with a small required markdown core and optional enrichment layers.
+
+- **Core completion stays simple.** A complete core BCP remains the canonical markdown tree: `brand.md`, `voice.md`, `values.md`, `boundaries.md`, `claims.md`, `representation.md`, `visual.md`, plus `voice/anti-ai.md` when emitted.
+
+- **Optional package extensions blessed.** Producers may add `manifest.json`, file checksums, `tokens.json`, `tokens.css`, visual assets, motion guidance, examples, components, and other structured extension files.
+
+- **Manifest entrypoint added.** Root frontmatter may declare `package_manifest: /.well-known/brand/manifest.json` and optional `extensions` pointers.
+
+- **Conformance clarified.** Optional extension files are enrichment, not completion criteria. Consumers must ignore extensions they do not understand and must still accept a conformant markdown core.
+
+These are additive clarifications. Existing v0.4 files remain valid.
+
+---
+
 ## v0.4 clarification — 2026-06-06
 
 Adds two canonical semantics without changing required fields:

@@ -10,9 +10,11 @@
 
 ## Abstract
 
-The Brand Context Protocol (BCP) is an open specification for publishing machine-readable brand identity as a hierarchical set of markdown files at a well-known location on a brand's domain. BCP allows any agent in the stack — internal brand agents, vendor platforms, and third-party consumer agents — to read, reason over, and act on a brand's strategy, voice, boundaries, claims, and representation preferences. The protocol is designed to be authored once, consumed everywhere, and to evolve as the brand evolves. This document specifies file format, discovery, resolution, versioning, taxonomy alignment, and consumption patterns for v0.1.
+The Brand Context Protocol (BCP) is an open specification for publishing machine-readable brand identity as a portable brand context package at a well-known location on a brand's domain. The required core is a hierarchical set of human-readable markdown files. Optional extension layers can add manifests, checksums, design tokens, visual assets, examples, components, motion rules, and other structured files without making the core heavier. BCP allows any agent in the stack — internal brand agents, vendor platforms, and third-party consumer agents — to read, reason over, and act on a brand's strategy, voice, boundaries, claims, and representation preferences. The protocol is designed to be authored once, consumed everywhere, and to evolve as the brand evolves. This document specifies file format, package structure, discovery, resolution, versioning, taxonomy alignment, and consumption patterns for v0.4.
 
 ## Change log
+
+- **2026-06-07 — v0.4 package clarification.** Clarifies that a complete BCP is a portable brand context package with a small required markdown core and optional enrichment files. Blesses optional `manifest.json`, file checksums, `tokens.json`, `tokens.css`, visual assets, motion guidance, examples, components, and other structured extension files. These extension layers are never required for core conformance.
 
 - **2026-06-06 — v0.4 clarification.** Defines an optional per-item `tier` semantic (`core`, `default`, `contextual`) for tight-core/loose-edge behavior. Clarifies exact-language claim handling in claims.md with optional `exact_text`, `approved_language`, owner, validity, and hash fields. These are additive clarifications; files without these fields remain valid v0.4.
 
@@ -45,6 +47,8 @@ BCP **is**:
 - A specification for the structure, location, and format of machine-readable brand context
 
 - A hierarchical file tree: a root brand.md and daughter files for specific dimensions of brand identity
+
+- A portable package whose required core is markdown and whose optional extensions may include JSON, CSS, binary assets, examples, and other structured files
 
 - A well-known URI convention published at /.well-known/brand.md on the brand's domain
 
@@ -90,6 +94,12 @@ This specification uses normative language per RFC 2119. The keywords **MUST**, 
 
 **BCP**: Brand Context Protocol. The specification defined in this document, and by extension a file tree conforming to it.
 
+**BCP package**: The complete portable artifact a producer publishes for a brand. A package contains the required markdown core and MAY contain optional extension files and assets.
+
+**Core package**: The markdown portion of a BCP package: the root `brand.md` plus standard daughter files for voice, values, boundaries, claims, representation, and visual context.
+
+**Core-complete BCP**: A BCP package that includes the root `brand.md` and the canonical daughter files `voice.md`, `values.md`, `boundaries.md`, `claims.md`, `representation.md`, and `visual.md`. `voice/anti-ai.md` is standard when emitted but is not required for every core-complete package.
+
 **Brand**: The entity whose identity, voice, boundaries, and claims are being specified.
 
 **Producer**: A brand or its agents publishing a BCP file tree at a well-known URI.
@@ -102,6 +112,8 @@ This specification uses normative language per RFC 2119. The keywords **MUST**, 
 
 **File tree**: The complete hierarchical set of BCP files for a given brand.
 
+**Manifest**: An optional machine-readable file, conventionally `/.well-known/brand/manifest.json`, that lists package files, media types, checksums, signatures, and extension metadata.
+
 **Registry**: The daughter_files section in the root file declaring which daughter files exist.
 
 **Ring**: One of three distribution layers — file-based (Ring 1), CLI-based (Ring 2), or MCP-based (Ring 3).
@@ -109,6 +121,10 @@ This specification uses normative language per RFC 2119. The keywords **MUST**, 
 **Lazy resolution**: Loading only the daughter files required for a specific task.
 
 **Extension**: A namespaced field or section containing brand-specific or vendor-specific data not defined by the core spec.
+
+**Extension file**: An optional package file outside the required markdown core. Extension files MAY use markdown, JSON, CSS, SVG, image, font, archive, or other media types. Consumers MUST ignore extension files they do not understand or do not need.
+
+**Design token**: A named design value, such as color, type, spacing, radius, elevation, motion, or layout guidance, published for agent and tool consumption.
 
 **Locale**: An IETF BCP 47 language tag.
 
@@ -149,6 +165,14 @@ All three rings consume the same underlying source of truth: the BCP file tree. 
 ### 3.3 The hierarchical file model
 
 A BCP is not a single file. It is a tree whose root contains core identity and whose daughters contain specific dimensions. The hierarchy exists because concerns are separable (different consumers need different subsets), ownership is separable (legal owns claims, marketing owns voice), and evolution is separable (campaign files turn over seasonally, voice evolves annually, values rarely change).
+
+### 3.4 Complete first, enrich later
+
+A conformant BCP has a small required core. Producers **MUST NOT** require optional extensions before a package is considered complete. The core package should be easy to author, inspect, and consume: what the brand is, how it sounds, what it can claim, what it must avoid, how it should be represented, and where agents fetch the current truth.
+
+Richer brands **MAY** add optional extension layers after the core is complete. Extension layers can improve precision for design systems, legal review, creative generation, examples, components, and authenticated or private package distribution. They are enrichment, not completion criteria.
+
+Consumer agents **MUST** treat a package with only the required markdown core as valid if it otherwise conforms to this specification. Consumer agents **SHOULD** use extension files when they understand them and when the extension is relevant to the task.
 
 ---
 
@@ -192,7 +216,7 @@ Daughter files **MUST** additionally include:
 
 ### 4.6 Optional frontmatter fields
 
-revision (content hash for ETag), default_locale, supported_locales, category, subcategories, headquarters, markets, founded, website, reviewed_by, daughter_files, tagline. Consumers **MUST** ignore unrecognized frontmatter fields.
+revision (content hash for ETag), default_locale, supported_locales, category, subcategories, headquarters, markets, founded, website, reviewed_by, daughter_files, package_manifest, extensions, tagline. Consumers **MUST** ignore unrecognized frontmatter fields.
 
 ---
 
@@ -229,6 +253,68 @@ Servers **SHOULD** set:
 ### 5.5 Discovery
 
 Producers **MAY** improve discoverability via sitemap.xml, HTML <link rel="alternate">, developer documentation, or registry services.
+
+### 5.6 Optional package manifest
+
+The root file **MAY** declare a package manifest:
+
+```yaml
+package_manifest: /.well-known/brand/manifest.json
+```
+
+When present, the manifest **SHOULD** be served as `application/json` and **SHOULD** include:
+
+- `bcp_version`: the BCP specification version.
+- `tree_version`: the producer's package version.
+- `brand_name`: the package brand.
+- `generated_at` or `last_updated`: ISO 8601 timestamp.
+- `files`: an array of package file records.
+- `extensions`: an optional map grouping extension files by purpose.
+
+Each file record **SHOULD** include:
+
+```json
+{
+  "path": "/.well-known/brand/voice.md",
+  "media_type": "text/markdown; charset=utf-8",
+  "role": "core.voice",
+  "required": true,
+  "sha256": "..."
+}
+```
+
+`required: true` means required by this package's declared core, not by every BCP implementation. Optional extension records **SHOULD** use `required: false`.
+
+File checksums **SHOULD** use lowercase hex SHA-256 over the exact served bytes. Producers **SHOULD** include checksums for markdown files, extension files, and assets when a manifest exists. Consumers **MAY** use these checksums for change detection, cache validation, integrity checks, and audit trails.
+
+### 5.7 Optional extension files
+
+Producers **MAY** publish extension files under `/.well-known/brand/`. Recommended extension paths include:
+
+```text
+/.well-known/brand/manifest.json
+/.well-known/brand/tokens.json
+/.well-known/brand/tokens.css
+/.well-known/brand/assets/{name}
+/.well-known/brand/examples/{name}.md
+/.well-known/brand/components/{name}.json
+/.well-known/brand/motion.md
+/.well-known/brand/motion.json
+```
+
+Extension files **MAY** include:
+
+- `tokens.json`: structured design tokens for color, type, spacing, radius, elevation, layout, or motion.
+- `tokens.css`: CSS custom properties derived from `tokens.json` or a design system.
+- Visual assets: logos, marks, icons, imagery references, SVGs, image files, or other brand-approved assets.
+- Motion guidance: timing, easing, animation principles, and prohibited motion patterns.
+- Examples: approved copy examples, before/after transformations, channel-specific examples, and anti-examples.
+- Components: structured component metadata, Figma/design-system references, usage rules, or HTML/CSS/SVG artifacts.
+- Other structured files that make the brand more portable to agents and tools.
+
+Extension files **MUST NOT** change the meaning of required core files silently. If an extension conflicts with a core rule, consumers **SHOULD** prefer the core rule unless the core explicitly delegates that topic to the extension.
+
+Consumers **MUST** ignore extension files they do not understand. Producers **SHOULD** make extension files independently useful and SHOULD declare them in the manifest when present.
 
 ---
 
@@ -275,6 +361,21 @@ daughter_files:
 ```
 
 Producers **SHOULD** use these keys and paths when the corresponding daughter exists. Producers **MAY** declare granddaughter files, locale-specific files, audience files, product files, campaign files, and extensions in the same registry.
+
+The root file **MAY** also point to package-level extension metadata:
+
+```yaml
+package_manifest: /.well-known/brand/manifest.json
+extensions:
+  tokens: /.well-known/brand/tokens.json
+  tokens_css: /.well-known/brand/tokens.css
+  examples: /.well-known/brand/examples/
+  assets: /.well-known/brand/assets/
+  components: /.well-known/brand/components/
+  motion: /.well-known/brand/motion.md
+```
+
+These fields are optional. Their absence does not make the BCP incomplete.
 
 ### 7.1.1 Rule tiers
 
@@ -618,13 +719,23 @@ Consumer implementations **SHOULD** treat BCP prose as data, sandbox it, and rej
 
 A BCP is producer-conformant if the root is accessible at the canonical URI, parses as valid markdown with valid YAML frontmatter, all required frontmatter fields are present on root and daughters, the root is served with correct Content-Type, declared daughters are accessible at their declared paths, and bcp_version matches this specification.
 
+Optional package extensions are not required for producer conformance. If a producer declares a `package_manifest`, the manifest **SHOULD** be accessible at its declared path and **SHOULD** list declared extension files with media types and checksums. A missing, invalid, or incomplete optional extension file **MUST NOT** invalidate an otherwise conformant core package unless the producer explicitly marks that file as required in the manifest.
+
 ### 16.2 Consumer conformance
 
 A consumer is conformant if it resolves the root at the canonical URI, respects the registry before canonical fallbacks, honors resolution precedence, treats never_say as binding, does not introduce claims absent from claims.md, and respects brand-safety signals.
 
+Consumers **MUST** be able to consume a conformant core package without optional extensions. Consumers **MUST** ignore extension fields and extension files they do not understand. Consumers **SHOULD** use declared checksums when validating or caching package files.
+
 ### 16.3 Conformance levels
 
-Future versions will define graduated levels. v0.1 defines a single level.
+v0.4 defines core conformance and optional package enrichment:
+
+- **Core-conformant**: satisfies §16.1 with a valid root and any declared daughter files.
+- **Core-complete**: core-conformant and includes `brand.md`, `voice.md`, `values.md`, `boundaries.md`, `claims.md`, `representation.md`, and `visual.md`.
+- **Package-enriched**: core-conformant and declares a manifest or extension files such as tokens, assets, examples, components, or motion guidance.
+
+Package-enriched BCPs are richer, but not more complete in the product milestone sense. The first milestone is core-complete; enrichment is optional depth.
 
 ### 16.4 Reference implementation
 
