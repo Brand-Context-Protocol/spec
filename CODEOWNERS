@@ -11,3 +11,7 @@
 # Licenses — do not edit without maintainer approval
 /LICENSE-SPEC               @Bruiserhq
 /LICENSE-CODE               @Bruiserhq
+
+# CI workflows and JSON schema — maintainer review required
+/.github/workflows/         @Bruiserhq
+/schema/                    @Bruiserhq
