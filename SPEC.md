@@ -1,18 +1,20 @@
 # Brand Context Protocol (BCP) — Specification
 
-**Version:** 0.4
+**Version:** 0.5
 
 **Status:** Draft
 
-**Date:** 2026-05-30
+**Date:** 2026-06-13
 
 **License:** CC BY 4.0
 
 ## Abstract
 
-The Brand Context Protocol (BCP) is an open specification for publishing machine-readable brand identity as a portable brand context package at a well-known location on a brand's domain. The required core is a hierarchical set of human-readable markdown files. Optional extension layers can add manifests, checksums, design tokens, visual assets, examples, components, motion rules, and other structured files without making the core heavier. BCP allows any agent in the stack — internal brand agents, vendor platforms, and third-party consumer agents — to read, reason over, and act on a brand's strategy, voice, boundaries, claims, and representation preferences. The protocol is designed to be authored once, consumed everywhere, and to evolve as the brand evolves. This document specifies file format, package structure, discovery, resolution, versioning, taxonomy alignment, and consumption patterns for v0.4.
+The Brand Context Protocol (BCP) is an open specification for publishing machine-readable brand identity as a portable brand context package at a well-known location on a brand's domain. The required core is a hierarchical set of human-readable markdown files. Optional extension layers can add manifests, checksums, design tokens, visual assets, examples, components, motion rules, and other structured files without making the core heavier. BCP allows any agent in the stack — internal brand agents, vendor platforms, and third-party consumer agents — to read, reason over, and act on a brand's strategy, voice, boundaries, claims, and representation preferences. The protocol is designed to be authored once, consumed everywhere, and to evolve as the brand evolves. This document specifies file format, package structure, discovery, resolution, versioning, taxonomy alignment, and consumption patterns for v0.5.
 
 ## Change log
+
+- **2026-06-13 — v0.5 draft. Commerce pointer.** Adds an optional `commerce.md` daughter file and a `commerce` root pointer so a brand can declare that its products or services are purchasable by agents, and hand off to a commerce or payment protocol. BCP stays the understanding layer: `commerce.md` does not define checkout or payment itself, it points to an external protocol (for example UCP at `/.well-known/ucp`, an Agentic Commerce Protocol surface, or a Stripe Machine Payments Protocol endpoint). Understanding precedes transaction: a consuming agent reads `brand.md` and the relevant daughter files before it acts on the commerce pointer. The file and pointer are optional; a BCP without them stays valid. All changes are additive per §8.2.
 
 - **2026-06-07 — v0.4 package clarification.** Clarifies that a complete BCP is a portable brand context package with a small required markdown core and optional enrichment files. Blesses optional `manifest.json`, file checksums, `tokens.json`, `tokens.css`, visual assets, motion guidance, examples, components, and other structured extension files. These extension layers are never required for core conformance.
 
@@ -216,7 +218,7 @@ Daughter files **MUST** additionally include:
 
 ### 4.6 Optional frontmatter fields
 
-revision (content hash for ETag), default_locale, supported_locales, category, subcategories, headquarters, markets, founded, website, reviewed_by, daughter_files, package_manifest, extensions, tagline. Consumers **MUST** ignore unrecognized frontmatter fields.
+revision (content hash for ETag), default_locale, supported_locales, category, subcategories, headquarters, markets, founded, website, reviewed_by, daughter_files, package_manifest, extensions, tagline, commerce (v0.5: a path or URL pointing to the brand's commerce.md signpost, see §7.11). Consumers **MUST** ignore unrecognized frontmatter fields.
 
 ---
 
@@ -518,6 +520,26 @@ Product-specific positioning and claims. v0.1 does not fully standardize; v0.2 p
 ### 7.10 campaigns/{name}.md
 
 Campaign-scoped overrides. Recommended frontmatter: campaign_id, starts_at, ends_at. Sunset semantics deferred to v0.2.
+
+### 7.11 commerce.md (v0.5)
+
+Optional. Declares that the brand's products or services are purchasable, and points a consuming agent at the commerce or payment protocol to use. **BCP does not define checkout, carts, or payment.** It is the understanding layer; `commerce.md` is a signpost that hands off to a commerce protocol. This keeps BCP complementary to commerce standards rather than competing with them.
+
+Canonical location: `/.well-known/brand/commerce.md`. A brand that publishes it **SHOULD** add a `commerce` pointer to the root (see §7.1) so agents discover it without guessing, for example `commerce: /.well-known/brand/commerce.md`.
+
+Understanding precedes transaction: a consuming agent **SHOULD** read `brand.md` and the daughter files relevant to its task (voice, claims, boundaries, representation) before acting on the commerce pointer. The point of BCP is that an agent understands the brand before it buys, sells, or transacts on its behalf.
+
+Recommended frontmatter (fenced YAML), all fields optional unless noted:
+
+- `offers`: a list of what is for sale. Each entry: `id`, `name`, `summary`, `price` (`{ amount, currency, interval }` where `interval` is `one_time` or a recurrence such as `month`), and `terms_url`.
+- `protocols`: an ordered list of the commerce or payment protocols the brand supports, most-preferred first. Each entry has a `protocol` identifier and the fields that protocol needs to be discovered. Recognized identifiers:
+  - `ucp` — Universal Commerce Protocol. Field: `profile` (URL of the brand's `/.well-known/ucp` document).
+  - `acp` — Agentic Commerce Protocol. Field: `endpoint` or `surface`.
+  - `mpp` — Stripe Machine Payments Protocol (HTTP 402 + payment credential). Fields: `endpoint`, `challenge` (e.g. `402`), `credential_header`.
+  - A brand **MAY** include a vendor-specific identifier for a bespoke flow, but **SHOULD** prefer a standard protocol where one exists.
+- `understand_first` (prose): a one-line instruction reinforcing that the agent should read the BCP before purchasing.
+
+Consumers **MUST** ignore protocols they do not support and **SHOULD** select the first `protocols` entry they can transact over. A `commerce.md` with no `protocols` an agent recognizes is informational only; the agent **MUST NOT** invent a payment flow.
 
 ---
 

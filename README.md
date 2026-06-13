@@ -6,7 +6,7 @@ AI agents generate content about your brand every day. Without a machine-readabl
 
 ## Specification
 
-**[SPEC.md](SPEC.md)** is the normative specification for BCP v0.4. It defines the required markdown core, optional package extensions, discovery, resolution, versioning, taxonomy alignment, and consumption patterns.
+**[SPEC.md](SPEC.md)** is the normative specification for BCP v0.5. It defines the required markdown core, optional package extensions, discovery, resolution, versioning, taxonomy alignment, the optional v0.5 commerce pointer (how a brand signposts that it is purchasable and hands off to a commerce protocol), and consumption patterns.
 
 ## Repository layout
 

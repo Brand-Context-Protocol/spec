@@ -4,6 +4,17 @@ All notable changes to the Brand Context Protocol specification are documented h
 
 ---
 
+## v0.5 commerce pointer — 2026-06-13
+
+Adds the optional commerce layer so agents can move from understanding a brand to purchasing from it, without BCP reinventing checkout or payment.
+
+- **New optional `commerce.md` daughter file** (`/.well-known/brand/commerce.md`, §7.11). Declares `offers` (what is for sale, with price) and `protocols` (the commerce or payment protocols the brand supports, most-preferred first). It points to an external protocol rather than defining payment itself: UCP (`/.well-known/ucp`), an Agentic Commerce Protocol surface, or a Stripe Machine Payments Protocol (402) endpoint.
+- **New optional root `commerce` pointer** in `brand.md` frontmatter (§4.6) so the signpost is discoverable.
+- **Understanding precedes transaction.** A consuming agent should read `brand.md` and the task-relevant daughter files before acting on the commerce pointer. BCP remains the understanding layer; commerce protocols remain the transaction layer.
+- Both the file and the pointer are optional. A BCP without them is a valid v0.5 document. All changes are additive per §8.2.
+
+---
+
 ## v0.4 package clarification — 2026-06-07
 
 Clarifies BCP as a portable brand context package with a small required markdown core and optional enrichment layers.
