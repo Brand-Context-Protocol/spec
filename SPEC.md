@@ -1,10 +1,10 @@
 # Brand Context Protocol (BCP) — Specification
 
-**Version:** 0.5
+**Version:** 0.6
 
 **Status:** Draft
 
-**Date:** 2026-06-13
+**Date:** 2026-07-03
 
 **License:** CC BY 4.0
 
@@ -13,6 +13,8 @@
 The Brand Context Protocol (BCP) is an open specification for publishing machine-readable brand identity as a portable brand context package at a well-known location on a brand's domain. The required core is a hierarchical set of human-readable markdown files. Optional extension layers can add manifests, checksums, design tokens, visual assets, examples, components, motion rules, and other structured files without making the core heavier. BCP allows any agent in the stack — internal brand agents, vendor platforms, and third-party consumer agents — to read, reason over, and act on a brand's strategy, voice, boundaries, claims, and representation preferences. The protocol is designed to be authored once, consumed everywhere, and to evolve as the brand evolves. This document specifies file format, package structure, discovery, resolution, versioning, taxonomy alignment, and consumption patterns for v0.5.
 
 ## Change log
+
+- **2026-07-03 — v0.6 draft. Interoperability artifacts.** Documents `brand.json` (§5.8) as an optional, deterministically-derived root-level file that projects a BCP's already-compiled colors, fonts, logos, and tone into the schema used by the Ad Context Protocol (AdCP)'s `brand_agent`/`get_brand_identity` contract, so AdCP-native ad-buying agents can discover and read a brand without knowing BCP exists. `get_bcp` MAY optionally accept AdCP-shaped `fields`/`use_case` request arguments and answer from the same published `brand.json`, gated by the registry trust ladder defined in this entry (§5.9's `official_brand_source`) — this does not introduce a second tool or change `get_bcp`'s default response. Retroactively documents an artifact already shipped in the reference implementation; no behavior changes as a result of this entry, only the spec catching up to it. Also notes DESIGN.md (Google Labs, alpha) as a second interop candidate for the same root-level pattern, not yet built — see §5.8. All changes are additive per §8.2.
 
 - **2026-06-13 — v0.5 draft. Commerce pointer.** Adds an optional `commerce.md` daughter file and a `commerce` root pointer so a brand can declare that its products or services are purchasable by agents, and hand off to a commerce or payment protocol. BCP stays the understanding layer: `commerce.md` does not define checkout or payment itself, it points to an external protocol (for example UCP at `/.well-known/ucp`, an Agentic Commerce Protocol surface, or a Stripe Machine Payments Protocol endpoint). Understanding precedes transaction: a consuming agent reads `brand.md` and the relevant daughter files before it acts on the commerce pointer. The file and pointer are optional; a BCP without them stays valid. All changes are additive per §8.2.
 
@@ -317,6 +319,27 @@ Extension files **MAY** include:
 Extension files **MUST NOT** change the meaning of required core files silently. If an extension conflicts with a core rule, consumers **SHOULD** prefer the core rule unless the core explicitly delegates that topic to the extension.
 
 Consumers **MUST** ignore extension files they do not understand. Producers **SHOULD** make extension files independently useful and SHOULD declare them in the manifest when present.
+
+### 5.8 Interoperability artifacts (v0.6)
+
+BCP's position on adjacent standards is to interoperate, not compete: a narrow, single-purpose external format that already has real tooling adoption is a projection target, not a rival to replace BCP's evidence-bound daughter files. This section documents optional, deterministically-derived root-level files (siblings to `brand.md`, not nested under `/.well-known/brand/`) that re-express a BCP's already-compiled data in an external ecosystem's native schema, so that ecosystem's tools can discover and read a brand without needing to understand BCP at all.
+
+An interoperability artifact **MUST** be generated deterministically from the same structured data behind the corresponding BCP daughter file (for example, `visual.md`'s already-computed colors, fonts, and logos) — never authored or re-derived independently, so the two can never silently drift apart. An interoperability artifact **MUST NOT** carry claims, voice, values, boundaries, or representation content; those are BCP's evidence-bound depth and are deliberately out of scope for commodity external schemas. Producers **MAY** omit an interoperability artifact entirely; a BCP without one remains fully valid.
+
+**`brand.json`** — projects a BCP's compiled colors, fonts, logos, and voice/tone into the schema used by the [Ad Context Protocol](https://github.com/adcontextprotocol/adcp) (AdCP)'s `brand_agent` house/brands shape, so AdCP-native ad-buying agents can discover a brand's identity without reading BCP's markdown tree. Canonical location: `/.well-known/brand.json`. Producers **SHOULD** include an `agents[]` entry pointing at a live MCP endpoint capable of answering AdCP's `get_brand_identity` contract.
+
+A registry or MCP surface that already serves `get_bcp` **MAY** extend it, additively, to also answer AdCP-shaped requests: an optional `fields` (array of AdCP identity field names) and `use_case` argument, answered from the same published `brand.json` rather than a second parser. Core identity fields (house, names, logos) **MUST** be returned regardless of trust level; authorized-only fields (colors, fonts, visual guidelines, tone, tagline, voice synthesis, assets, rights, per AdCP's schema) **MUST** be gated behind the same `official_brand_source` trust signal defined in §5.9 — never a second, weaker authorization path. This **MUST NOT** introduce a second tool name or change `get_bcp`'s existing full-tree response when `fields` is absent.
+
+**DESIGN.md** — [Google Labs' DESIGN.md](https://github.com/google-labs-code/design.md) is a second interop candidate for the same root-level pattern, covering visual design tokens (colors, typography, spacing, components) for the growing set of coding agents and tools that read it natively. As of this entry, DESIGN.md is alpha, its schema has no BCP-equivalent frontmatter (`tier`, `parent`, evidence-binding), and no reference implementation exists in this ecosystem yet — **not yet implemented, no committed timeline.** A future point release will document its projection precisely once specced against DESIGN.md's then-current schema; implementers **MUST NOT** assume field names from this entry.
+
+### 5.9 Registry trust attestation (v0.6, Ring 2/3 only)
+
+A published BCP is authored by, or on behalf of, the account that published it — publishing alone **MUST NOT** be read as proof that the account controls the brand's domain. A Ring 2/3 registry service **MAY** implement a two-tier attestation so consumers can distinguish the two:
+
+- **`claimed`** — the default. A live, account-managed BCP that has not proven domain control. Consumers **MUST** treat it as usable context, not as confirmed authority.
+- **`verified`** — the publishing account has additionally proven control of the brand's domain (for example, a DNS TXT record matching a registry-issued challenge). A registry **MUST NOT** report `verified` without a real, checkable proof of domain control; a self-asserted or client-supplied claim of authority **MUST NOT** upgrade this tier.
+
+A registry exposing this attestation **SHOULD** surface exactly two machine-readable signals to a consumer: `trust_level` (`claimed` | `verified`) and `official_brand_source` (boolean, `true` only when `trust_level` is `verified`). Consumer agents **MUST** treat a record as the authoritative source for a brand only when `official_brand_source` is `true`; a `claimed` record remains useful context but is not proof of authority. This section documents the attestation contract only — a full registry conformance profile (challenge format, propagation, revocation, and this document's own worked example use dns_txt) is left to a future point release.
 
 ---
 
