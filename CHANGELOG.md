@@ -4,6 +4,32 @@ All notable changes to the Brand Context Protocol specification are documented h
 
 ---
 
+## v0.7 agent discovery guidance — 2026-07-05
+
+Prompted by a live test: a general-purpose agent asked about a brand that publishes a BCP did not fetch `/.well-known/brand.md` on its own until told to. The file being reachable was never the gap — nothing prompted a consumer that didn't already know BCP existed to look. Three additive recommendations, none required for conformance:
+
+- **New recommended "Agent Instructions" block** in `brand.md` (§7.1.2): a short, imperative, producer-authored block telling a consuming agent to fetch this file before answering brand-related questions and to load daughters lazily by task. Recommended shape included in the spec; producers write it in their own voice.
+- **New optional `agent_first_action` frontmatter field** (schema updated) for consumers that parse frontmatter rather than prose, e.g. `agent_first_action: "fetch /.well-known/brand.md"`.
+- **Recommended discovery path for consumers** (§5.5.1–5.5.2): registry lookup first when a handle is known, direct `/.well-known/` fetch as fallback, prefer `official_brand_source: true` records — and a recommendation that consumers attempt discovery on any brand-naming query calling for brand-accurate output, not only when a user explicitly names BCP.
+- **New platform/tool-integration recommendations** (§13.5), addressed to AI platforms and assistants rather than individual producers: check for a BCP by default on brand queries, prefer verified registry records, cache with respect to `last_updated`, surface grounding to the end user.
+
+All changes are additive per §8.2; a v0.6-conformant BCP without any of the above remains fully valid.
+
+---
+
+## v0.6 interoperability artifacts — 2026-07-03
+
+Documents `brand.json` and `DESIGN.md` interop patterns, and registry trust attestation, that were already shipped in the reference implementation — the spec catching up to the code, not the reverse.
+
+- **`brand.json`** (§5.8): an optional, deterministically-derived root-level file projecting a BCP's compiled colors, fonts, logos, and tone into the schema used by the Ad Context Protocol (AdCP)'s `brand_agent`/`get_brand_identity` contract, so AdCP-native agents can discover and read a brand without knowing BCP exists.
+- **`get_bcp` AdCP fields/use_case support**: `get_bcp` MAY optionally accept AdCP-shaped `fields`/`use_case` arguments and answer from the same published `brand.json` — no second tool, no revived `get_brand_identity`.
+- **Registry trust attestation** (§5.9, Ring 2/3): a `claimed`/`verified` trust ladder; authorized-only fields gate behind `official_brand_source`.
+- **`DESIGN.md`** noted as a second interop candidate (Google Labs, alpha) for the same root-level pattern — not yet built at the time of this spec entry.
+
+All changes are additive per §8.2.
+
+---
+
 ## v0.5 commerce pointer — 2026-06-13
 
 Adds the optional commerce layer so agents can move from understanding a brand to purchasing from it, without BCP reinventing checkout or payment.

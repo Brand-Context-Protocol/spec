@@ -54,6 +54,10 @@
     "package_manifest": {
       "$ref": "#/$defs/jsonPath"
     },
+    "agent_first_action": {
+      "type": "string",
+      "description": "Optional machine-parseable hint (v0.7) for consumers reading frontmatter rather than prose, e.g. \"fetch /.well-known/brand.md\". Mirrors the prose Agent Instructions block recommended in SPEC.md §7.1.2. Not required for conformance."
+    },
     "extensions": {
       "type": "object",
       "description": "Optional package extension entrypoints. Extensions enrich a BCP package but are not required for core conformance.",
