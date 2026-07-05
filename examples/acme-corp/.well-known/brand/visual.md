@@ -1,8 +1,8 @@
 ---
 parent: /.well-known/brand.md
 file_type: visual
-bcp_version: "0.4"
-last_updated: 2026-05-30
+bcp_version: "0.7"
+last_updated: 2026-07-05
 ---
 
 # Visual
