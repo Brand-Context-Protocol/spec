@@ -4,6 +4,16 @@ All notable changes to the Brand Context Protocol specification are documented h
 
 ---
 
+## v0.7 DESIGN.md interop artifact shipped — 2026-07-06
+
+The v0.6 entry below noted DESIGN.md as "not yet built at the time of this spec entry." That's no longer true — the reference implementation now generates `/.well-known/DESIGN.md` deterministically from the same compiled visual data behind `visual.md`, including the same live design-system-read enrichment `visual.md` already used when available.
+
+- **`DESIGN.md`** (§5.8): documents the actual shipped frontmatter shape — `version`, `name`, `colors` (role-to-hex map), `typography` (`display`/`body`/`mono` roles with `fontFamily`/`fontWeight`), `rounded` (`sm`/`md`/`lg`), `spacing` (`sm`/`md`/`lg`/`xl`/`2xl`), and `components` (keyed by component name). A field is omitted, never fabricated, when the source BCP has no corresponding data.
+
+Retroactively documents an artifact already shipped in the reference implementation, same pattern as the v0.6 `brand.json` entry — no protocol behavior changes, only the spec catching up to the code. All changes are additive per §8.2.
+
+---
+
 ## v0.7 agent discovery guidance — 2026-07-05
 
 Prompted by a live test: a general-purpose agent asked about a brand that publishes a BCP did not fetch `/.well-known/brand.md` on its own until told to. The file being reachable was never the gap — nothing prompted a consumer that didn't already know BCP existed to look. Three additive recommendations, none required for conformance:
