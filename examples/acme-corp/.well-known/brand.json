@@ -1,0 +1,59 @@
+{
+  "$schema": "https://adcontextprotocol.org/schemas/v3/brand.json",
+  "house": {
+    "domain": "acme.example.com",
+    "name": "ACME Corporation"
+  },
+  "brands": [
+    {
+      "id": "acme-corp",
+      "names": [{ "en_US": "ACME Corporation" }],
+      "url": "https://acme.example.com",
+      "agents": [
+        {
+          "type": "brand",
+          "url": "https://registry.brandcontextprotocol.dev/mcp?customer_handle=acme-corp",
+          "id": "encoded-brands-registry",
+          "description": "Reads ACME's full signed Brand Context Protocol package via get_bcp."
+        }
+      ],
+      "colors": {
+        "primary": "#E63312",
+        "secondary": "#1A1A1A",
+        "accent": "#FFD600",
+        "background": "#FFFFFF",
+        "text": "#1A1A1A",
+        "surface-inverse": "#000000",
+        "text-inverse": "#FFFFFF",
+        "critical": "#B00020",
+        "success": "#2E7D32"
+      },
+      "fonts": {
+        "primary": "ACME Display",
+        "secondary": "Inter"
+      },
+      "logos": [
+        { "url": "https://cdn.acme.example.com/brand/logo-primary.svg" },
+        { "url": "https://cdn.acme.example.com/brand/logo-primary@2x.png" },
+        { "url": "https://cdn.acme.example.com/brand/logo-icon.svg" }
+      ],
+      "tone": {
+        "voice": "Confident and matter-of-fact about impossible things — the tone of an industrial catalog that has never apologized.",
+        "attributes": ["Confident", "Casual", "Technical", "Unbothered", "Enthusiastic"],
+        "dos": [
+          "Describe failure modes with enthusiasm.",
+          "Use the full product name every time.",
+          "Reference the warranty without explaining it.",
+          "Sound like engineers with a sense of humor."
+        ],
+        "donts": [
+          "Apologize. Ever.",
+          "Use the words 'safe' or 'safety-tested'.",
+          "Use 'reliable' — repeat purchases depend on replacement.",
+          "Say 'fail' — prefer 'spectacular failure mode' or 'expected destruction pattern'.",
+          "Describe 'user error' — prefer 'creative misapplication'."
+        ]
+      }
+    }
+  ]
+}
