@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schema.brandcontextprotocol.dev/claims.schema.json",
+  "title": "Brand Context Protocol claims JSON companion",
+  "description": "Optional structured companion generated deterministically from /.well-known/brand/claims.md. claims.md remains the source of truth.",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "bcp.claims.v1"
+    },
+    "bcp_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$"
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "const": "/.well-known/brand/claims.md"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": ["path", "sha256"],
+      "additionalProperties": true
+    },
+    "legal_review": {
+      "type": "object",
+      "properties": {
+        "required": {
+          "type": "boolean",
+          "const": true
+        },
+        "disclosure": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": ["required", "disclosure"],
+      "additionalProperties": true
+    },
+    "claims": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/claim" }
+    }
+  },
+  "required": ["schema", "bcp_version", "source", "legal_review", "claims"],
+  "additionalProperties": true,
+  "$defs": {
+    "claim": {
+      "type": "object",
+      "properties": {
+        "section": {
+          "type": "string",
+          "enum": ["approved_at_launch", "requires_caveat", "forbidden"]
+        },
+        "id": { "type": "string" },
+        "claim": { "type": "string" },
+        "tier": {
+          "type": "string",
+          "enum": ["core", "default", "contextual"]
+        },
+        "proof_status": {
+          "type": "string",
+          "enum": ["approved", "requires_caveat", "forbidden", "expired", "aspirational", "unknown"]
+        },
+        "evidence": { "type": "string" },
+        "owner": { "type": "string" },
+        "valid_from": {
+          "type": "string",
+          "format": "date"
+        },
+        "valid_until": {
+          "type": "string",
+          "format": "date"
+        },
+        "source_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "exact_text": { "type": "boolean" },
+        "approved_language": { "type": "string" },
+        "caveat": { "type": "string" }
+      },
+      "required": ["section"],
+      "additionalProperties": true
+    }
+  }
+}
