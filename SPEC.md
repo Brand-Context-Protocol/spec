@@ -14,6 +14,8 @@ The Brand Context Protocol (BCP) is an open specification for publishing machine
 
 ## Change log
 
+- **2026-07-09 - v0.7 clarification. Claims JSON companion and review notice.** Adds optional `/.well-known/brand/claims.json` as a deterministic structured companion generated from `claims.md`'s claim blocks. `claims.md` remains the human-readable source of truth. Producers SHOULD include an explicit legal-review notice in `claims.md` and in the JSON companion because proof status records evidence and owner-confirmation state, not legal advice or automatic legal approval. Adds `schema/claims.schema.json`. All changes are additive per §8.2.
+
 - **2026-07-06 — v0.7. DESIGN.md interop artifact shipped.** §5.8's DESIGN.md entry previously said "not yet implemented, no committed timeline"; that is no longer true. The reference implementation now generates `/.well-known/DESIGN.md` deterministically from the same compiled visual data behind `visual.md`, merging live design-system reads (colors, typography, component styles) when available, same enrichment `visual.md` itself already used. Documents the actual shipped frontmatter shape (`version`, `name`, `colors`, `typography`, `rounded`, `spacing`, `components`) so implementers no longer have to guess field names from an alpha upstream schema. Retroactively documents an artifact already shipped in the reference implementation, same pattern as `brand.json`'s v0.6 entry; no protocol behavior changes as a result of this entry, only the spec catching up to it. All changes are additive per §8.2.
 
 - **2026-07-05 — v0.7 draft. Agent discovery guidance.** Prompted by a live test: a general-purpose agent asked about a brand that publishes a BCP did not fetch `/.well-known/brand.md` on its own until told to — the file existed and was correct, but nothing prompted an agent that didn't already know BCP existed to look for it. Adds three additive, non-breaking recommendations: (1) §7.1 recommends producers include a short, imperative "Agent Instructions" block in `brand.md` telling a consuming agent to fetch this file before answering brand-related questions, plus an optional `agent_first_action` frontmatter field for machine parsing; (2) §5.5 expands "Discovery" into a recommended discovery path (Registry MCP first, direct `/.well-known/` fetch as fallback, preferring `official_brand_source: true` records) so agents have a specific, ordered procedure instead of just knowing multiple paths exist; (3) §13.5 adds platform/tool-integration guidance addressed to the AI systems and platforms themselves (check for the well-known file on brand queries, prefer verified registry records, load daughters lazily, respect `last_updated` for caching) — the `robots.txt`/`security.txt` convention only works at scale once consuming platforms look for it by default, not only when an individual brand tells them to. None of this is required for conformance; a v0.6 BCP without an Agent Instructions block remains valid. All changes are additive per §8.2.
@@ -315,6 +317,7 @@ Producers **MAY** publish extension files under `/.well-known/brand/`. Recommend
 
 ```text
 /.well-known/brand/manifest.json
+/.well-known/brand/claims.json
 /.well-known/brand/tokens.json
 /.well-known/brand/tokens.css
 /.well-known/brand/assets/{name}
@@ -327,6 +330,7 @@ Producers **MAY** publish extension files under `/.well-known/brand/`. Recommend
 Extension files **MAY** include:
 
 - `tokens.json`: structured design tokens for color, type, spacing, radius, elevation, layout, or motion.
+- `claims.json`: deterministic structured claims companion generated from `claims.md`; useful for software that needs exact claim records without parsing markdown.
 - `tokens.css`: CSS custom properties derived from `tokens.json` or a design system.
 - Visual assets: logos, marks, icons, imagery references, SVGs, image files, or other brand-approved assets.
 - Motion guidance: timing, easing, animation principles, and prohibited motion patterns.
@@ -559,6 +563,8 @@ What the brand does and does not do. Primary file for brand-safety agents and ve
 
 Approved marketing claims with supporting evidence. Required structured blocks: approved_at_launch, requires_caveat, forbidden. Agents generating copy **MUST NOT** introduce claims absent from this file.
 
+Producers **SHOULD** include an explicit review notice in this file: claims are generated from available evidence for review, are not legal advice, and should be reviewed by legal or the accountable brand owner before use in advertising, packaging, sales, regulated, or comparative contexts. The `proof_status` field records evidence and owner-confirmation state; it does not replace legal review.
+
 Claim entries **MAY** include:
 
 - id: stable claim identifier.
@@ -574,6 +580,8 @@ Claim entries **MAY** include:
 - caveat: required qualifier or disclosure.
 
 Consumers **MUST NOT** use entries with proof_status `forbidden` or `expired`. Consumers **MUST NOT** paraphrase entries whose `exact_text` is true. Consumers **SHOULD** include the caveat when using a claim with proof_status `requires_caveat`. Producers **SHOULD** assign `tier: core` to legally exact or compliance-owned claims.
+
+Producers **MAY** publish `/.well-known/brand/claims.json` as an optional structured companion to this file. When present, `claims.json` **MUST** be generated deterministically from the structured claims in `claims.md`; it **MUST NOT** introduce, approve, remove, or relabel claims independently. If `claims.json` conflicts with `claims.md`, consumers **MUST** prefer `claims.md`.
 
 ### 7.7 representation.md
 
@@ -799,7 +807,7 @@ Producers **MAY** validate their BCP in CI via a reference CLI.
 
 ### 15.1 Trust model
 
-BCP content is claims authored by or on behalf of a brand, not verified truth. Consumer agents **MUST NOT** treat BCP content as authoritative evidence for factual claims about the world.
+BCP content is claims authored by or on behalf of a brand, not verified truth. Consumer agents **MUST NOT** treat BCP content as authoritative evidence for factual claims about the world. Claim proof status is not legal advice and is not a substitute for review by legal or the accountable brand owner.
 
 ### 15.2 Conflict with observable facts
 

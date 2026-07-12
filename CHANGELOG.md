@@ -4,6 +4,18 @@ All notable changes to the Brand Context Protocol specification are documented h
 
 ---
 
+## v0.7 claims JSON companion and review notice — 2026-07-09
+
+Adds the optional `/.well-known/brand/claims.json` extension as a deterministic structured companion generated from `claims.md`.
+
+- **`claims.md` remains authoritative** (§7.6): if `claims.json` conflicts with `claims.md`, consumers prefer `claims.md`.
+- **Explicit review notice** (§7.6, §15.1): producers should state that claims are generated from available evidence for review, are not legal advice, and should be reviewed by legal or the accountable brand owner before regulated, comparative, sales, packaging, or advertising use.
+- **`schema/claims.schema.json`**: reference schema for `bcp.claims.v1`, including `source.sha256`, `legal_review`, and structured claim entries.
+
+All changes are additive per §8.2; a core-complete markdown BCP without `claims.json` remains valid.
+
+---
+
 ## v0.7 DESIGN.md interop artifact shipped — 2026-07-06
 
 The v0.6 entry below noted DESIGN.md as "not yet built at the time of this spec entry." That's no longer true — the reference implementation now generates `/.well-known/DESIGN.md` deterministically from the same compiled visual data behind `visual.md`, including the same live design-system-read enrichment `visual.md` already used when available.
