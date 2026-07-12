@@ -17,12 +17,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout spec
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: spec
 
       - name: Checkout website
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: Brand-Context-Protocol/website
           token: ${{ secrets.WEBSITE_SYNC_PAT }}
@@ -54,12 +54,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout spec
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: spec
 
       - name: Checkout encoder
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: Encoded-Brands/encoder
           token: ${{ secrets.ENCODER_SYNC_PAT }}
