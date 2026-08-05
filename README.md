@@ -36,4 +36,4 @@ The specification is also published at [brandcontextprotocol.dev](https://brandc
 
 ## Maintained by
 
-[Encoded Brands](https://encodedbrands.com) and the community.
+[Encoded Brands](https://encodedbrands.ai) and the community.
