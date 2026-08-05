@@ -12,6 +12,7 @@
     "file_type": {
       "type": "string",
       "enum": [
+        "pointer",
         "root",
         "voice",
         "visual",
@@ -36,8 +37,7 @@
       "type": "string"
     },
     "parent": {
-      "type": "string",
-      "pattern": "^/.*\\.md$"
+      "$ref": "#/$defs/markdownReference"
     },
     "daughter_files": {
       "type": "object",
@@ -56,7 +56,25 @@
     },
     "agent_first_action": {
       "type": "string",
-      "description": "Optional machine-parseable hint (v0.7) for consumers reading frontmatter rather than prose, e.g. \"fetch /.well-known/brand.md\". Mirrors the prose Agent Instructions block recommended in SPEC.md §7.1.2. Not required for conformance."
+      "description": "Machine-parseable fetch hint. Registry-hosted roots and pointers use an absolute HTTPS canonical URL; self-hosted roots may use the conventional domain-relative discovery path."
+    },
+    "canonical_bcp": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://"
+    },
+    "registry_mcp": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://"
+    },
+    "registry_handle": {
+      "type": "string",
+      "minLength": 1
+    },
+    "publication_profile": {
+      "type": "string",
+      "enum": ["self_hosted", "registry_backed"]
     },
     "extensions": {
       "type": "object",
@@ -72,15 +90,23 @@
         "required": ["file_type"]
       },
       "then": {
-        "required": ["brand_name", "tree_version"]
+        "required": ["brand_name", "tree_version", "agent_first_action"]
       }
     },
     {
       "if": {
-        "not": {
-          "properties": { "file_type": { "const": "root" } },
-          "required": ["file_type"]
-        }
+        "properties": { "file_type": { "const": "pointer" } },
+        "required": ["file_type"]
+      },
+      "then": {
+        "required": ["brand_name", "canonical_bcp", "agent_first_action"],
+        "not": { "required": ["daughter_files"] }
+      }
+    },
+    {
+      "if": {
+        "properties": { "file_type": { "not": { "enum": ["root", "pointer"] } } },
+        "required": ["file_type"]
       },
       "then": {
         "required": ["parent"]
@@ -89,16 +115,19 @@
   ],
   "$defs": {
     "markdownPath": {
+      "$ref": "#/$defs/markdownReference"
+    },
+    "markdownReference": {
       "type": "string",
-      "pattern": "^/.*\\.md$"
+      "pattern": "^(?:/|https://).+\\.md$"
     },
     "jsonPath": {
       "type": "string",
-      "pattern": "^/.*\\.json$"
+      "pattern": "^(?:/|https://).+\\.json$"
     },
     "packagePath": {
       "type": "string",
-      "pattern": "^/.+"
+      "pattern": "^(?:/|https://).+"
     }
   }
 }
