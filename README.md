@@ -6,11 +6,11 @@ AI agents generate content about your brand every day. Without a machine-readabl
 
 ## Specification
 
-**[SPEC.md](SPEC.md)** is the normative specification for BCP v0.7. It defines the required markdown core, optional package extensions, discovery, resolution, versioning, taxonomy alignment, claims handling, interoperability artifacts, and consumption patterns.
+**[SPEC.md](SPEC.md)** is the normative specification for BCP v0.8. It defines the required markdown core, self-hosted and Registry-backed publication profiles, optional package extensions, discovery, resolution, publication integrity, versioning, taxonomy alignment, claims handling, interoperability artifacts, and consumption patterns.
 
 ## Repository layout
 
-- [`SPEC.md`](SPEC.md) — The normative specification text (v0.7).
+- [`SPEC.md`](SPEC.md) — The normative specification text (v0.8).
 - [`schema/`](schema/) — JSON Schema definitions for validation.
 - [`examples/`](examples/) — Example BCP implementations.
 - [`spec/hypotheses.md`](spec/hypotheses.md) — Open hypotheses and design questions.
@@ -19,7 +19,7 @@ AI agents generate content about your brand every day. Without a machine-readabl
 
 ## Quick start
 
-Publish a `brand.md` file at `/.well-known/` on your domain, plus the canonical daughter files under `/.well-known/brand/`. Agents, platforms, and tools can read the markdown core immediately. Richer packages may add `manifest.json`, `claims.json`, checksums, design tokens, assets, examples, components, and motion guidance later.
+Publish a discovery document at `/.well-known/brand.md` on your domain. It can be a complete self-hosted root or a thin pointer to a canonical Registry-hosted package. Agents, platforms, and tools follow the same discovery path in either case. Richer packages may add `manifest.json`, `claims.json`, checksums, signatures, design tokens, assets, examples, components, and motion guidance later.
 
 ## Examples
 

@@ -1,18 +1,20 @@
 # Brand Context Protocol (BCP) — Specification
 
-**Version:** 0.7
+**Version:** 0.8
 
 **Status:** Draft
 
-**Date:** 2026-07-05
+**Date:** 2026-08-05
 
 **License:** CC BY 4.0
 
 ## Abstract
 
-The Brand Context Protocol (BCP) is an open specification for publishing machine-readable brand identity as a portable brand context package at a well-known location on a brand's domain. The required core is a hierarchical set of human-readable markdown files. Optional extension layers can add manifests, checksums, design tokens, visual assets, examples, components, motion rules, and other structured files without making the core heavier. BCP allows any agent in the stack — internal brand agents, vendor platforms, and third-party consumer agents — to read, reason over, and act on a brand's strategy, voice, boundaries, claims, and representation preferences. The protocol is designed to be authored once, consumed everywhere, and to evolve as the brand evolves. This document specifies file format, package structure, discovery, resolution, versioning, taxonomy alignment, and consumption patterns for v0.7.
+The Brand Context Protocol (BCP) is an open specification for publishing machine-readable brand identity as a portable brand context package discovered at a well-known location on a brand's domain. A brand may serve the canonical package itself or publish a thin domain pointer to a canonical package in a Registry. The required core is a hierarchical set of human-readable markdown files. Optional extension layers can add manifests, checksums, signatures, design tokens, visual assets, examples, components, motion rules, and other structured files without making the core heavier. BCP allows any agent in the stack — internal brand agents, vendor platforms, and third-party consumer agents — to read, reason over, and act on a brand's strategy, voice, boundaries, claims, and representation preferences. The protocol is designed to be authored once, consumed everywhere, and to evolve as the brand evolves. This document specifies file format, package structure, discovery, resolution, publication integrity, versioning, taxonomy alignment, and consumption patterns for v0.8.
 
 ## Change log
+
+- **2026-08-05 — v0.8 draft. Domain discovery and canonical Registry publication.** Defines two conformant publication profiles. A self-hosted profile serves a complete BCP tree on the brand domain. A Registry-backed profile serves a thin `file_type: pointer` discovery document at the same well-known domain URI and directs consumers to an absolute HTTPS canonical BCP URL. Requires absolute references in Registry-hosted canonical packages, adds bounded pointer resolution, and separates domain control, publication authorization, and content integrity. Registry implementations sign immutable canonical bytes at publication and verify those stored bytes on reads; they must not mutate or re-sign content while serving it. Existing v0.7 packages remain consumable.
 
 - **2026-07-09 - v0.7 clarification. Claims JSON companion and review notice.** Adds optional `/.well-known/brand/claims.json` as a deterministic structured companion generated from `claims.md`'s claim blocks. `claims.md` remains the human-readable source of truth. Producers SHOULD include an explicit legal-review notice in `claims.md` and in the JSON companion because proof status records evidence and owner-confirmation state, not legal advice or automatic legal approval. Adds `schema/claims.schema.json`. All changes are additive per §8.2.
 
@@ -116,7 +118,13 @@ This specification uses normative language per RFC 2119. The keywords **MUST**, 
 
 **Consumer**: An agent, platform, tool, or human reading BCP files to obtain brand context.
 
-**Root file**: The file located at /.well-known/brand.md on the brand's domain.
+**Discovery document**: The document located at `/.well-known/brand.md` on the brand's domain. It is either a complete self-hosted root or a Registry-backed pointer.
+
+**Root file**: The canonical `file_type: root` document for a complete BCP package. It may be served on the brand's domain or by a Registry.
+
+**Pointer file**: A thin `file_type: pointer` discovery document on the brand's domain that identifies the absolute HTTPS URL of the canonical Registry-backed root.
+
+**Canonical BCP**: The complete package a consumer uses after discovery and pointer resolution.
 
 **Daughter file**: A file referenced by the root that contains a specific dimension of brand context.
 
@@ -152,13 +160,13 @@ This specification uses normative language per RFC 2119. The keywords **MUST**, 
 
 BCP content is made available through three rings, in order of decreasing ubiquity and increasing dynamism.
 
-**Ring 1 — File-based.** The baseline. BCP files served as static markdown at canonical well-known URIs on the brand's domain. Any HTTP client can fetch them. Requires no infrastructure beyond standard web hosting.
+**Ring 1 — File-based.** The baseline. A discovery document is served at the canonical well-known URI on the brand's domain. It either contains the complete self-hosted root or points to a complete canonical package at an absolute HTTPS URL. Any HTTP client can resolve it.
 
 **Ring 2 — CLI-based.** A reference command-line tool and compatible third-party tools provide programmatic access for authoring, validation, inspection, and one-shot agent consumption.
 
 **Ring 3 — MCP-based.** An MCP server exposes BCP content as tools agents can invoke within a session, supporting session-persistent context, dynamic resolution, authenticated private BCPs, and tool-native agent integration.
 
-All three rings consume the same underlying source of truth: the BCP file tree. Producers **MAY** publish through any combination of rings; Ring 1 is **REQUIRED** for conformance.
+All three rings consume the same underlying source of truth: the canonical BCP file tree. Producers **MAY** publish through any combination of rings; Ring 1 discovery is **REQUIRED** for conformance.
 
 ### 3.2 Consumption patterns
 
@@ -210,15 +218,21 @@ Every BCP file **MUST** include:
 
 - bcp_version: string matching ^\d+\.\d+$
 
-- file_type: one of root, voice, visual, values, boundaries, claims, representation, audience, product, campaign, anti_ai
+- file_type: one of pointer, root, voice, visual, values, boundaries, claims, representation, audience, product, campaign, anti_ai
 
 - last_updated: ISO 8601 date
 
-The root file **MUST** additionally include:
+The root and pointer files **MUST** additionally include:
 
 - brand_name: string
 
+- agent_first_action: an imperative fetch instruction for the canonical root. A self-hosted root uses its domain discovery path. A Registry-hosted root or pointer uses the absolute canonical Registry URL.
+
+A root file **MUST** additionally include:
+
 - tree_version: semver string
+
+A pointer file **MUST** additionally include `canonical_bcp`, an absolute HTTPS URL. Its `agent_first_action` **MUST** fetch the same URL.
 
 Daughter files **MUST** additionally include:
 
@@ -226,7 +240,7 @@ Daughter files **MUST** additionally include:
 
 ### 4.6 Optional frontmatter fields
 
-revision (content hash for ETag), default_locale, supported_locales, category, subcategories, headquarters, markets, founded, website, reviewed_by, daughter_files, package_manifest, extensions, tagline, commerce (v0.5: a path or URL pointing to the brand's commerce.md signpost, see §7.11). Consumers **MUST** ignore unrecognized frontmatter fields.
+revision (content hash for ETag), default_locale, supported_locales, category, subcategories, headquarters, markets, founded, website, reviewed_by, daughter_files, package_manifest, extensions, tagline, commerce (v0.5: a path or URL pointing to the brand's commerce.md signpost, see §7.11), registry_mcp, registry_handle, publication_profile. Consumers **MUST** ignore unrecognized frontmatter fields.
 
 ---
 
@@ -234,19 +248,19 @@ revision (content hash for ETag), default_locale, supported_locales, category, s
 
 ### 5.1 Canonical location
 
-A BCP's root file **MUST** be published at https://{domain}/.well-known/brand.md. Daughter files **MUST** be published at https://{domain}/.well-known/brand/{filename}.md or subdirectory equivalents.
+A BCP discovery document **MUST** be published at `https://{domain}/.well-known/brand.md`. It **MUST** use one of the profiles in §5.3. A self-hosted root's daughter files are normally published at `https://{domain}/.well-known/brand/{filename}.md` or subdirectory equivalents. A Registry-backed pointer's canonical package and daughters are published at the absolute URLs declared by the Registry root.
 
 ### 5.2 Source of truth
 
-Producers **SHOULD** maintain BCP files in a version-controlled repository. The repository's default branch is the canonical source of truth. The content served at /.well-known/brand.md is the consumed artifact derived from that source.
+Producers **SHOULD** maintain BCP source in version control or another auditable system. The canonical consumed artifact is the complete root and its declared package, not necessarily the domain discovery document. A Registry-backed pointer identifies that artifact through `canonical_bcp`.
 
-### 5.3 Three valid distribution models
+### 5.3 Two valid publication profiles
 
-**Direct serving.** The producer serves from their own domain through their own infrastructure.
+**Self-hosted.** The domain discovery document is also the complete `file_type: root` document. It declares daughter files and optional extensions using root-relative or absolute HTTPS references. The producer serves and operates the canonical package.
 
-**Fork-the-template.** The producer forks a template repository and serves from their own infrastructure.
+**Registry-backed.** The domain discovery document is a thin `file_type: pointer` document. It declares `canonical_bcp` as an absolute HTTPS URL for the Registry-hosted root and **MUST NOT** duplicate a daughter registry. The Registry root declares absolute HTTPS references for daughters, manifests, and extension entrypoints so those references retain the Registry handle and cannot resolve against the wrong host.
 
-**Hosted.** The producer publishes through a third-party hosting provider. All three models produce the same consumable artifact at the same URL pattern.
+Forked templates and hosted services are implementation choices within these profiles, not separate protocol shapes. BCP is open: no producer is required to use a particular Registry or vendor.
 
 ### 5.4 HTTP headers
 
@@ -264,17 +278,13 @@ Servers **SHOULD** set:
 
 Producers **MAY** improve discoverability via sitemap.xml, HTML <link rel="alternate">, developer documentation, or registry services.
 
-#### 5.5.1 Recommended discovery path for consumers (v0.7)
+#### 5.5.1 Recommended discovery path for consumers (v0.8)
 
-A consumer that already knows a brand publishes a BCP, or that wants the highest-trust copy, **SHOULD** try in this order:
+A consumer **SHOULD** fetch `https://{brand-domain}/.well-known/brand.md` first. If it is a root, consume it. If it is a pointer, follow `canonical_bcp`, then consume the returned root and its absolute references. A configured Registry MCP **MAY** be used as a transport or lookup surface after the Registry is discovered, or directly when the brand domain is unavailable and a handle is already known.
 
-1. **Registry MCP, if the brand's handle is known.** Call `get_bcp` (or an equivalent tool) against a registry service. A registry response can carry a trust attestation (§5.9) that a raw file fetch cannot.
-2. **Direct `/.well-known/` fetch**, as a fallback when no registry handle is known, or when the consumer prefers to go straight to the producer's own domain.
-3. **Prefer `official_brand_source: true` (or an equivalent verified/DNS-verified signal) when more than one record exists for the same brand.** A `claimed`-but-unverified record and a `verified` record are not equally trustworthy; consumers **SHOULD** surface which one they used when it matters to the task.
+Pointer resolution **MUST** use HTTPS, **MUST NOT** forward origin credentials to a different host, **MUST** detect loops, and **MUST NOT** follow more than three pointer hops. A pointer target **MUST** resolve to a root, not another pointer indefinitely.
 
-This ordering is a recommendation, not a requirement — both paths remain independently valid per §5.3's three distribution models, and a producer that only self-hosts (no registry) is still fully conformant.
-
-#### 5.5.2 Recommended discovery trigger (v0.7)
+#### 5.5.2 Recommended discovery trigger (v0.8)
 
 The gap this addresses is not "does a well-known path exist" (it does, §5.1) but "does a consumer know to look." Consumers (agents, assistants, platforms) **SHOULD** attempt discovery — Registry lookup or a `/.well-known/brand.md` fetch — on any query that names a specific brand or company and calls for brand-accurate output (describing the brand, writing in its voice, citing its claims, or representing it to a third party), not only when a user or operator explicitly names BCP or points at the file. See §13.5 for the platform-level version of this recommendation.
 
@@ -367,17 +377,29 @@ A published BCP is authored by, or on behalf of, the account that published it �
 
 A registry exposing this attestation **SHOULD** surface exactly two machine-readable signals to a consumer: `trust_level` (`claimed` | `verified`) and `official_brand_source` (boolean, `true` only when `trust_level` is `verified`). Consumer agents **MUST** treat a record as the authoritative source for a brand only when `official_brand_source` is `true`; a `claimed` record remains useful context but is not proof of authority. This section documents the attestation contract only — a full registry conformance profile (challenge format, propagation, revocation, and this document's own worked example use dns_txt) is left to a future point release.
 
+### 5.10 Publication integrity and trust layers (v0.8)
+
+Domain control, publication authorization, and package integrity answer different questions and **MUST NOT** be presented as interchangeable:
+
+- Domain verification proves that someone controlling the domain endorsed or configured the discovery pointer at a point in time. It does not prove the truth of the BCP or that the canonical bytes were not later altered.
+- Registry authentication proves that an authorized Registry account requested a publication. It does not by itself prove domain control.
+- A publication signature proves that the exact signed bytes match a particular publication key and have not changed since signing. It does not prove that the claims inside are true.
+
+A Registry implementing signatures **MUST** sign immutable canonical package bytes at publication time, persist the signature and digest with the publication, and verify the stored bytes against that digest or signature before serving them. It **MUST NOT** append content, rewrite references, or create a new signature during a public read. Key identifiers, algorithms, and rotation metadata **SHOULD** be exposed in the package manifest or response metadata. Consumers **SHOULD** verify the manifest and signature when supplied.
+
+A Registry serving a signed file over HTTP **SHOULD** expose the stored digest, signature, and signing-key identifier as response metadata. The reference header names are `X-Content-Sha256`, `X-Signature`, and `X-Signature-Kid`. Browser-readable endpoints **SHOULD** include those names in `Access-Control-Expose-Headers`. An `ETag` **SHOULD** identify the same immutable stored revision.
+
 ---
 
 ## 6. Hierarchical resolution
 
 ### 6.1 Root declares daughters
 
-The root file **SHOULD** include a daughter_files registry in its frontmatter or as a dedicated YAML block.
+The canonical root file **SHOULD** include a daughter_files registry in its frontmatter or as a dedicated YAML block. A pointer file **MUST NOT** declare daughters.
 
 ### 6.2 Canonical fallback paths
 
-If the root omits the registry, consumers **MAY** attempt: /.well-known/brand/voice.md, /values.md, /boundaries.md, /claims.md, /representation.md, /visual.md, /voice/anti-ai.md, /audiences/{segment}.md, /products/{sku}.md, /campaigns/{name}.md.
+If a self-hosted root omits the registry, consumers **MAY** attempt the conventional paths below its domain. Consumers **MUST NOT** guess these paths for a Registry-backed package; they use the absolute references declared by its root.
 
 ### 6.3 Resolution order and precedence
 
@@ -428,15 +450,40 @@ extensions:
 
 These fields are optional. Their absence does not make the BCP incomplete.
 
-The root file **MAY** declare a machine-parseable first-action hint in frontmatter:
+The root file **SHOULD** declare a machine-parseable first-action hint in frontmatter. A self-hosted package may use the conventional relative discovery path:
 
 ```yaml
 agent_first_action: "fetch /.well-known/brand.md"
 ```
 
-This mirrors the imperative prose block recommended in §7.1.2 for consumers that parse frontmatter rather than reading prose.
+A Registry-hosted canonical root **MUST** use its absolute canonical URL instead:
 
-### 7.1.1 Rule tiers
+```yaml
+agent_first_action: "fetch https://registry.example/brand-handle/.well-known/brand.md"
+```
+
+This prevents a relative path from losing the Registry handle when resolved from the Registry host.
+
+### 7.1.1 brand.md pointer profile (v0.8)
+
+A Registry-backed domain publishes a small pointer at `/.well-known/brand.md`:
+
+```yaml
+---
+bcp_version: "0.8"
+file_type: pointer
+brand_name: Example Brand
+last_updated: 2026-08-05
+canonical_bcp: https://registry.example/example-brand/.well-known/brand.md
+registry_mcp: https://registry.example/mcp
+registry_handle: example-brand
+agent_first_action: "fetch https://registry.example/example-brand/.well-known/brand.md"
+---
+```
+
+The pointer **MUST** contain no brand claims, daughter registry, or duplicated package content. Its purpose is discovery and endorsement. The canonical root remains the source consumed by agents.
+
+### 7.1.2 Rule tiers
 
 Structured entries in daughter files **MAY** include a `tier` field. Valid values:
 
@@ -448,7 +495,7 @@ Structured entries in daughter files **MAY** include a `tier` field. Valid value
 
 If `tier` is absent, consumers **SHOULD** treat the entry as `default`. Producers **SHOULD** use `core` sparingly for invariants: legal claims, naming rules, hard boundaries, forbidden terms, and non-negotiable representation constraints.
 
-### 7.1.2 Agent Instructions block (v0.7, recommended)
+### 7.1.3 Agent Instructions block (v0.8, recommended)
 
 Producers **SHOULD** include a short, imperative block in `brand.md`, addressed directly to a consuming agent, instructing it to fetch this file (or the registry equivalent) before generating brand-related output, and to load only the daughter files a task actually needs rather than the whole tree. This exists because a consumer not already looking for a BCP has no reason to check `/.well-known/` on its own — the file being reachable is necessary but not sufficient; something has to tell a first-time consumer to look. Recommended shape:
 
@@ -569,7 +616,7 @@ Claim entries **MAY** include:
 
 - id: stable claim identifier.
 - claim: human-readable claim text.
-- tier: one of `core`, `default`, or `contextual` per §7.1.1.
+- tier: one of `core`, `default`, or `contextual` per §7.1.2.
 - proof_status: one of `approved`, `requires_caveat`, `forbidden`, `expired`, `aspirational`, or `unknown`.
 - evidence: source URLs, document references, citations, or notes supporting the claim.
 - owner: team or person responsible for approving changes.
@@ -743,9 +790,9 @@ Future versions define authenticated access patterns. v0.1 producers **MAY** ser
 
 No credentials, commercial terms, unannounced plans, personal information, or content whose disclosure would be a material breach.
 
-### 12.4 Signed BCPs (v0.2 preview)
+### 12.4 Signed BCPs
 
-v0.2 will introduce optional cryptographic signing. v0.1 operates under a trust model where domain ownership implies authorship.
+Registries and self-hosters **MAY** sign canonical packages. Signature semantics are defined in §5.10. Domain control, account authentication, and signature verification are separate trust signals.
 
 ---
 
@@ -767,9 +814,9 @@ Recommended tool names: get_brand_root(), get_voice(), get_boundaries(context?),
 
 Ring 1 for one-off queries and stateless consumers. Ring 2 for developer authoring. Ring 3 for long sessions, private BCPs, dynamic resolution.
 
-### 13.5 Platform and tool integration recommendations (v0.7)
+### 13.5 Platform and tool integration recommendations (v0.8)
 
-The `/.well-known/` convention (shared with `robots.txt` and `security.txt`) only removes friction at scale once consuming platforms check for it by default — an individual producer publishing §7.1.2's Agent Instructions block helps a consumer that already fetched the file, but does nothing for one that never thought to look. This section is addressed to AI platforms, assistants, and tool builders, not to individual brand producers.
+The `/.well-known/` convention (shared with `robots.txt` and `security.txt`) only removes friction at scale once consuming platforms check for it by default — an individual producer publishing §7.1.3's Agent Instructions block helps a consumer that already fetched the file, but does nothing for one that never thought to look. This section is addressed to AI platforms, assistants, and tool builders, not to individual brand producers.
 
 Platforms and AI systems **SHOULD**:
 
@@ -819,7 +866,7 @@ Producers **SHOULD** set cache headers. Consumers **SHOULD** respect them.
 
 ### 15.4 Spoofing and domain verification
 
-Consumers **SHOULD** confirm the domain serving the BCP matches the brand expected.
+Consumers **SHOULD** confirm the discovery domain matches the brand expected. A domain-control check proves control at a point in time, not the truth of content or the identity of every person with DNS access. Consumers **SHOULD** verify publication signatures and manifests independently when supplied.
 
 ### 15.5 Prompt injection in prose fields
 
@@ -831,13 +878,13 @@ Consumer implementations **SHOULD** treat BCP prose as data, sandbox it, and rej
 
 ### 16.1 Producer conformance
 
-A BCP is producer-conformant if the root is accessible at the canonical URI, parses as valid markdown with valid YAML frontmatter, all required frontmatter fields are present on root and daughters, the root is served with correct Content-Type, declared daughters are accessible at their declared paths, and bcp_version matches this specification.
+A BCP is producer-conformant if a discovery document is accessible at the canonical domain URI and matches one of §5.3's profiles. A self-hosted discovery document must be a valid root with accessible declared daughters. A Registry-backed discovery document must be a valid pointer whose absolute HTTPS `canonical_bcp` resolves, within the bounded rules of §5.5.1, to a valid root with accessible declared references. All files must have valid frontmatter and `bcp_version` matching this specification.
 
 Optional package extensions are not required for producer conformance. If a producer declares a `package_manifest`, the manifest **SHOULD** be accessible at its declared path and **SHOULD** list declared extension files with media types and checksums. A missing, invalid, or incomplete optional extension file **MUST NOT** invalidate an otherwise conformant core package unless the producer explicitly marks that file as required in the manifest.
 
 ### 16.2 Consumer conformance
 
-A consumer is conformant if it resolves the root at the canonical URI, respects the registry before canonical fallbacks, honors resolution precedence, treats never_say as binding, does not introduce claims absent from claims.md, and respects brand-safety signals.
+A consumer is conformant if it resolves the domain discovery document, follows a pointer safely when present, resolves the canonical root and declared references, honors resolution precedence, treats never_say as binding, does not introduce claims absent from claims.md, and respects brand-safety signals.
 
 Consumers **MUST** be able to consume a conformant core package without optional extensions. Consumers **MUST** ignore extension fields and extension files they do not understand. Consumers **SHOULD** use declared checksums when validating or caching package files.
 
@@ -859,9 +906,9 @@ The reference at github.com/Brand-Context-Protocol/spec/examples/acme-corp/.well
 
 ## 17. Open questions and future work
 
-### 17.1 Signed BCPs (v0.2)
+### 17.1 Signature profiles and key discovery
 
-Cryptographic signing for authenticity verification.
+Standardize algorithms, key discovery, revocation, and rotation beyond §5.10's minimum integrity contract.
 
 ### 17.2 Private and authenticated BCPs (v0.2)
 

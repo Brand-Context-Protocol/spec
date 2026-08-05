@@ -4,6 +4,18 @@ All notable changes to the Brand Context Protocol specification are documented h
 
 ---
 
+## v0.8 domain discovery and canonical Registry publication — 2026-08-05
+
+Defines two conformant publication profiles while preserving one predictable domain discovery URI.
+
+- **Self-hosted:** `/.well-known/brand.md` is the complete root and daughters live on the brand domain.
+- **Registry-backed:** `/.well-known/brand.md` is a thin `file_type: pointer` with an absolute HTTPS `canonical_bcp`; the Registry root uses absolute references so the brand handle is never lost.
+- **Bounded resolution:** HTTPS only, loop detection, at most three pointer hops, and no cross-origin credential forwarding.
+- **Separated trust layers:** domain control, Registry publication authorization, and cryptographic integrity answer different questions.
+- **Immutable serving:** Registries sign exact canonical bytes at publication, persist the signature and digest, and verify rather than mutate or re-sign on public reads.
+
+Existing v0.7 packages remain consumable. Self-hosting remains fully conformant and no vendor is required.
+
 ## v0.7 claims JSON companion and review notice — 2026-07-09
 
 Adds the optional `/.well-known/brand/claims.json` extension as a deterministic structured companion generated from `claims.md`.
