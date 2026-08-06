@@ -430,14 +430,15 @@ The canonical daughter registry keys for standard BCP daughters are:
 ```yaml
 daughter_files:
   voice: /.well-known/brand/voice.md
-  visual: /.well-known/brand/visual.md
+  voice_anti_ai: /.well-known/brand/voice/anti-ai.md
   values: /.well-known/brand/values.md
   boundaries: /.well-known/brand/boundaries.md
   claims: /.well-known/brand/claims.md
   representation: /.well-known/brand/representation.md
+  visual: /.well-known/brand/visual.md
 ```
 
-Producers **SHOULD** use these keys and paths when the corresponding daughter exists. Producers **MAY** declare granddaughter files, locale-specific files, audience files, product files, campaign files, and extensions in the same registry.
+The standard package comprises one root plus these seven supporting files. Although `voice/anti-ai.md` is nested beneath `voice/` by path, the root registers it directly as `voice_anti_ai` so consumers can discover it deterministically. Producers **SHOULD** use these keys and paths when the corresponding daughter exists. Producers **MAY** declare additional granddaughter files, locale-specific files, audience files, product files, campaign files, and extensions in the same registry.
 
 The root file **MAY** also point to package-level extension metadata:
 
@@ -486,6 +487,7 @@ registry_handle: example-brand
 agent_first_action: "fetch https://registry.example/example-brand/.well-known/brand.md"
 daughter_files:
   voice: https://registry.example/example-brand/.well-known/brand/voice.md
+  voice_anti_ai: https://registry.example/example-brand/.well-known/brand/voice/anti-ai.md
   values: https://registry.example/example-brand/.well-known/brand/values.md
   boundaries: https://registry.example/example-brand/.well-known/brand/boundaries.md
   claims: https://registry.example/example-brand/.well-known/brand/claims.md

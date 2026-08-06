@@ -11,6 +11,7 @@ registry_handle: example-brand
 agent_first_action: "fetch https://registry.example/example-brand/.well-known/brand.md"
 daughter_files:
   voice: https://registry.example/example-brand/.well-known/brand/voice.md
+  voice_anti_ai: https://registry.example/example-brand/.well-known/brand/voice/anti-ai.md
   values: https://registry.example/example-brand/.well-known/brand/values.md
   boundaries: https://registry.example/example-brand/.well-known/brand/boundaries.md
   claims: https://registry.example/example-brand/.well-known/brand/claims.md
