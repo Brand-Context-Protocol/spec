@@ -4,12 +4,21 @@ All notable changes to the Brand Context Protocol specification are documented h
 
 ---
 
+## v0.8 rich Registry-backed root correction — 2026-08-05
+
+Corrects the Registry-backed publication profile so the domain document stays useful before an agent follows another link.
+
+- **Rich domain root:** `/.well-known/brand.md` remains a complete `file_type: root` brand brief instead of collapsing into a thin pointer.
+- **Canonical Registry depth:** Registry-backed roots declare `canonical_bcp`, `registry_mcp`, and `registry_handle`, with absolute Registry references for daughters and extensions.
+- **Explicit first action:** `agent_first_action` must explicitly fetch the same absolute canonical Registry root declared by `canonical_bcp`.
+- **Compatibility:** consumers continue to resolve existing v0.8 pointer documents, while producers should migrate them to the rich root profile.
+
 ## v0.8 domain discovery and canonical Registry publication — 2026-08-05
 
 Defines two conformant publication profiles while preserving one predictable domain discovery URI.
 
 - **Self-hosted:** `/.well-known/brand.md` is the complete root and daughters live on the brand domain.
-- **Registry-backed:** `/.well-known/brand.md` is a thin `file_type: pointer` with an absolute HTTPS `canonical_bcp`; the Registry root uses absolute references so the brand handle is never lost.
+- **Registry-backed:** `/.well-known/brand.md` is a complete `file_type: root` with an absolute HTTPS `canonical_bcp`; the Registry root uses absolute references so the brand handle is never lost.
 - **Bounded resolution:** HTTPS only, loop detection, at most three pointer hops, and no cross-origin credential forwarding.
 - **Separated trust layers:** domain control, Registry publication authorization, and cryptographic integrity answer different questions.
 - **Immutable serving:** Registries sign exact canonical bytes at publication, persist the signature and digest, and verify rather than mutate or re-sign on public reads.

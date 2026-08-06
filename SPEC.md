@@ -10,11 +10,13 @@
 
 ## Abstract
 
-The Brand Context Protocol (BCP) is an open specification for publishing machine-readable brand identity as a portable brand context package discovered at a well-known location on a brand's domain. A brand may serve the canonical package itself or publish a thin domain pointer to a canonical package in a Registry. The required core is a hierarchical set of human-readable markdown files. Optional extension layers can add manifests, checksums, signatures, design tokens, visual assets, examples, components, motion rules, and other structured files without making the core heavier. BCP allows any agent in the stack — internal brand agents, vendor platforms, and third-party consumer agents — to read, reason over, and act on a brand's strategy, voice, boundaries, claims, and representation preferences. The protocol is designed to be authored once, consumed everywhere, and to evolve as the brand evolves. This document specifies file format, package structure, discovery, resolution, publication integrity, versioning, taxonomy alignment, and consumption patterns for v0.8.
+The Brand Context Protocol (BCP) is an open specification for publishing machine-readable brand identity as a portable brand context package discovered at a well-known location on a brand's domain. A brand may serve the canonical package itself or publish a complete Registry-backed root document that gives agents useful first-read brand context and directs them to a canonical package in a Registry. The required core is a hierarchical set of human-readable markdown files. Optional extension layers can add manifests, checksums, signatures, design tokens, visual assets, examples, components, motion rules, and other structured files without making the core heavier. BCP allows any agent in the stack — internal brand agents, vendor platforms, and third-party consumer agents — to read, reason over, and act on a brand's strategy, voice, boundaries, claims, and representation preferences. The protocol is designed to be authored once, consumed everywhere, and to evolve as the brand evolves. This document specifies file format, package structure, discovery, resolution, publication integrity, versioning, taxonomy alignment, and consumption patterns for v0.8.
 
 ## Change log
 
-- **2026-08-05 — v0.8 draft. Domain discovery and canonical Registry publication.** Defines two conformant publication profiles. A self-hosted profile serves a complete BCP tree on the brand domain. A Registry-backed profile serves a thin `file_type: pointer` discovery document at the same well-known domain URI and directs consumers to an absolute HTTPS canonical BCP URL. Requires absolute references in Registry-hosted canonical packages, adds bounded pointer resolution, and separates domain control, publication authorization, and content integrity. Registry implementations sign immutable canonical bytes at publication and verify those stored bytes on reads; they must not mutate or re-sign content while serving it. Existing v0.7 packages remain consumable.
+- **2026-08-05 — v0.8 draft correction. Rich Registry-backed roots.** Corrects the Registry-backed publication profile so the domain discovery document remains a complete, useful `file_type: root` brand brief instead of collapsing into a thin pointer. The domain root declares the canonical Registry URL, Registry MCP endpoint, Registry handle, absolute daughter references, and an explicit absolute `agent_first_action`. Legacy v0.8 pointer documents remain consumable for compatibility, but producers SHOULD replace them with rich Registry-backed roots.
+
+- **2026-08-05 — v0.8 draft. Domain discovery and canonical Registry publication.** Defines two conformant publication profiles. A self-hosted profile serves a complete BCP tree on the brand domain. A Registry-backed profile serves a complete root document at the same well-known domain URI and directs consumers to an absolute HTTPS canonical BCP URL. Requires absolute references in Registry-hosted canonical packages, adds bounded legacy-pointer resolution, and separates domain control, publication authorization, and content integrity. Registry implementations sign immutable canonical bytes at publication and verify those stored bytes on reads; they must not mutate or re-sign content while serving it. Existing v0.7 packages remain consumable.
 
 - **2026-07-09 - v0.7 clarification. Claims JSON companion and review notice.** Adds optional `/.well-known/brand/claims.json` as a deterministic structured companion generated from `claims.md`'s claim blocks. `claims.md` remains the human-readable source of truth. Producers SHOULD include an explicit legal-review notice in `claims.md` and in the JSON companion because proof status records evidence and owner-confirmation state, not legal advice or automatic legal approval. Adds `schema/claims.schema.json`. All changes are additive per §8.2.
 
@@ -118,11 +120,11 @@ This specification uses normative language per RFC 2119. The keywords **MUST**, 
 
 **Consumer**: An agent, platform, tool, or human reading BCP files to obtain brand context.
 
-**Discovery document**: The document located at `/.well-known/brand.md` on the brand's domain. It is either a complete self-hosted root or a Registry-backed pointer.
+**Discovery document**: The complete root document located at `/.well-known/brand.md` on the brand's domain. It contains useful first-read brand context. A Registry-backed root also identifies the absolute HTTPS URL of the canonical Registry root.
 
 **Root file**: The canonical `file_type: root` document for a complete BCP package. It may be served on the brand's domain or by a Registry.
 
-**Pointer file**: A thin `file_type: pointer` discovery document on the brand's domain that identifies the absolute HTTPS URL of the canonical Registry-backed root.
+**Pointer file**: A legacy-compatible `file_type: pointer` discovery document that identifies the absolute HTTPS URL of a canonical Registry-backed root. Consumers MUST continue to resolve valid pointers, but new v0.8 producers SHOULD publish a rich Registry-backed root instead.
 
 **Canonical BCP**: The complete package a consumer uses after discovery and pointer resolution.
 
@@ -160,7 +162,7 @@ This specification uses normative language per RFC 2119. The keywords **MUST**, 
 
 BCP content is made available through three rings, in order of decreasing ubiquity and increasing dynamism.
 
-**Ring 1 — File-based.** The baseline. A discovery document is served at the canonical well-known URI on the brand's domain. It either contains the complete self-hosted root or points to a complete canonical package at an absolute HTTPS URL. Any HTTP client can resolve it.
+**Ring 1 — File-based.** The baseline. A complete root document is served at the canonical well-known URI on the brand's domain. A Registry-backed root also points to a complete canonical package at an absolute HTTPS URL. Any HTTP client can read useful brand context immediately and resolve deeper canonical context when needed.
 
 **Ring 2 — CLI-based.** A reference command-line tool and compatible third-party tools provide programmatic access for authoring, validation, inspection, and one-shot agent consumption.
 
@@ -210,7 +212,7 @@ Fields intended for human reading, voice-matched paraphrasing, or nuanced agent 
 
 ### 4.4 Character encoding and size
 
-Files **MUST** be UTF-8. No BOM. LF line endings preferred. Root file **SHOULD** be under 8 KB. Daughter files **SHOULD** be under 32 KB.
+Files **MUST** be UTF-8. No BOM. LF line endings preferred. Root files **SHOULD** be under 16 KB. Daughter files **SHOULD** be under 32 KB.
 
 ### 4.5 Required frontmatter fields
 
@@ -226,11 +228,13 @@ The root and pointer files **MUST** additionally include:
 
 - brand_name: string
 
-- agent_first_action: an imperative fetch instruction for the canonical root. A self-hosted root uses its domain discovery path. A Registry-hosted root or pointer uses the absolute canonical Registry URL.
+- agent_first_action: an explicit imperative fetch instruction for the canonical root. A self-hosted root uses its domain discovery path. A Registry-backed root, Registry-hosted root, or legacy pointer uses the absolute canonical Registry URL.
 
 A root file **MUST** additionally include:
 
 - tree_version: semver string
+
+A Registry-backed root **MUST** additionally include `publication_profile: registry_backed`, `canonical_bcp`, `registry_mcp`, and `registry_handle`. `canonical_bcp` and `registry_mcp` **MUST** be absolute HTTPS URLs. Its `agent_first_action` **MUST** explicitly fetch the same URL declared by `canonical_bcp`.
 
 A pointer file **MUST** additionally include `canonical_bcp`, an absolute HTTPS URL. Its `agent_first_action` **MUST** fetch the same URL.
 
@@ -248,17 +252,17 @@ revision (content hash for ETag), default_locale, supported_locales, category, s
 
 ### 5.1 Canonical location
 
-A BCP discovery document **MUST** be published at `https://{domain}/.well-known/brand.md`. It **MUST** use one of the profiles in §5.3. A self-hosted root's daughter files are normally published at `https://{domain}/.well-known/brand/{filename}.md` or subdirectory equivalents. A Registry-backed pointer's canonical package and daughters are published at the absolute URLs declared by the Registry root.
+A BCP discovery document **MUST** be published at `https://{domain}/.well-known/brand.md`. It **MUST** use one of the profiles in §5.3. A self-hosted root's daughter files are normally published at `https://{domain}/.well-known/brand/{filename}.md` or subdirectory equivalents. A Registry-backed root's canonical package and daughters are published at the absolute URLs declared by that root.
 
 ### 5.2 Source of truth
 
-Producers **SHOULD** maintain BCP source in version control or another auditable system. The canonical consumed artifact is the complete root and its declared package, not necessarily the domain discovery document. A Registry-backed pointer identifies that artifact through `canonical_bcp`.
+Producers **SHOULD** maintain BCP source in version control or another auditable system. The canonical consumed artifact is the Registry root and its declared package when `publication_profile` is `registry_backed`. The domain root remains useful first-read context and identifies that canonical artifact through `canonical_bcp`.
 
 ### 5.3 Two valid publication profiles
 
 **Self-hosted.** The domain discovery document is also the complete `file_type: root` document. It declares daughter files and optional extensions using root-relative or absolute HTTPS references. The producer serves and operates the canonical package.
 
-**Registry-backed.** The domain discovery document is a thin `file_type: pointer` document. It declares `canonical_bcp` as an absolute HTTPS URL for the Registry-hosted root and **MUST NOT** duplicate a daughter registry. The Registry root declares absolute HTTPS references for daughters, manifests, and extension entrypoints so those references retain the Registry handle and cannot resolve against the wrong host.
+**Registry-backed.** The domain discovery document is a complete `file_type: root` brand brief. It **MUST** retain the root content that lets an agent understand the brand before following another link. It declares `publication_profile: registry_backed`, `canonical_bcp`, `registry_mcp`, `registry_handle`, an explicit absolute `agent_first_action`, and the complete daughter registry. Daughter, manifest, commerce, and extension references **MUST** be absolute Registry URLs so they retain the Registry handle and cannot resolve against the wrong host. The Registry-hosted canonical root SHOULD use the same projected root bytes so the domain and Registry entrypoints do not disagree about brand content.
 
 Forked templates and hosted services are implementation choices within these profiles, not separate protocol shapes. BCP is open: no producer is required to use a particular Registry or vendor.
 
@@ -280,7 +284,7 @@ Producers **MAY** improve discoverability via sitemap.xml, HTML <link rel="alter
 
 #### 5.5.1 Recommended discovery path for consumers (v0.8)
 
-A consumer **SHOULD** fetch `https://{brand-domain}/.well-known/brand.md` first. If it is a root, consume it. If it is a pointer, follow `canonical_bcp`, then consume the returned root and its absolute references. A configured Registry MCP **MAY** be used as a transport or lookup surface after the Registry is discovered, or directly when the brand domain is unavailable and a handle is already known.
+A consumer **SHOULD** fetch `https://{brand-domain}/.well-known/brand.md` first and use its brand context immediately. If `publication_profile` is `registry_backed`, the consumer **SHOULD** then perform the declared `agent_first_action`, fetch `canonical_bcp`, and load only the absolute daughter references needed for the task. If the document is a legacy pointer, follow `canonical_bcp`, then consume the returned root and its absolute references. A configured Registry MCP **MAY** be used as a transport or lookup surface after the Registry is discovered, or directly when the brand domain is unavailable and a handle is already known.
 
 Pointer resolution **MUST** use HTTPS, **MUST NOT** forward origin credentials to a different host, **MUST** detect loops, and **MUST NOT** follow more than three pointer hops. A pointer target **MUST** resolve to a root, not another pointer indefinitely.
 
@@ -395,7 +399,7 @@ A Registry serving a signed file over HTTP **SHOULD** expose the stored digest, 
 
 ### 6.1 Root declares daughters
 
-The canonical root file **SHOULD** include a daughter_files registry in its frontmatter or as a dedicated YAML block. A pointer file **MUST NOT** declare daughters.
+The canonical root file **SHOULD** include a daughter_files registry in its frontmatter or as a dedicated YAML block. A Registry-backed domain root **MUST** include the complete daughter registry with absolute Registry URLs. A legacy pointer file **MUST NOT** declare daughters.
 
 ### 6.2 Canonical fallback paths
 
@@ -411,7 +415,7 @@ Consumers **SHOULD** load only files required for the task. Copy generation: voi
 
 ### 6.5 Root size target
 
-Under 3 KB of body text plus frontmatter. Content exceeding this **SHOULD** move to daughter files.
+Under 12 KB of body text plus frontmatter. The root should contain enough identity, positioning, offering, and agent guidance to be useful on first read. Detailed voice, claims, values, boundaries, representation, and visual rules **SHOULD** remain in daughter files.
 
 ---
 
@@ -450,7 +454,7 @@ extensions:
 
 These fields are optional. Their absence does not make the BCP incomplete.
 
-The root file **SHOULD** declare a machine-parseable first-action hint in frontmatter. A self-hosted package may use the conventional relative discovery path:
+The root file **MUST** declare a machine-parseable first-action instruction in frontmatter. A self-hosted package may use the conventional relative discovery path:
 
 ```yaml
 agent_first_action: "fetch /.well-known/brand.md"
@@ -464,24 +468,43 @@ agent_first_action: "fetch https://registry.example/brand-handle/.well-known/bra
 
 This prevents a relative path from losing the Registry handle when resolved from the Registry host.
 
-### 7.1.1 brand.md pointer profile (v0.8)
+### 7.1.1 Registry-backed brand.md root profile (v0.8)
 
-A Registry-backed domain publishes a small pointer at `/.well-known/brand.md`:
+A Registry-backed domain publishes a useful root at `/.well-known/brand.md`:
 
 ```yaml
 ---
 bcp_version: "0.8"
-file_type: pointer
+file_type: root
 brand_name: Example Brand
+tree_version: "2.0.0"
 last_updated: 2026-08-05
+publication_profile: registry_backed
 canonical_bcp: https://registry.example/example-brand/.well-known/brand.md
 registry_mcp: https://registry.example/mcp
 registry_handle: example-brand
 agent_first_action: "fetch https://registry.example/example-brand/.well-known/brand.md"
+daughter_files:
+  voice: https://registry.example/example-brand/.well-known/brand/voice.md
+  values: https://registry.example/example-brand/.well-known/brand/values.md
+  boundaries: https://registry.example/example-brand/.well-known/brand/boundaries.md
+  claims: https://registry.example/example-brand/.well-known/brand/claims.md
+  representation: https://registry.example/example-brand/.well-known/brand/representation.md
+  visual: https://registry.example/example-brand/.well-known/brand/visual.md
 ---
+
+# Example Brand
+
+Example Brand makes durable tools for independent builders. It combines repairable hardware, plain-language support, and a long-term parts program so customers can keep working without replacing equipment unnecessarily.
+
+## Agent Instructions
+
+Use this root as immediate brand context. Before producing brand-accurate output, perform `agent_first_action` and fetch the canonical signed Registry root. Load only the declared daughter files needed for the task.
 ```
 
-The pointer **MUST** contain no brand claims, daughter registry, or duplicated package content. Its purpose is discovery and endorsement. The canonical root remains the source consumed by agents.
+The domain root **MUST NOT** be reduced to only connection metadata. It **MUST** preserve the brand identity, core positioning, useful first-read business context, and agent instructions present in the canonical root. The Registry remains canonical for integrity, signed depth, and daughter-file resolution.
+
+Legacy `file_type: pointer` documents remain consumer-compatible. A consumer encountering one follows `canonical_bcp` under §5.5.1. Producers SHOULD migrate those documents to this rich root profile.
 
 ### 7.1.2 Rule tiers
 
@@ -878,7 +901,7 @@ Consumer implementations **SHOULD** treat BCP prose as data, sandbox it, and rej
 
 ### 16.1 Producer conformance
 
-A BCP is producer-conformant if a discovery document is accessible at the canonical domain URI and matches one of §5.3's profiles. A self-hosted discovery document must be a valid root with accessible declared daughters. A Registry-backed discovery document must be a valid pointer whose absolute HTTPS `canonical_bcp` resolves, within the bounded rules of §5.5.1, to a valid root with accessible declared references. All files must have valid frontmatter and `bcp_version` matching this specification.
+A BCP is producer-conformant if a discovery document is accessible at the canonical domain URI and matches one of §5.3's profiles. A self-hosted discovery document must be a valid root with accessible declared daughters. A Registry-backed discovery document must be a valid rich root whose absolute HTTPS `canonical_bcp` resolves to a valid Registry root with accessible declared references. Its `agent_first_action` must explicitly fetch that canonical root, and its daughter registry must use absolute Registry URLs. Legacy pointer documents remain consumer-compatible but are not the recommended v0.8 producer profile. All files must have valid frontmatter and `bcp_version` matching this specification.
 
 Optional package extensions are not required for producer conformance. If a producer declares a `package_manifest`, the manifest **SHOULD** be accessible at its declared path and **SHOULD** list declared extension files with media types and checksums. A missing, invalid, or incomplete optional extension file **MUST NOT** invalidate an otherwise conformant core package unless the producer explicitly marks that file as required in the manifest.
 

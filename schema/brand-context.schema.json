@@ -105,6 +105,24 @@
     },
     {
       "if": {
+        "properties": {
+          "file_type": { "const": "root" },
+          "publication_profile": { "const": "registry_backed" }
+        },
+        "required": ["file_type", "publication_profile"]
+      },
+      "then": {
+        "required": [
+          "canonical_bcp",
+          "registry_mcp",
+          "registry_handle",
+          "agent_first_action",
+          "daughter_files"
+        ]
+      }
+    },
+    {
+      "if": {
         "properties": { "file_type": { "not": { "enum": ["root", "pointer"] } } },
         "required": ["file_type"]
       },
