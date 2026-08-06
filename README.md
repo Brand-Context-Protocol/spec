@@ -19,7 +19,7 @@ AI agents generate content about your brand every day. Without a machine-readabl
 
 ## Quick start
 
-Publish a discovery document at `/.well-known/brand.md` on your domain. It can be a complete self-hosted root or a thin pointer to a canonical Registry-hosted package. Agents, platforms, and tools follow the same discovery path in either case. Richer packages may add `manifest.json`, `claims.json`, checksums, signatures, design tokens, assets, examples, components, and motion guidance later.
+Publish a complete root document at `/.well-known/brand.md` on your domain. It can be self-hosted or Registry-backed. A Registry-backed root keeps useful first-read brand context on the domain while declaring an explicit first action and absolute references to the canonical signed Registry package. Agents, platforms, and tools follow the same discovery path in either case. Richer packages may add `manifest.json`, `claims.json`, checksums, signatures, design tokens, assets, examples, components, and motion guidance later.
 
 ## Examples
 
