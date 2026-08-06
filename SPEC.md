@@ -14,6 +14,8 @@ The Brand Context Protocol (BCP) is an open specification for publishing machine
 
 ## Change log
 
+- **2026-08-06, v0.8 trust-attestation clarification.** Defines the complete `official_brand_source` contract for Ring 2/3 registries: the registry operator grants it only after a fresh DNS challenge proves domain control; it proves origin control at verification time and nothing about content truth, legality, identity, endorsement, or current key custody; it expires after at most 90 days; and revocation immediately downgrades all read surfaces to `claimed` without deleting the BCP. Adds required verification timestamps, fresh-challenge renewal, revocation triggers, and cache propagation rules.
+
 - **2026-08-05 — v0.8 draft correction. Rich Registry-backed roots.** Corrects the Registry-backed publication profile so the domain discovery document remains a complete, useful `file_type: root` brand brief instead of collapsing into a thin pointer. The domain root declares the canonical Registry URL, Registry MCP endpoint, Registry handle, absolute daughter references, and an explicit absolute `agent_first_action`. Legacy v0.8 pointer documents remain consumable for compatibility, but producers SHOULD replace them with rich Registry-backed roots.
 
 - **2026-08-05 — v0.8 draft. Domain discovery and canonical Registry publication.** Defines two conformant publication profiles. A self-hosted profile serves a complete BCP tree on the brand domain. A Registry-backed profile serves a complete root document at the same well-known domain URI and directs consumers to an absolute HTTPS canonical BCP URL. Requires absolute references in Registry-hosted canonical packages, adds bounded legacy-pointer resolution, and separates domain control, publication authorization, and content integrity. Registry implementations sign immutable canonical bytes at publication and verify those stored bytes on reads; they must not mutate or re-sign content while serving it. Existing v0.7 packages remain consumable.
@@ -372,14 +374,63 @@ Frontmatter: `version` (the DESIGN.md schema version this projection targets; cu
 
 DESIGN.md's own upstream schema is alpha and has no BCP-equivalent frontmatter (`tier`, `parent`, evidence-binding) — this artifact projects only visual tokens, never claims, voice, values, boundaries, or representation content, the same restriction as `brand.json`. As DESIGN.md's upstream schema evolves, this projection **SHOULD** track it; a future point release will document breaking upstream changes when they land.
 
-### 5.9 Registry trust attestation (v0.6, Ring 2/3 only)
+### 5.9 Registry trust attestation (v0.8, Ring 2/3 only)
 
-A published BCP is authored by, or on behalf of, the account that published it — publishing alone **MUST NOT** be read as proof that the account controls the brand's domain. A Ring 2/3 registry service **MAY** implement a two-tier attestation so consumers can distinguish the two:
+A published BCP is authored by, or on behalf of, the account that published it. Publishing alone **MUST NOT** be read as proof that the account controls the brand's domain. A Ring 2/3 registry service **MAY** implement a two-tier attestation so consumers can distinguish the two:
 
-- **`claimed`** — the default. A live, account-managed BCP that has not proven domain control. Consumers **MUST** treat it as usable context, not as confirmed authority.
-- **`verified`** — the publishing account has additionally proven control of the brand's domain (for example, a DNS TXT record matching a registry-issued challenge). A registry **MUST NOT** report `verified` without a real, checkable proof of domain control; a self-asserted or client-supplied claim of authority **MUST NOT** upgrade this tier.
+- **`claimed`** is the default. It means a live Registry record is managed by the publishing account but has no current Registry attestation of domain control. Consumers **MUST** treat it as usable context, not as confirmed authority.
+- **`verified`** means the Registry operator granted a time-bounded attestation after the authenticated publishing account completed a fresh, Registry-issued DNS challenge for the claimed domain.
 
-A registry exposing this attestation **SHOULD** surface exactly two machine-readable signals to a consumer: `trust_level` (`claimed` | `verified`) and `official_brand_source` (boolean, `true` only when `trust_level` is `verified`). Consumer agents **MUST** treat a record as the authoritative source for a brand only when `official_brand_source` is `true`; a `claimed` record remains useful context but is not proof of authority. This section documents the attestation contract only — a full registry conformance profile (challenge format, propagation, revocation, and this document's own worked example use dns_txt) is left to a future point release.
+#### 5.9.1 Grantor and proof
+
+Only the Registry operator **MAY** set `trust_level: verified` and `official_brand_source: true`. It **MUST** do so only after all of these conditions hold:
+
+1. the publishing account is authenticated and authorized to manage the Registry handle;
+2. the Registry issued a unique, unpredictable, time-bounded DNS challenge bound to that account, handle, and domain;
+3. the Registry independently observed the exact challenge response under the claimed domain; and
+4. the successful proof was recorded with `verified_at` and `verification_expires_at` timestamps.
+
+A self-asserted field, client-supplied boolean, previously observed challenge, reusable challenge, web-page claim, email address, or successful Registry publication **MUST NOT** upgrade the record.
+
+#### 5.9.2 Meaning and limits
+
+`official_brand_source: true` proves only that the publishing account demonstrated control of the named domain through the Registry's challenge at `verified_at`, and that the attestation has not expired or been revoked. It is a proof-of-origin signal.
+
+It **MUST NOT** be represented as proof of:
+
+- the factual truth, completeness, legality, or regulatory approval of BCP content;
+- the legal identity or authority of a particular person;
+- endorsement by the Registry operator, Encoded Brands, or the protocol maintainers;
+- current control of the domain after `verified_at`;
+- cryptographic integrity of publication bytes, which is a separate signature proof defined in §5.10; or
+- immunity from compromised DNS, account, or Registry credentials.
+
+#### 5.9.3 Expiry and renewal
+
+A verification attestation **MUST** expire no later than 90 days after `verified_at`. A registry **MAY** choose a shorter period. Renewal **MUST** use a newly generated challenge and repeat the complete verification procedure. Merely observing an old TXT value again **MUST NOT** extend the attestation.
+
+After `verification_expires_at`, every Registry read surface **MUST** return `trust_level: claimed` and `official_brand_source: false` until a fresh verification succeeds. Expiry does not delete, suspend, or alter the published BCP.
+
+#### 5.9.4 Revocation
+
+The Registry operator **MUST** revoke the attestation before its scheduled expiry when any of these occurs:
+
+- the verified account requests revocation;
+- control of the Registry handle transfers to another account;
+- the verified domain associated with the handle changes;
+- the Registry observes removal or conflict of the verification record during a recheck;
+- account, DNS, or Registry credential compromise is suspected; or
+- continued attestation would create a documented safety, abuse, or impersonation risk.
+
+Revocation **MUST** preserve the BCP but immediately downgrade every Registry read surface to `claimed` and `official_brand_source: false`. The Registry **MUST** record the revocation time and reason in its operator audit trail. Restoration requires a fresh challenge; an operator **MUST NOT** restore the old attestation by toggling a stored boolean.
+
+Registry caches carrying trust metadata **MUST** either support active invalidation or have a maximum freshness of 24 hours. Consumers **SHOULD** honor the latest Registry trust response and **MUST NOT** infer `official_brand_source: true` from a cached, expired, or locally reconstructed DNS result.
+
+#### 5.9.5 Consumer signals
+
+A registry exposing this attestation **MUST** surface `trust_level` (`claimed` | `verified`) and `official_brand_source` (boolean, `true` only when `trust_level` is `verified`) on every applicable read surface. When verified, it **SHOULD** also surface `verification_method`, `verified_domain`, `verified_at`, and `verification_expires_at` so consumers can explain and audit the decision.
+
+Consumer agents **MUST** treat a record as the Registry-attested authoritative source for a brand only when `official_brand_source` is true. A `claimed` record remains useful context but is not proof of authority.
 
 ### 5.10 Publication integrity and trust layers (v0.8)
 
