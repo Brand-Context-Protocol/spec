@@ -4,6 +4,16 @@ All notable changes to the Brand Context Protocol specification are documented h
 
 ---
 
+## v0.8 official brand source clarification, 2026-08-06
+
+Defines the complete Ring 2/3 trust-attestation contract in §5.9.
+
+- **Grantor:** only the Registry operator, after an authenticated account completes a fresh DNS challenge bound to the account, handle, and domain.
+- **Meaning:** proof of domain control at verification time, not content truth, legality, identity, endorsement, current control, or byte integrity.
+- **Expiry:** no later than 90 days after verification, with a new challenge required for renewal.
+- **Revocation:** preserves the publication but downgrades every read surface to `claimed` and `official_brand_source: false`, with an operator audit record and bounded cache propagation.
+- **Consumer metadata:** requires the trust level and boolean on every applicable read surface and recommends method, domain, verification, and expiry timestamps.
+
 ## v0.8 rich Registry-backed root correction — 2026-08-05
 
 Corrects the Registry-backed publication profile so the domain document stays useful before an agent follows another link.
