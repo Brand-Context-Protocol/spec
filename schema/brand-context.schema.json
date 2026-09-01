@@ -23,7 +23,8 @@
         "audience",
         "product",
         "campaign",
-        "anti_ai"
+        "anti_ai",
+        "commerce"
       ]
     },
     "last_updated": {
@@ -53,6 +54,9 @@
     },
     "package_manifest": {
       "$ref": "#/$defs/jsonPath"
+    },
+    "commerce": {
+      "$ref": "#/$defs/markdownPath"
     },
     "agent_first_action": {
       "type": "string",

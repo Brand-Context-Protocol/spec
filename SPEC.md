@@ -14,6 +14,8 @@ The Brand Context Protocol (BCP) is an open specification for publishing machine
 
 ## Change log
 
+- **2026-09-01 — v0.8 draft correction. Commerce frontmatter.** Adds the already-defined optional `commerce.md` document to the `file_type` enum and requires daughter-file frontmatter (`file_type: commerce` and `parent: /.well-known/brand.md`). This resolves the schema omission without changing the commerce handoff model.
+
 - **2026-08-06, v0.8 trust-attestation clarification.** Defines the complete `official_brand_source` contract for Ring 2/3 registries: the registry operator grants it only after a fresh DNS challenge proves domain control; it proves origin control at verification time and nothing about content truth, legality, identity, endorsement, or current key custody; it expires after at most 90 days; and revocation immediately downgrades all read surfaces to `claimed` without deleting the BCP. Adds required verification timestamps, fresh-challenge renewal, revocation triggers, and cache propagation rules.
 
 - **2026-08-05 — v0.8 draft correction. Rich Registry-backed roots.** Corrects the Registry-backed publication profile so the domain discovery document remains a complete, useful `file_type: root` brand brief instead of collapsing into a thin pointer. The domain root declares the canonical Registry URL, Registry MCP endpoint, Registry handle, absolute daughter references, and an explicit absolute `agent_first_action`. Legacy v0.8 pointer documents remain consumable for compatibility, but producers SHOULD replace them with rich Registry-backed roots.
@@ -222,7 +224,7 @@ Every BCP file **MUST** include:
 
 - bcp_version: string matching ^\d+\.\d+$
 
-- file_type: one of pointer, root, voice, visual, values, boundaries, claims, representation, audience, product, campaign, anti_ai
+- file_type: one of pointer, root, voice, visual, values, boundaries, claims, representation, audience, product, campaign, anti_ai, commerce
 
 - last_updated: ISO 8601 date
 
@@ -730,7 +732,7 @@ Canonical location: `/.well-known/brand/commerce.md`. A brand that publishes it 
 
 Understanding precedes transaction: a consuming agent **SHOULD** read `brand.md` and the daughter files relevant to its task (voice, claims, boundaries, representation) before acting on the commerce pointer. The point of BCP is that an agent understands the brand before it buys, sells, or transacts on its behalf.
 
-Recommended frontmatter (fenced YAML), all fields optional unless noted:
+Frontmatter (fenced YAML) **MUST** include `file_type: commerce` and `parent: /.well-known/brand.md`. The following commerce fields are optional:
 
 - `offers`: a list of what is for sale. Each entry: `id`, `name`, `summary`, `price` (`{ amount, currency, interval }` where `interval` is `one_time` or a recurrence such as `month`), and `terms_url`.
 - `protocols`: an ordered list of the commerce or payment protocols the brand supports, most-preferred first. Each entry has a `protocol` identifier and the fields that protocol needs to be discovered. Recognized identifiers:
