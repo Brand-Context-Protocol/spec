@@ -4,6 +4,16 @@ All notable changes to the Brand Context Protocol specification are documented h
 
 ---
 
+## v0.8 annual domain-verification correction, 2026-09-01
+
+Removes quarterly DNS maintenance without turning verification into a permanent claim.
+
+- **Annual term:** an attestation may remain verified for at most 365 days after the fresh challenge succeeds.
+- **Automatic liveness:** the Registry rechecks the existing proof at least every 30 days and publishes `verification_last_checked_at`.
+- **No silent extension:** observing the same static TXT value maintains the current term but cannot extend its annual expiry; annual renewal requires a fresh challenge unless the customer has established a conforming delegated verification mechanism.
+- **Early revocation:** confirmed removal, conflict, domain change, account transfer, or compromise downgrades trust before annual expiry.
+- **Outage safety:** inconclusive DNS and verifier outages are retried and cannot mass-downgrade unexpired brands or silently extend them.
+
 ## v0.8 official brand source clarification, 2026-08-06
 
 Defines the complete Ring 2/3 trust-attestation contract in §5.9.
