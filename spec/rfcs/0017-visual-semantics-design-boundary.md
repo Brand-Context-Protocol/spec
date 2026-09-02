@@ -1,9 +1,13 @@
 # RFC 0017: Visual semantics vocabulary and DESIGN.md boundary
 
-- Status: Proposed
+- Status: Implemented in BCP v0.8
 - Tracking issue: https://github.com/Brand-Context-Protocol/spec/issues/17
 - Target: Additive v0.8 clarification
 - Compatibility: Backward compatible
+
+## Resolution
+
+Accepted and implemented as an additive v0.8 clarification on 2026-09-02. The normative contract is in `SPEC.md` §5.8 and §7.3; the optional vocabulary is represented by `schema/v0.2/visual.json` and `examples/visual-semantics-v0.8.json`. No producer is required to populate the complete vocabulary.
 
 ## Summary
 

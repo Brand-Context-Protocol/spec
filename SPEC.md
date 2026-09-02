@@ -14,6 +14,8 @@ The Brand Context Protocol (BCP) is an open specification for publishing machine
 
 ## Change log
 
+- **2026-09-02 — v0.8 visual-semantics clarification.** Adds an entirely optional, evidence-labeled vocabulary for color meaning, typography character, logo-generation policy, imagery and media direction, composition, and motion. Clarifies that `visual.md` is authoritative for brand-owned visual meaning and constraints, while `DESIGN.md` is only a deterministic projection for implementation mechanics. Existing v0.8 packages remain valid; producers may emit any supported subset and MUST NOT fabricate missing semantics.
+
 - **2026-09-01 — v0.8 trust-attestation correction. Annual verification.** Extends the maximum customer-facing DNS attestation from 90 to 365 days, requires automated liveness checks at least every 30 days, and adds `verification_last_checked_at` so consumers can distinguish initial proof, latest observation, and final expiry. Reobserving the existing TXT proof may maintain trust during the annual term but does not extend the annual expiry; renewal still requires a fresh account/handle/domain-bound challenge. Confirmed removal or conflict revokes early, while inconclusive DNS or verifier outages must be retried rather than causing a mass downgrade.
 
 - **2026-09-01 — v0.8 draft correction. Commerce frontmatter.** Adds the already-defined optional `commerce.md` document to the `file_type` enum and requires daughter-file frontmatter (`file_type: commerce` and `parent: /.well-known/brand.md`). This resolves the schema omission without changing the commerce handoff model.
@@ -374,11 +376,11 @@ An interoperability artifact **MUST** be generated deterministically from the sa
 
 A registry or MCP surface that already serves `get_bcp` **MAY** extend it, additively, to also answer AdCP-shaped requests: an optional `fields` (array of AdCP identity field names) and `use_case` argument, answered from the same published `brand.json` rather than a second parser. Core identity fields (house, names, logos) **MUST** be returned regardless of trust level; authorized-only fields (colors, fonts, visual guidelines, tone, tagline, voice synthesis, assets, rights, per AdCP's schema) **MUST** be gated behind the same `official_brand_source` trust signal defined in §5.9 — never a second, weaker authorization path. This **MUST NOT** introduce a second tool name or change `get_bcp`'s existing full-tree response when `fields` is absent.
 
-**DESIGN.md** — [Google Labs' DESIGN.md](https://github.com/google-labs-code/design.md) is a second interop artifact for the same root-level pattern, covering visual design tokens (colors, typography, spacing, components) for the growing set of coding agents and tools that read it natively. Canonical location: `/.well-known/DESIGN.md`. It **MUST** be generated deterministically from the same compiled visual data behind `visual.md` — never authored or re-derived independently, same rule as `brand.json` above.
+**DESIGN.md** — [Google Labs' DESIGN.md](https://github.com/google-labs-code/design.md) is a second interop artifact for the same root-level pattern, covering visual design tokens (colors, typography, spacing, components) for the growing set of coding agents and tools that read it natively. Canonical location: `/.well-known/DESIGN.md`. It **MUST** be generated deterministically from the same compiled visual data behind `visual.md` — never authored or re-derived independently, same rule as `brand.json` above. `visual.md` is the authority for brand-owned visual identity, meaning, assets, generative direction, and constraints. `DESIGN.md` is a derived implementation projection and **MUST NOT** override `visual.md`. Exact values MAY appear in both because they originate in one record; that is duplicated representation, not duplicated authority.
 
 Frontmatter: `version` (the DESIGN.md schema version this projection targets; currently `alpha`, tracking upstream) and `name`. When the underlying visual data supports them: `colors` (a flat role-to-hex map — `primary`, `secondary`, `accent`, `background`, `text`, and any other roles the source BCP defines), `typography` (role-keyed entries — `display`, `body`, `mono` — each with a `fontFamily` and optional `fontWeight`), `rounded` (a corner-radius scale keyed `sm`/`md`/`lg`), `spacing` (a scale keyed `sm`/`md`/`lg`/`xl`/`2xl`), and `components` (keyed by component name, for example `button-primary`, with the style properties DESIGN.md's own schema defines — background/text color, radius, padding, font weight). A field is omitted entirely rather than fabricated when the source BCP has no corresponding data — same anti-fabrication discipline as every other BCP file.
 
-DESIGN.md's own upstream schema is alpha and has no BCP-equivalent frontmatter (`tier`, `parent`, evidence-binding) — this artifact projects only visual tokens, never claims, voice, values, boundaries, or representation content, the same restriction as `brand.json`. As DESIGN.md's upstream schema evolves, this projection **SHOULD** track it; a future point release will document breaking upstream changes when they land.
+DESIGN.md's own upstream schema is alpha and has no BCP-equivalent frontmatter (`tier`, `parent`, evidence-binding) — this artifact projects only visual tokens and implementation mechanics, never claims, voice, values, boundaries, representation content, or independently authored brand meaning. CSS variables, spacing and radius scales, shadows, component styles, breakpoints, exact animation durations, easing curves, and UI-state mechanics belong in this projection when supported. General task recipes and workflow instructions belong in neither file. As DESIGN.md's upstream schema evolves, this projection **SHOULD** track it; a future point release will document breaking upstream changes when they land.
 
 ### 5.9 Registry trust attestation (v0.8, Ring 2/3 only)
 
@@ -638,7 +640,18 @@ Frontmatter for voice/anti-ai.md **MUST** include file_type: anti_ai and parent:
 
 ### 7.3 visual.md
 
-Defines the brand's visual identity in machine-consumable form. visual.md is a first-class standard daughter file for any consumer that renders, composes, adapts, or evaluates brand creative. v0.4 schematizes five areas: logo, color, typography, layout, and imagery principles. Producers **MAY** include any subset; consumers **MUST** ignore unrecognized fields and **MUST** tolerate the absence of any optional block.
+Defines the brand's visual identity in machine-consumable form. visual.md is a first-class standard daughter file for any consumer that renders, composes, adapts, or evaluates brand creative. It is the authoritative home for brand-owned visual identity, meaning, approved assets, generative direction, and constraints. It schematizes logo, color, typography, layout and composition, imagery and media, and motion.
+
+Every visual block and every semantic field defined below is **OPTIONAL**. Producers **MAY** emit any subset they can support. A producer **MUST** omit unavailable information or record an explicit gap; it **MUST NOT** fabricate it. Consumers **MUST** ignore unrecognized fields, tolerate absent optional fields, and **MUST NOT** infer missing semantic guidance from exact values alone. A hex value, for example, does not by itself establish that a color is premium, natural, restrained, or culturally associated with any named shade.
+
+Semantic guidance MAY declare `evidence_status` as one of:
+
+- `brand_declared`: supplied by an authoritative brand source
+- `brand_confirmed`: explicitly confirmed by the accountable brand owner
+- `observed`: measured or extracted from a live surface but not confirmed as policy
+- `inferred`: a machine interpretation that is not authoritative brand guidance
+
+Normative semantic guidance **SHOULD** be `brand_declared` or `brand_confirmed`. Observed values MAY be published when their status remains explicit. Inferred values **MUST NOT** be presented as binding brand truth. This vocabulary supplements, and does not replace, the package's provenance and trust metadata.
 
 #### 7.3.1 Logo
 
@@ -666,6 +679,14 @@ The logo_usage: block declares rules that apply to any logo entry. It **MAY** in
 
 - forbidden_modifications: a binding string array. Consumers **MUST NOT** apply any listed modification
 
+- generation_policy: `official_assets_only` or `generation_permitted`
+
+- generation_instructions: producer-authored instructions for generation or compositing
+
+- evidence_status: the authority of the guidance
+
+When `generation_policy` is absent, consumers **SHOULD** prefer verified official assets over model-generated approximations. When it is `official_assets_only`, consumers **MUST NOT** draw, approximate, or hallucinate the logo; they may generate surrounding creative and composite a verified official asset afterward.
+
 Consumers selecting a logo for a given context **MUST** verify the sha256 of any fetched variant before use. Consumers that cannot verify integrity **MUST NOT** render the asset.
 
 #### 7.3.2 Color
@@ -674,27 +695,39 @@ The color: block declares semantic color tokens and pairing rules.
 
 color.tokens is a map of token names to objects with hex and role. The hex value **MUST** match ^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6}|[0-9A-Fa-f]{8})$. The role **MUST** be one of: primary, secondary, accent, surface, surface-inverse, text, text-inverse, critical, success, warning, info, neutral.
 
+A color token MAY additionally declare `semantic_name`, `perceptual_descriptors`, `generation_prompt`, `avoid_confusion_with`, `usage_rule`, and `evidence_status`. These fields **MUST** come from an admissible source or brand confirmation; they **MUST NOT** be derived from the hex value alone.
+
 color.approved_pairs and color.forbidden_pairs are arrays of { foreground, background } objects whose values reference token names from color.tokens. Consumers generating new layouts **SHOULD** prefer approved_pairs and **MUST NOT** generate combinations listed in forbidden_pairs.
 
 #### 7.3.3 Typography
 
 The typography: block declares typeface families and their roles.
 
-typography.families is a map of family IDs to entries declaring family (CSS family name), and optionally fallback_stack, weights, styles, source, and license_note.
+typography.families is a map of family IDs to entries declaring family (CSS family name), and optionally fallback_stack, weights, styles, source, and license_note. A family MAY additionally declare `classification`, `character`, `comparable_families`, `usage_rule`, and `evidence_status`.
+
+`comparable_families` describes visual similarity only. It does not grant licensing rights or authorize substitution. `fallback_stack` remains the executable substitution order.
 
 typography.roles maps usage roles display, body, ui, mono, code) to family IDs. Consumers generating typeset content **SHOULD** select the family whose role matches the context.
 
 #### 7.3.4 Layout
 
-The layout: block carries composition rules for generated or adapted creative. It **MAY** include density, whitespace, grid, hierarchy, corner_radius, motion, and forbidden_compositions guidance. Layout guidance **SHOULD** be specific enough for agents to choose spacing, cropping, and hierarchy without copying a static design.
+The layout: block carries brand-level composition rules for generated or adapted creative. A producer MAY use the synonymous composition: block when distinguishing brand semantics from implementation layout tokens. Either block **MAY** include density, whitespace, grid, hierarchy, cropping, corner_radius, forbidden_compositions, and evidence_status guidance. Producers **SHOULD NOT** publish contradictory `layout` and `composition` blocks.
+
+Layout guidance **SHOULD** be specific enough for agents to choose spacing, cropping, and hierarchy without copying a static design. Raw spacing scales, radius scales, shadows, button styling, breakpoints, and component implementation belong in `DESIGN.md`, not as brand meaning in `visual.md`.
 
 Consumers generating visual assets **SHOULD** use layout guidance alongside logo_usage, color, and typography. Consumers **MUST NOT** generate layouts listed in forbidden_compositions when present.
 
 #### 7.3.5 Imagery
 
-The imagery: block carries prose principles for photographic_style, illustration_style, iconography_style, and a forbidden_treatments string array. v0.2 keeps imagery prose-primary; further schematization is deferred.
+The imagery: block carries prose principles for photographic_style, illustration_style, iconography_style, and a forbidden_treatments string array. Producers MAY additionally provide structured `photography`, `illustration`, `video`, `audio`, or equivalent media blocks. Structured direction MAY include camera_language, lighting, composition, color_grade, subject_behavior, principles, prompt_fragments, forbidden_treatments, negative_prompts, and evidence_status. Top-level imagery MAY also include prompt_fragments, negative_prompts, and evidence_status.
 
-#### 7.3.6 Extensions
+Prompts and negative prompts are constraints derived from approved direction, not permission to fabricate unsupported brand meaning.
+
+#### 7.3.6 Motion
+
+The optional motion: block carries brand-level `character`, `principles`, `forbidden_treatments`, `reduced_motion_policy`, and `evidence_status`. Exact durations, easing curves, and component transitions belong in `DESIGN.md` or another implementation artifact. A reduced-motion policy **SHOULD** preserve meaning without requiring animation.
+
+#### 7.3.7 Extensions
 
 Brand-specific or vendor-specific fields not covered by this section **MUST** be placed under a namespaced extensions: block per §9.2.
 
@@ -1030,9 +1063,9 @@ Companion specification for brand fidelity measurement across surfaces.
 
 Transition from maintainer-led to published governance model before v1.0.
 
-### 17.7 Visual.md schematization (resolved in v0.2)
+### 17.7 Visual.md schematization (resolved in v0.8)
 
-Resolved in v0.2 §7.3 with structured fields for logo, color tokens, typography, and imagery principles. Further schematization of imagery (composition rules, subject framing) and motion remains open.
+Resolved in §7.3. v0.2 established structured logo, color, typography, and imagery fields; v0.8 adds the optional evidence-labeled semantic vocabulary for color, type, logo authenticity, imagery and media, composition, and motion. The `visual.md`/`DESIGN.md` authority boundary is defined in §5.8. Future additions remain additive and subject to the same anti-fabrication rule.
 
 ### 17.9 Canonical community reference for voice/anti-ai.md
 
