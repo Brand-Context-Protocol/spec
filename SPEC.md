@@ -18,17 +18,19 @@ The Brand Context Protocol (BCP) is an open specification for publishing machine
 
 - **2026-09-01 — v0.8 draft correction. Commerce frontmatter.** Adds the already-defined optional `commerce.md` document to the `file_type` enum and requires daughter-file frontmatter (`file_type: commerce` and `parent: /.well-known/brand.md`). This resolves the schema omission without changing the commerce handoff model.
 
+- **2026-08-31, v0.8 neutrality and discovery clarification.** Reconciles older Registry-first wording with v0.8's domain-first discovery rule. A consumer checks the brand domain first, follows a declared Registry package when the producer chooses the Registry-backed profile, and evaluates explicit trust metadata rather than assuming that Registry hosting implies verification or signing. Self-hosting remains a first-class implementation. Also distinguishes the `daughter_files` registry from a hosted Registry service and removes a vendor-specific name from the generic trust contract. No conformance shape changes.
+
 - **2026-08-06, v0.8 trust-attestation clarification.** Defines the complete `official_brand_source` contract for Ring 2/3 registries: the registry operator grants it only after a fresh DNS challenge proves domain control; it proves origin control at verification time and nothing about content truth, legality, identity, endorsement, or current key custody; it expires after at most 90 days; and revocation immediately downgrades all read surfaces to `claimed` without deleting the BCP. Adds required verification timestamps, fresh-challenge renewal, revocation triggers, and cache propagation rules.
 
 - **2026-08-05 — v0.8 draft correction. Rich Registry-backed roots.** Corrects the Registry-backed publication profile so the domain discovery document remains a complete, useful `file_type: root` brand brief instead of collapsing into a thin pointer. The domain root declares the canonical Registry URL, Registry MCP endpoint, Registry handle, absolute daughter references, and an explicit absolute `agent_first_action`. Legacy v0.8 pointer documents remain consumable for compatibility, but producers SHOULD replace them with rich Registry-backed roots.
 
-- **2026-08-05 — v0.8 draft. Domain discovery and canonical Registry publication.** Defines two conformant publication profiles. A self-hosted profile serves a complete BCP tree on the brand domain. A Registry-backed profile serves a complete root document at the same well-known domain URI and directs consumers to an absolute HTTPS canonical BCP URL. Requires absolute references in Registry-hosted canonical packages, adds bounded legacy-pointer resolution, and separates domain control, publication authorization, and content integrity. Registry implementations sign immutable canonical bytes at publication and verify those stored bytes on reads; they must not mutate or re-sign content while serving it. Existing v0.7 packages remain consumable.
+- **2026-08-05 — v0.8 draft. Domain discovery and Registry-backed publication.** Defines two conformant publication profiles. A self-hosted profile serves a complete BCP tree on the brand domain. A Registry-backed profile serves a complete root document at the same well-known domain URI and directs consumers to an absolute HTTPS package URL chosen by the producer. Requires absolute references in Registry-hosted packages, adds bounded legacy-pointer resolution, and separates domain control, publication authorization, and content integrity. A Registry that implements signatures signs immutable canonical bytes at publication and verifies those stored bytes on reads; it must not mutate or re-sign content while serving it. Existing v0.7 packages remain consumable.
 
 - **2026-07-09 - v0.7 clarification. Claims JSON companion and review notice.** Adds optional `/.well-known/brand/claims.json` as a deterministic structured companion generated from `claims.md`'s claim blocks. `claims.md` remains the human-readable source of truth. Producers SHOULD include an explicit legal-review notice in `claims.md` and in the JSON companion because proof status records evidence and owner-confirmation state, not legal advice or automatic legal approval. Adds `schema/claims.schema.json`. All changes are additive per §8.2.
 
 - **2026-07-06 — v0.7. DESIGN.md interop artifact shipped.** §5.8's DESIGN.md entry previously said "not yet implemented, no committed timeline"; that is no longer true. The reference implementation now generates `/.well-known/DESIGN.md` deterministically from the same compiled visual data behind `visual.md`, merging live design-system reads (colors, typography, component styles) when available, same enrichment `visual.md` itself already used. Documents the actual shipped frontmatter shape (`version`, `name`, `colors`, `typography`, `rounded`, `spacing`, `components`) so implementers no longer have to guess field names from an alpha upstream schema. Retroactively documents an artifact already shipped in the reference implementation, same pattern as `brand.json`'s v0.6 entry; no protocol behavior changes as a result of this entry, only the spec catching up to it. All changes are additive per §8.2.
 
-- **2026-07-05 — v0.7 draft. Agent discovery guidance.** Prompted by a live test: a general-purpose agent asked about a brand that publishes a BCP did not fetch `/.well-known/brand.md` on its own until told to — the file existed and was correct, but nothing prompted an agent that didn't already know BCP existed to look for it. Adds three additive, non-breaking recommendations: (1) §7.1 recommends producers include a short, imperative "Agent Instructions" block in `brand.md` telling a consuming agent to fetch this file before answering brand-related questions, plus an optional `agent_first_action` frontmatter field for machine parsing; (2) §5.5 expands "Discovery" into a recommended discovery path (Registry MCP first, direct `/.well-known/` fetch as fallback, preferring `official_brand_source: true` records) so agents have a specific, ordered procedure instead of just knowing multiple paths exist; (3) §13.5 adds platform/tool-integration guidance addressed to the AI systems and platforms themselves (check for the well-known file on brand queries, prefer verified registry records, load daughters lazily, respect `last_updated` for caching) — the `robots.txt`/`security.txt` convention only works at scale once consuming platforms look for it by default, not only when an individual brand tells them to. None of this is required for conformance; a v0.6 BCP without an Agent Instructions block remains valid. All changes are additive per §8.2.
+- **2026-07-05 — v0.7 draft. Agent discovery guidance.** Prompted by a live test: a general-purpose agent asked about a brand that publishes a BCP did not fetch `/.well-known/brand.md` on its own until told to — the file existed and was correct, but nothing prompted an agent that didn't already know BCP existed to look for it. Adds three additive, non-breaking recommendations: (1) §7.1 recommends producers include a short, imperative "Agent Instructions" block in `brand.md` telling a consuming agent to fetch this file before answering brand-related questions, plus an optional `agent_first_action` frontmatter field for machine parsing; (2) §5.5 expands "Discovery" into a specific ordered procedure; its draft Registry-first wording is superseded by the domain-first v0.8 clarification above; (3) §13.5 adds platform/tool-integration guidance addressed to the AI systems and platforms themselves (check for the well-known file on brand queries, prefer verified records, load daughters lazily, respect `last_updated` for caching). None of this is required for conformance; a v0.6 BCP without an Agent Instructions block remains valid. All changes are additive per §8.2.
 
 - **2026-07-03 — v0.6 draft. Interoperability artifacts.** Documents `brand.json` (§5.8) as an optional, deterministically-derived root-level file that projects a BCP's already-compiled colors, fonts, logos, and tone into the schema used by the Ad Context Protocol (AdCP)'s `brand_agent`/`get_brand_identity` contract, so AdCP-native ad-buying agents can discover and read a brand without knowing BCP exists. `get_bcp` MAY optionally accept AdCP-shaped `fields`/`use_case` request arguments and answer from the same published `brand.json`, gated by the registry trust ladder defined in this entry (§5.9's `official_brand_source`) — this does not introduce a second tool or change `get_bcp`'s default response. Retroactively documents an artifact already shipped in the reference implementation; no behavior changes as a result of this entry, only the spec catching up to it. Also notes DESIGN.md (Google Labs, alpha) as a second interop candidate for the same root-level pattern, not yet built — see §5.8. All changes are additive per §8.2.
 
@@ -126,7 +128,7 @@ This specification uses normative language per RFC 2119. The keywords **MUST**, 
 
 **Consumer**: An agent, platform, tool, or human reading BCP files to obtain brand context.
 
-**Discovery document**: The complete root document located at `/.well-known/brand.md` on the brand's domain. It contains useful first-read brand context. A Registry-backed root also identifies the absolute HTTPS URL of the canonical Registry root.
+**Discovery document**: The complete root document located at `/.well-known/brand.md` on the brand's domain. It contains useful first-read brand context. A Registry-backed root also identifies the absolute HTTPS URL of its declared Registry root.
 
 **Root file**: The canonical `file_type: root` document for a complete BCP package. It may be served on the brand's domain or by a Registry.
 
@@ -140,7 +142,7 @@ This specification uses normative language per RFC 2119. The keywords **MUST**, 
 
 **Manifest**: An optional machine-readable file, conventionally `/.well-known/brand/manifest.json`, that lists package files, media types, checksums, signatures, and extension metadata.
 
-**Registry**: The daughter_files section in the root file declaring which daughter files exist.
+**Daughter registry**: The `daughter_files` section in the root file declaring which daughter files exist. This is distinct from a hosted Registry service.
 
 **Ring**: One of three distribution layers — file-based (Ring 1), CLI-based (Ring 2), or MCP-based (Ring 3).
 
@@ -262,13 +264,13 @@ A BCP discovery document **MUST** be published at `https://{domain}/.well-known/
 
 ### 5.2 Source of truth
 
-Producers **SHOULD** maintain BCP source in version control or another auditable system. The canonical consumed artifact is the Registry root and its declared package when `publication_profile` is `registry_backed`. The domain root remains useful first-read context and identifies that canonical artifact through `canonical_bcp`.
+Producers **SHOULD** maintain BCP source in version control or another auditable system. For a self-hosted profile, the domain package is the consumed artifact. For a Registry-backed profile, the producer declares the Registry root and package through `canonical_bcp`; the domain root remains useful first-read context. Registry hosting alone does not imply verification, signing, or official-source status. Consumers evaluate those properties separately through §5.9 and §5.10.
 
 ### 5.3 Two valid publication profiles
 
 **Self-hosted.** The domain discovery document is also the complete `file_type: root` document. It declares daughter files and optional extensions using root-relative or absolute HTTPS references. The producer serves and operates the canonical package.
 
-**Registry-backed.** The domain discovery document is a complete `file_type: root` brand brief. It **MUST** retain the root content that lets an agent understand the brand before following another link. It declares `publication_profile: registry_backed`, `canonical_bcp`, `registry_mcp`, `registry_handle`, an explicit absolute `agent_first_action`, and the complete daughter registry. Daughter, manifest, commerce, and extension references **MUST** be absolute Registry URLs so they retain the Registry handle and cannot resolve against the wrong host. The Registry-hosted canonical root SHOULD use the same projected root bytes so the domain and Registry entrypoints do not disagree about brand content.
+**Registry-backed.** The domain discovery document is a complete `file_type: root` brand brief. It **MUST** retain the root content that lets an agent understand the brand before following another link. It declares `publication_profile: registry_backed`, `canonical_bcp`, `registry_mcp`, `registry_handle`, an explicit absolute `agent_first_action`, and the complete daughter registry. Daughter, manifest, commerce, and extension references **MUST** be absolute Registry URLs so they retain the Registry handle and cannot resolve against the wrong host. The declared Registry root SHOULD use the same projected root bytes so the domain and Registry entrypoints do not disagree about brand content.
 
 Forked templates and hosted services are implementation choices within these profiles, not separate protocol shapes. BCP is open: no producer is required to use a particular Registry or vendor.
 
@@ -404,7 +406,7 @@ It **MUST NOT** be represented as proof of:
 
 - the factual truth, completeness, legality, or regulatory approval of BCP content;
 - the legal identity or authority of a particular person;
-- endorsement by the Registry operator, Encoded Brands, or the protocol maintainers;
+- endorsement by the Registry operator or the protocol maintainers;
 - current control of the domain after `verification_last_checked_at`;
 - cryptographic integrity of publication bytes, which is a separate signature proof defined in §5.10; or
 - immunity from compromised DNS, account, or Registry credentials.
@@ -574,10 +576,10 @@ Example Brand makes durable tools for independent builders. It combines repairab
 
 ## Agent Instructions
 
-Use this root as immediate brand context. Before producing brand-accurate output, perform `agent_first_action` and fetch the canonical signed Registry root. Load only the declared daughter files needed for the task.
+Use this root as immediate brand context. Before producing brand-accurate output, perform `agent_first_action` and fetch the declared Registry root. Load only the declared daughter files needed for the task, and inspect Registry trust metadata before treating the record as official.
 ```
 
-The domain root **MUST NOT** be reduced to only connection metadata. It **MUST** preserve the brand identity, core positioning, useful first-read business context, and agent instructions present in the canonical root. The Registry remains canonical for integrity, signed depth, and daughter-file resolution.
+The domain root **MUST NOT** be reduced to only connection metadata. It **MUST** preserve the brand identity, core positioning, useful first-read business context, and agent instructions present in the declared Registry root. In the Registry-backed profile, `canonical_bcp` identifies the producer-declared package for daughter-file resolution. Signing and official-source attestation are separate properties governed by §5.10 and §5.9.
 
 Legacy `file_type: pointer` documents remain consumer-compatible. A consumer encountering one follows `canonical_bcp` under §5.5.1. Producers SHOULD migrate those documents to this rich root profile.
 
@@ -919,7 +921,7 @@ The `/.well-known/` convention (shared with `robots.txt` and `security.txt`) onl
 Platforms and AI systems **SHOULD**:
 
 - On a query that names a specific brand or company and calls for brand-accurate output (§5.5.2), check for a BCP at `/.well-known/brand.md` on that brand's primary domain, or query a registry service if one is configured, before relying solely on training data or a general web search.
-- Prefer a registry record over a raw domain fetch when both are available, and prefer `official_brand_source: true` (or an equivalent verified signal, §5.9) over an unverified `claimed` record.
+- Read the domain discovery document first. When it declares a Registry-backed profile, follow that declared package. If multiple records conflict, prefer a current `official_brand_source: true` attestation under §5.9 over an unverified `claimed` record; do not infer authority merely from Registry hosting.
 - Load daughter files lazily by task type (§6.4) rather than the whole tree on every query.
 - Respect `last_updated` (§8.1) for caching: treat a cached BCP as stale once a fresher `last_updated` is available, rather than caching indefinitely.
 - Surface to the end user, where relevant, that brand-specific output was grounded in a BCP (and at what trust level) rather than presenting it as generic knowledge.
