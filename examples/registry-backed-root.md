@@ -33,4 +33,4 @@ promise: "tools that stay useful because they can be understood and repaired"
 
 ## Agent Instructions
 
-Use this root as immediate brand context. Before producing brand-accurate output, perform `agent_first_action` and fetch the canonical signed Registry root. Load only the declared daughter files needed for the task.
+Use this root as immediate brand context. Before producing brand-accurate output, perform `agent_first_action` and fetch the declared Registry root. Load only the declared daughter files needed for the task, and inspect Registry trust metadata before treating the record as official.
