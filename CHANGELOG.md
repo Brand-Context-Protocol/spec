@@ -4,6 +4,16 @@ All notable changes to the Brand Context Protocol specification are documented h
 
 ---
 
+## v0.8 visual semantics and DESIGN.md boundary, 2026-09-02
+
+Adds a backward-compatible optional vocabulary for AI-executable visual identity.
+
+- **Partial support is conformant:** every new field is optional; producers emit only supported facts and must not fabricate missing semantics.
+- **Evidence stays visible:** semantic guidance may be labeled `brand_declared`, `brand_confirmed`, `observed`, or `inferred`; inferred values cannot be represented as binding brand truth.
+- **Richer visual meaning:** color tokens, typography families, logo policy, imagery and media, composition, and motion gain optional semantic and generative guidance.
+- **Authority is explicit:** `visual.md` owns brand meaning, assets, and constraints. `DESIGN.md` is a deterministic projection for interface implementation and cannot override `visual.md`.
+- **Compatibility is tested:** the reference schema continues to accept earlier visual documents and accepts partial v0.8 producer subsets.
+
 ## v0.8 annual domain-verification correction, 2026-09-01
 
 Removes quarterly DNS maintenance without turning verification into a permanent claim.

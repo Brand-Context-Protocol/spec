@@ -1,0 +1,115 @@
+{
+  "bcp_version": "0.8",
+  "file_type": "visual",
+  "parent": "/.well-known/brand.md",
+  "last_updated": "2026-09-02",
+  "logo_usage": {
+    "generation_policy": "official_assets_only",
+    "generation_instructions": [
+      "Generate surrounding imagery without a logo.",
+      "Composite a verified official asset afterward."
+    ],
+    "evidence_status": "brand_confirmed"
+  },
+  "color": {
+    "tokens": {
+      "primary": {
+        "hex": "#184F35",
+        "role": "primary",
+        "semantic_name": "dark British racing green",
+        "perceptual_descriptors": [
+          "deep",
+          "muted",
+          "cool"
+        ],
+        "generation_prompt": "dark British racing green, deep forest tone, muted and natural",
+        "avoid_confusion_with": [
+          "hunter green",
+          "olive",
+          "bright forest green"
+        ],
+        "usage_rule": "Use for primary emphasis.",
+        "evidence_status": "brand_declared"
+      }
+    }
+  },
+  "typography": {
+    "families": {
+      "display": {
+        "family": "Neue Haas Grotesk Display",
+        "classification": "neo-grotesque sans-serif",
+        "character": [
+          "precise",
+          "neutral",
+          "modernist"
+        ],
+        "comparable_families": [
+          "Helvetica Neue",
+          "Aktiv Grotesk"
+        ],
+        "fallback_stack": [
+          "Helvetica Neue",
+          "Arial",
+          "sans-serif"
+        ],
+        "usage_rule": "Use for display headlines and high-confidence editorial moments.",
+        "evidence_status": "brand_confirmed"
+      }
+    },
+    "roles": {
+      "display": "display"
+    }
+  },
+  "composition": {
+    "density": "restrained",
+    "whitespace": "generous and structural",
+    "hierarchy": "one dominant message per surface",
+    "cropping": "preserve the subject's line of sight",
+    "forbidden_compositions": [
+      "dense decorative collage"
+    ],
+    "evidence_status": "brand_declared"
+  },
+  "imagery": {
+    "photography": {
+      "camera_language": "documentary, eye-level, natural focal lengths",
+      "lighting": "available light with controlled contrast",
+      "composition": [
+        "generous negative space",
+        "one clear subject"
+      ],
+      "color_grade": "neutral whites with restrained saturation",
+      "subject_behavior": [
+        "candid rather than posed"
+      ],
+      "evidence_status": "brand_confirmed"
+    },
+    "prompt_fragments": [
+      "direct, observational photography",
+      "quiet confidence"
+    ],
+    "forbidden_treatments": [
+      "generic stock-business scenes",
+      "fake interface overlays"
+    ],
+    "negative_prompts": [
+      "synthetic corporate handshake",
+      "decorative AI circuitry"
+    ],
+    "evidence_status": "brand_confirmed"
+  },
+  "motion": {
+    "character": [
+      "purposeful",
+      "restrained"
+    ],
+    "principles": [
+      "Motion clarifies state changes rather than decorating static content."
+    ],
+    "forbidden_treatments": [
+      "ornamental looping motion"
+    ],
+    "reduced_motion_policy": "Preserve meaning without requiring animation.",
+    "evidence_status": "brand_declared"
+  }
+}
