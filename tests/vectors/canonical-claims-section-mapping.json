@@ -1,0 +1,32 @@
+{
+  "schema": "bcp.canonical.claims.section-mapping.v1",
+  "input_records": [
+    { "id": "claim.unknown", "proof_status": "unknown" },
+    { "id": "claim.approved.z", "proof_status": "approved" },
+    { "id": "claim.expired", "proof_status": "expired" },
+    { "id": "claim.caveated", "proof_status": "requires_caveat" },
+    { "id": "claim.aspirational", "proof_status": "aspirational" },
+    { "id": "claim.forbidden", "proof_status": "forbidden" },
+    { "id": "claim.approved.a", "proof_status": "approved" }
+  ],
+  "expected_blocks": {
+    "approved_at_launch": [
+      { "id": "claim.approved.a", "proof_status": "approved" },
+      { "id": "claim.approved.z", "proof_status": "approved" }
+    ],
+    "requires_caveat": [
+      { "id": "claim.caveated", "proof_status": "requires_caveat" }
+    ],
+    "forbidden": [
+      { "id": "claim.aspirational", "proof_status": "aspirational" },
+      { "id": "claim.expired", "proof_status": "expired" },
+      { "id": "claim.forbidden", "proof_status": "forbidden" },
+      { "id": "claim.unknown", "proof_status": "unknown" }
+    ]
+  },
+  "requirements": {
+    "retain_original_proof_status": true,
+    "sort_records_by": "id_utf8",
+    "surrounding_markdown_is_canonical": false
+  }
+}

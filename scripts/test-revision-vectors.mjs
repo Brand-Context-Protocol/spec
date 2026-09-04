@@ -155,4 +155,30 @@ assert.notEqual(restore.restoring_revision.revision_id, restore.selected_prior_r
 assert.equal(restore.restoring_revision.content_sha256, restore.selected_prior_revision.content_sha256);
 assert.equal(restore.restoring_revision.change_method, "restore");
 
+const claimSectionMapping = read("tests/vectors/canonical-claims-section-mapping.json");
+const projectedClaimBlocks = {
+  approved_at_launch: [],
+  requires_caveat: [],
+  forbidden: [],
+};
+for (const record of claimSectionMapping.input_records) {
+  const block = record.proof_status === "approved"
+    ? "approved_at_launch"
+    : record.proof_status === "requires_caveat"
+      ? "requires_caveat"
+      : "forbidden";
+  projectedClaimBlocks[block].push({ ...record });
+}
+for (const records of Object.values(projectedClaimBlocks)) {
+  records.sort((left, right) => Buffer.compare(Buffer.from(left.id, "utf8"), Buffer.from(right.id, "utf8")));
+}
+assert.deepEqual(projectedClaimBlocks, claimSectionMapping.expected_blocks);
+assert.deepEqual(
+  Object.values(projectedClaimBlocks).flat().map((record) => record.proof_status).sort(),
+  claimSectionMapping.input_records.map((record) => record.proof_status).sort(),
+);
+assert.equal(claimSectionMapping.requirements.retain_original_proof_status, true);
+assert.equal(claimSectionMapping.requirements.sort_records_by, "id_utf8");
+assert.equal(claimSectionMapping.requirements.surrounding_markdown_is_canonical, false);
+
 console.log("revision extension canonicalization vectors passed");

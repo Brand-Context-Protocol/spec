@@ -759,9 +759,32 @@ Claim entries **MAY** include:
 - approved_language: the exact wording to use when `exact_text` is true.
 - caveat: required qualifier or disclosure.
 
+For deterministic projection of `bcp.canonical.claims.v1` records, producers
+**MUST** map `proof_status` to the three required structured blocks as follows:
+
+- `approved` → `approved_at_launch`;
+- `requires_caveat` → `requires_caveat`; and
+- `forbidden`, `expired`, `aspirational`, or `unknown` → `forbidden`.
+
+This is a publication-safety mapping, not a relabeling of proof status. The
+rendered entry **MUST** retain its original `proof_status`. Aspirational or
+unknown language may be useful as private draft context, but a deterministic
+public claims projection must not make it available as an approved factual
+claim. A later schema version may define a separate public aspiration surface;
+it must not change this mapping behind `bcp.canonical.claims.v1`.
+
 Consumers **MUST NOT** use entries with proof_status `forbidden` or `expired`. Consumers **MUST NOT** paraphrase entries whose `exact_text` is true. Consumers **SHOULD** include the caveat when using a claim with proof_status `requires_caveat`. Producers **SHOULD** assign `tier: core` to legally exact or compliance-owned claims.
 
 Producers **MAY** publish `/.well-known/brand/claims.json` as an optional structured companion to this file. When present, `claims.json` **MUST** be generated deterministically from the structured claims in `claims.md`; it **MUST NOT** introduce, approve, remove, or relabel claims independently. If `claims.json` conflicts with `claims.md`, consumers **MUST** prefer `claims.md`.
+
+The explicit `canonical_model` opt-in defined by RFC 0018 is the only
+exception to that default precedence. When it names
+`/.well-known/brand/claims.json` with
+`projection: deterministic`, the canonical records are authoritative only for
+the fields they define, the structured claims blocks in `claims.md` are their
+deterministic projection, and publication **MUST** fail if the mapped records
+and projected blocks disagree. Unstructured review notices and explanatory
+prose remain Markdown-authored content.
 
 ### 7.7 representation.md
 
