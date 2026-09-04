@@ -1,0 +1,18 @@
+{
+  "bcp_version": "0.8",
+  "file_type": "visual",
+  "parent": "/.well-known/brand.md",
+  "last_updated": "2026-09-04",
+  "canonical_tokens": [
+    {
+      "id": "token.brand-red",
+      "kind": "color",
+      "value": "#C93212",
+      "role": "primary",
+      "description": "Primary emphasis color.",
+      "source_ids": ["source.brand-guidelines"],
+      "approval_ids": ["approval.design-owner"],
+      "evidence_status": "brand_confirmed"
+    }
+  ]
+}

@@ -185,6 +185,15 @@ record identifier using UTF-8 byte order and must not silently omit a canonical
 field. A renderer version must fix its YAML field ordering, scalar escaping,
 indentation, and newline behavior.
 
+For `bcp.canonical.visual-tokens.v1`, deterministic projection targets only the
+top-level `canonical_tokens` array in the structured YAML block of `visual.md`.
+It is lossless: every canonical field is retained, records are sorted by stable
+identifier using UTF-8 byte order, and a renderer version fixes field order,
+scalar escaping, indentation, Unicode normalization, and newline behavior. A
+renderer must not infer brand meaning by translating a token role into the
+separate `color`, `typography`, `layout`, or `composition` blocks. Those fields
+remain Markdown-authored until a canonical semantic schema covers them.
+
 The manifest should record the renderer receipt:
 
 ```json

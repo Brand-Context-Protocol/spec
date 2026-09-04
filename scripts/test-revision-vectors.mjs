@@ -181,4 +181,34 @@ assert.equal(claimSectionMapping.requirements.retain_original_proof_status, true
 assert.equal(claimSectionMapping.requirements.sort_records_by, "id_utf8");
 assert.equal(claimSectionMapping.requirements.surrounding_markdown_is_canonical, false);
 
+const visualTokenMapping = read("tests/vectors/canonical-visual-token-mapping.json");
+const visualTokenFieldOrder = [
+  "id",
+  "kind",
+  "value",
+  "role",
+  "description",
+  "scope",
+  "source_ids",
+  "approval_ids",
+  "evidence_status",
+];
+const projectedVisualTokens = visualTokenMapping.input_records
+  .map((record) => Object.fromEntries(
+    visualTokenFieldOrder
+      .filter((field) => Object.hasOwn(record, field))
+      .map((field) => [field, structuredClone(record[field])]),
+  ))
+  .sort((left, right) => Buffer.compare(Buffer.from(left.id, "utf8"), Buffer.from(right.id, "utf8")));
+assert.deepEqual(projectedVisualTokens, visualTokenMapping.expected_canonical_tokens);
+for (const record of projectedVisualTokens) {
+  assert.deepEqual(Object.keys(record), visualTokenFieldOrder.filter((field) => Object.hasOwn(record, field)));
+}
+assert.deepEqual(
+  projectedVisualTokens.map(({ kind }) => kind).sort(),
+  ["color", "dimension", "font_family", "font_weight", "number", "string"],
+);
+assert.equal(visualTokenMapping.requirements.infer_semantic_blocks, false);
+assert.equal(visualTokenMapping.requirements.surrounding_markdown_is_canonical, false);
+
 console.log("revision extension canonicalization vectors passed");

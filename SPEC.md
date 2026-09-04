@@ -731,6 +731,30 @@ The optional motion: block carries brand-level `character`, `principles`, `forbi
 
 Brand-specific or vendor-specific fields not covered by this section **MUST** be placed under a namespaced extensions: block per §9.2.
 
+#### 7.3.8 Canonical visual-token projection
+
+Producers **MAY** publish `/.well-known/brand/tokens.json` using
+`bcp.canonical.visual-tokens.v1`. When the manifest explicitly names that file
+under a deterministic `canonical_model`, the canonical records are
+authoritative for the exact token fields they define. Their corresponding
+projection in `visual.md` is the top-level `canonical_tokens` array inside the
+structured YAML block. Publication **MUST** fail if the array cannot be
+reproduced byte-for-byte from the canonical records using the declared renderer.
+
+The projection is lossless rather than interpretive. It **MUST** preserve each
+record's `id`, `kind`, `value`, `role`, `description`, optional `scope`,
+`source_ids`, `approval_ids`, and `evidence_status`; sort records by `id` using
+UTF-8 byte order; and use that field order. It **MUST NOT** infer entries in
+`color`, `typography`, `layout`, `composition`, or any other semantic block
+from a token's value or role. Those blocks remain Markdown-authored unless a
+future canonical schema defines their semantics. Exact implementation tokens
+may additionally feed a deterministic `DESIGN.md` projection under §5.8, but
+that artifact cannot override `visual.md`.
+
+If the canonical opt-in is absent, `canonical_tokens` has no authority over the
+Markdown core. Unstructured visual principles, explanatory prose, and all
+structured fields outside `canonical_tokens` remain Markdown-authored content.
+
 ### 7.4 values.md
 
 Brand values with operational specificity for agent judgment calls. Recommended: numbered values with manifestations in practice plus agent resolution priority order.

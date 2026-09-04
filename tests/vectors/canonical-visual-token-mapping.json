@@ -1,0 +1,134 @@
+{
+  "schema": "bcp.canonical.visual-tokens.mapping.v1",
+  "input_records": [
+    {
+      "id": "token.string",
+      "kind": "string",
+      "value": "solid",
+      "role": "border_style",
+      "description": null,
+      "source_ids": ["source.system"],
+      "approval_ids": ["approval.owner"],
+      "evidence_status": "brand_declared"
+    },
+    {
+      "id": "token.color",
+      "kind": "color",
+      "value": "#C93212",
+      "role": "primary",
+      "description": "Primary emphasis color.",
+      "source_ids": ["source.guidelines"],
+      "approval_ids": ["approval.owner"],
+      "evidence_status": "brand_confirmed"
+    },
+    {
+      "id": "token.number",
+      "kind": "number",
+      "value": 1.25,
+      "role": "line_height",
+      "description": "Compact display leading.",
+      "source_ids": ["source.system"],
+      "approval_ids": ["approval.owner"],
+      "evidence_status": "observed"
+    },
+    {
+      "id": "token.font-weight",
+      "kind": "font_weight",
+      "value": 650,
+      "role": "display",
+      "description": null,
+      "source_ids": ["source.guidelines"],
+      "approval_ids": ["approval.owner"],
+      "evidence_status": "brand_declared"
+    },
+    {
+      "id": "token.dimension",
+      "kind": "dimension",
+      "value": { "amount": 4, "unit": "rem" },
+      "role": "page_margin",
+      "description": "Wide-screen page margin.",
+      "scope": { "markets": ["GB", "US"], "locales": ["en-GB", "en-US"] },
+      "source_ids": ["source.system"],
+      "approval_ids": ["approval.owner"],
+      "evidence_status": "brand_declared"
+    },
+    {
+      "id": "token.font-family",
+      "kind": "font_family",
+      "value": "Suisse Intl",
+      "role": "body",
+      "description": "Primary text family.",
+      "source_ids": ["source.guidelines"],
+      "approval_ids": ["approval.owner"],
+      "evidence_status": "brand_confirmed"
+    }
+  ],
+  "expected_canonical_tokens": [
+    {
+      "id": "token.color",
+      "kind": "color",
+      "value": "#C93212",
+      "role": "primary",
+      "description": "Primary emphasis color.",
+      "source_ids": ["source.guidelines"],
+      "approval_ids": ["approval.owner"],
+      "evidence_status": "brand_confirmed"
+    },
+    {
+      "id": "token.dimension",
+      "kind": "dimension",
+      "value": { "amount": 4, "unit": "rem" },
+      "role": "page_margin",
+      "description": "Wide-screen page margin.",
+      "scope": { "markets": ["GB", "US"], "locales": ["en-GB", "en-US"] },
+      "source_ids": ["source.system"],
+      "approval_ids": ["approval.owner"],
+      "evidence_status": "brand_declared"
+    },
+    {
+      "id": "token.font-family",
+      "kind": "font_family",
+      "value": "Suisse Intl",
+      "role": "body",
+      "description": "Primary text family.",
+      "source_ids": ["source.guidelines"],
+      "approval_ids": ["approval.owner"],
+      "evidence_status": "brand_confirmed"
+    },
+    {
+      "id": "token.font-weight",
+      "kind": "font_weight",
+      "value": 650,
+      "role": "display",
+      "description": null,
+      "source_ids": ["source.guidelines"],
+      "approval_ids": ["approval.owner"],
+      "evidence_status": "brand_declared"
+    },
+    {
+      "id": "token.number",
+      "kind": "number",
+      "value": 1.25,
+      "role": "line_height",
+      "description": "Compact display leading.",
+      "source_ids": ["source.system"],
+      "approval_ids": ["approval.owner"],
+      "evidence_status": "observed"
+    },
+    {
+      "id": "token.string",
+      "kind": "string",
+      "value": "solid",
+      "role": "border_style",
+      "description": null,
+      "source_ids": ["source.system"],
+      "approval_ids": ["approval.owner"],
+      "evidence_status": "brand_declared"
+    }
+  ],
+  "requirements": {
+    "sort_records_by": "id_utf8",
+    "infer_semantic_blocks": false,
+    "surrounding_markdown_is_canonical": false
+  }
+}

@@ -245,6 +245,13 @@
         }
       }
     },
+    "canonical_tokens": {
+      "type": "array",
+      "description": "Lossless deterministic projection of bcp.canonical.visual-tokens.v1 records when explicitly enabled by manifest canonical_model. Records are sorted by stable ID using UTF-8 byte order.",
+      "items": {
+        "$ref": "../canonical-visual-tokens.schema.json#/$defs/token"
+      }
+    },
     "extensions": {
       "type": "object",
       "description": "Brand-specific or vendor-specific fields not covered by the core schema. Consumers MUST ignore extension fields they do not recognize.",
