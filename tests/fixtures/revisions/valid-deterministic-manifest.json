@@ -1,0 +1,40 @@
+{
+  "bcp_version": "0.8",
+  "tree_version": "2.1.0",
+  "brand_name": "Example Brand",
+  "files": [
+    {
+      "path": "/.well-known/brand.md",
+      "media_type": "text/markdown",
+      "role": "root",
+      "required": true,
+      "byte_length": 240,
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "path": "/.well-known/brand/claims.json",
+      "media_type": "application/json",
+      "role": "canonical_claims",
+      "required": false,
+      "byte_length": 512,
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    {
+      "path": "/.well-known/brand/revision.json",
+      "media_type": "application/json",
+      "role": "revision_receipt",
+      "required": false
+    }
+  ],
+  "canonical_model": {
+    "schema": "bcp.canonical.v1",
+    "records": ["/.well-known/brand/claims.json"],
+    "projection": "deterministic"
+  },
+  "renderer": {
+    "name": "bcp-reference-renderer",
+    "version": "1.0.0",
+    "canonical_state_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "projected_tree_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "bcp_version": "0.8",
+  "tree_version": "2.0.0",
+  "brand_name": "Deterministically Projected Brand",
+  "files": [],
+  "canonical_model": {
+    "schema": "bcp.canonical.v1",
+    "records": ["/.well-known/brand/claims.json"],
+    "projection": "deterministic"
+  }
+}

@@ -213,9 +213,9 @@ The current package may publish `/.well-known/brand/revision.json` and declare i
 
 `revision_id` is an opaque stable identifier. It must not encode an email address, account identifier, or other personal information. `content_sha256` covers a specified canonical package manifest or tree serialization, not an implementation-dependent directory walk.
 
-For `bcp.revision.v1`, `content_sha256` is the SHA-256 digest of the JCS serialization of an array containing one object per published file with exactly these fields: `path`, `media_type`, `byte_length`, and `sha256`. Paths are normalized absolute package paths and the array is sorted by each path's UTF-8 byte sequence. `sha256` is the exact-byte digest of that file. `manifest_sha256` is the exact-byte SHA-256 digest of the published manifest file.
+For `bcp.revision.v1`, `content_sha256` is the SHA-256 digest of the JCS serialization of an array containing one object per ordinary published content file with exactly these fields: `path`, `media_type`, `byte_length`, and `sha256`. The manifest and revision receipt are bookkeeping files and are excluded from this array to prevent self-referential digests. Paths are normalized absolute package paths and the array is sorted by each path's UTF-8 byte sequence. `sha256` is the exact-byte digest of that file. `manifest_sha256` is the exact-byte SHA-256 digest of the published manifest file. The manifest declares the revision receipt's path and role but MUST NOT include its `sha256`, because the receipt already binds the manifest digest and hashing the receipt back into that manifest would create an unsatisfiable cycle.
 
-The revision signature covers the JCS serialization of the revision descriptor with the `signature` field omitted. Verification must therefore bind `revision_id`, `parent_revision_id`, tree version, publication time, both digests, and change method. A signature over only `content_sha256`, an implementation-dependent object walk, or a descriptor that still contains its own signature is not conformant.
+When present, the revision signature covers the JCS serialization of the revision descriptor with the `signature` field omitted. Verification must therefore bind `revision_id`, `parent_revision_id`, tree version, publication time, both digests, and change method. A signature over only `content_sha256`, an implementation-dependent object walk, or a descriptor that still contains its own signature is not conformant. An unsigned receipt remains structurally valid; it conveys lineage and digest information but no signature trust signal.
 
 `change_method` is a bounded machine-readable value such as `owner_edit`, `collaborator_proposal`, `agent_patch`, `research_refresh`, `import`, `restore`, or `migration`. It describes how the change entered the system; it does not prove approval.
 
@@ -385,12 +385,29 @@ Each slice must be independently reversible. Database migrations land before dep
 
 The first extension release adopts these decisions so separate implementations can build compatible fixtures:
 
-1. `/.well-known/brand/revision.json` is a standard optional package file. A producer that publishes it must declare and hash it in the manifest. The manifest may repeat its current receipt but may not define a conflicting second revision authority.
+1. `/.well-known/brand/revision.json` is a standard optional package file. A producer that publishes it must declare its path, media type, and `revision_receipt` role in the manifest, but MUST NOT add its digest to that manifest. The signed receipt binds the manifest digest in the opposite direction. The manifest may repeat non-signing display metadata from its current receipt but may not define a conflicting second revision authority.
 2. Typed sources use a combination of stable source ID, URI, retrieval or observation time, and—when exact bytes were captured—content digest and media type. A retrieval receipt is optional unless another schema requires it. A URL alone proves neither the observed content nor continued availability.
 3. The first canonical schemas cover claims and visual tokens. Boundaries, markets, commerce, and general source records follow only after the first two schemas and round-trip fixtures are stable.
 4. A projection that cannot be reproduced declares `projection: "manual"`; Markdown remains authoritative and the producer must not publish deterministic-renderer receipts or typed semantic-patch guarantees for that surface.
 5. The protocol does not impose one private-history retention period. A service advertising history must disclose a machine-readable retention policy and must not claim a revision is restorable after its exact bytes or lossless reconstruction expire. The current public revision receipt remains subject to the Registry's disclosed integrity and legal-retention policy.
 6. Semantic risk severity remains implementation policy. Portable diffs standardize objective risk signals and identify any policy/version used to derive a severity.
+
+## First executable artifacts
+
+The first extension release publishes these versioned JSON Schema contracts:
+
+- `schema/revision.schema.json` for `bcp.revision.v1` public receipts;
+- `schema/patch.schema.json` for `bcp.patch.v1` semantic patch requests;
+- `schema/canonical-claims.schema.json` for `bcp.canonical.claims.v1`; and
+- `schema/canonical-visual-tokens.schema.json` for `bcp.canonical.visual-tokens.v1`.
+
+`schema/manifest.schema.json` additionally validates the `canonical_model` declaration and optional deterministic renderer receipt. A manual projection is forbidden from publishing a renderer receipt. Existing manifests and Markdown-first packages remain valid because both additions are optional.
+
+The schemas deliberately leave stable record and revision identifiers opaque apart from requiring a non-empty string. Identifier syntax is producer-scoped and must not be mistaken for authorization. The patch schema rejects empty document pointers, malformed RFC 6901 escapes, prototype-related segments, missing prior-value digests, and values on remove operations. Current-head comparison, schema-declared field mutability, authorization, approval, and idempotency storage remain mandatory application checks because JSON Schema cannot evaluate them.
+
+For the first canonical visual-token schema, a color value is normalized to uppercase six- or eight-digit hexadecimal form (for example `#C93212` or `#C93212FF`). Three-digit shorthand and lowercase forms are not canonical. Canonical record sets, stable-ID reference arrays, market arrays, and locale arrays use unique values sorted by their UTF-8 byte sequence before hashing.
+
+Positive and negative fixtures live under `tests/fixtures/revisions/`. Cross-implementation digest and signing inputs live under `tests/vectors/`. The vector runner enforces stable-ID ordering for canonical record sets, UTF-8 path ordering for revision content manifests, omission of `signature` from the signing payload, omission of the external idempotency key from the normalized request digest, and conflict detection when one key is reused for different normalized content.
 
 ## Open questions
 

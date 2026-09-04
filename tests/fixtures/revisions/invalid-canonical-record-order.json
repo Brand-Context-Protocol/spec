@@ -1,0 +1,25 @@
+{
+  "schema": "bcp.canonical.visual-tokens.v1",
+  "records": [
+    {
+      "id": "token.z-last",
+      "kind": "string",
+      "value": "last",
+      "role": "example",
+      "description": null,
+      "source_ids": [],
+      "approval_ids": [],
+      "evidence_status": "observed"
+    },
+    {
+      "id": "token.a-first",
+      "kind": "string",
+      "value": "first",
+      "role": "example",
+      "description": null,
+      "source_ids": [],
+      "approval_ids": [],
+      "evidence_status": "observed"
+    }
+  ]
+}

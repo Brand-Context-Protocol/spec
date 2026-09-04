@@ -1,0 +1,15 @@
+{
+  "schema": "bcp.patch.v1",
+  "base_revision_id": "01J78XQ7QBWJY2DVBH5Z75C0ZR",
+  "idempotency_key": "attack-1",
+  "operations": [
+    {
+      "op": "replace",
+      "record_type": "claim",
+      "record_id": "claim.free-dns-verification",
+      "path": "/scope/__proto__/polluted",
+      "before_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "value": true
+    }
+  ]
+}

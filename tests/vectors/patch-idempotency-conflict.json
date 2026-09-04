@@ -1,0 +1,33 @@
+{
+  "accepted": {
+    "schema": "bcp.patch.v1",
+    "base_revision_id": "01J78XQ7QBWJY2DVBH5Z75C0ZR",
+    "idempotency_key": "reused-key",
+    "operations": [
+      {
+        "op": "replace",
+        "record_type": "claim",
+        "record_id": "claim.free-dns-verification",
+        "path": "/scope/markets",
+        "before_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "value": ["GB", "US"]
+      }
+    ]
+  },
+  "conflicting_retry": {
+    "schema": "bcp.patch.v1",
+    "base_revision_id": "01J78XQ7QBWJY2DVBH5Z75C0ZR",
+    "idempotency_key": "reused-key",
+    "operations": [
+      {
+        "op": "replace",
+        "record_type": "claim",
+        "record_id": "claim.free-dns-verification",
+        "path": "/scope/markets",
+        "before_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "value": ["DE", "GB", "US"]
+      }
+    ]
+  },
+  "expected": "idempotency_conflict"
+}

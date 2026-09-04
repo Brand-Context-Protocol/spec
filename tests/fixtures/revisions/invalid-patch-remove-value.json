@@ -1,0 +1,15 @@
+{
+  "schema": "bcp.patch.v1",
+  "base_revision_id": "01J78XQ7QBWJY2DVBH5Z75C0ZR",
+  "idempotency_key": "bad-remove",
+  "operations": [
+    {
+      "op": "remove",
+      "record_type": "claim",
+      "record_id": "claim.old-offer",
+      "path": "/approved_language",
+      "before_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "value": null
+    }
+  ]
+}

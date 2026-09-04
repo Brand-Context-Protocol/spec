@@ -1,0 +1,17 @@
+{
+  "files": [
+    {
+      "path": "/.well-known/brand/voice.md",
+      "media_type": "text/markdown",
+      "byte_length": 120,
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    {
+      "path": "/.well-known/brand.md",
+      "media_type": "text/markdown",
+      "byte_length": 240,
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ],
+  "expected_content_sha256": "eba1cf1e8565697ca976c2137238140763dc25c3b103fc9ec1677d77dc8bb527"
+}

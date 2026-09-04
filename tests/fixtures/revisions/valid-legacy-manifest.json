@@ -1,0 +1,13 @@
+{
+  "bcp_version": "0.8",
+  "tree_version": "2.0.0",
+  "brand_name": "Existing Markdown Brand",
+  "files": [
+    {
+      "path": "/.well-known/brand.md",
+      "media_type": "text/markdown",
+      "role": "root",
+      "required": true
+    }
+  ]
+}

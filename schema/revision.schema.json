@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schema.brandcontextprotocol.dev/revision.schema.json",
+  "title": "Brand Context Protocol publication revision receipt",
+  "description": "Public receipt for one immutable BCP publication. The Ed25519 signature covers the RFC 8785 serialization of this object with signature omitted.",
+  "type": "object",
+  "properties": {
+    "schema": { "const": "bcp.revision.v1" },
+    "revision_id": { "$ref": "#/$defs/opaqueId" },
+    "parent_revision_id": {
+      "oneOf": [
+        { "$ref": "#/$defs/opaqueId" },
+        { "type": "null" }
+      ]
+    },
+    "tree_version": {
+      "type": "string",
+      "pattern": "^(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)\\.(?:0|[1-9][0-9]*)(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+    },
+    "published_at": { "type": "string", "format": "date-time" },
+    "content_sha256": { "$ref": "#/$defs/sha256" },
+    "manifest_sha256": { "$ref": "#/$defs/sha256" },
+    "change_method": {
+      "type": "string",
+      "enum": [
+        "owner_edit",
+        "collaborator_proposal",
+        "agent_patch",
+        "research_refresh",
+        "import",
+        "restore",
+        "migration"
+      ]
+    },
+    "signature": {
+      "type": "object",
+      "properties": {
+        "algorithm": { "const": "Ed25519" },
+        "key_id": { "type": "string", "minLength": 1 },
+        "value": { "type": "string", "minLength": 1 }
+      },
+      "required": ["algorithm", "key_id", "value"],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema",
+    "revision_id",
+    "parent_revision_id",
+    "tree_version",
+    "published_at",
+    "content_sha256",
+    "manifest_sha256",
+    "change_method"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "opaqueId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

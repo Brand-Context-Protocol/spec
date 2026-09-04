@@ -1,0 +1,17 @@
+{
+  "selected_prior_revision": {
+    "revision_id": "revision-1",
+    "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "current_revision": {
+    "revision_id": "revision-2",
+    "parent_revision_id": "revision-1",
+    "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "restoring_revision": {
+    "revision_id": "revision-3",
+    "parent_revision_id": "revision-2",
+    "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "change_method": "restore"
+  }
+}
