@@ -306,6 +306,8 @@ Examples include:
 
 The diff engine must not label prose similarity as semantic equivalence. If a file cannot be mapped to typed records, it remains an ordinary file diff.
 
+`risk_class` is an implementation-policy result, not a portable statement of fact. When emitted, it must name the policy and version that produced it. Portable semantic diffs should also emit objective `risk_signals` such as `claim_language_changed`, `evidence_removed`, `approval_weakened`, `boundary_narrowed`, `market_availability_changed`, `price_changed`, or `visual_token_changed`, so another consumer can apply its own policy without trusting the producer's severity label.
+
 ### Approval and trust separation
 
 The following remain distinct signals:
@@ -379,14 +381,22 @@ Each slice must be independently reversible. Database migrations land before dep
 - privacy and authorization boundaries; and
 - rollback to the previous application version without corrupting the revision chain.
 
+## Decisions for the first extension release
+
+The first extension release adopts these decisions so separate implementations can build compatible fixtures:
+
+1. `/.well-known/brand/revision.json` is a standard optional package file. A producer that publishes it must declare and hash it in the manifest. The manifest may repeat its current receipt but may not define a conflicting second revision authority.
+2. Typed sources use a combination of stable source ID, URI, retrieval or observation time, and—when exact bytes were captured—content digest and media type. A retrieval receipt is optional unless another schema requires it. A URL alone proves neither the observed content nor continued availability.
+3. The first canonical schemas cover claims and visual tokens. Boundaries, markets, commerce, and general source records follow only after the first two schemas and round-trip fixtures are stable.
+4. A projection that cannot be reproduced declares `projection: "manual"`; Markdown remains authoritative and the producer must not publish deterministic-renderer receipts or typed semantic-patch guarantees for that surface.
+5. The protocol does not impose one private-history retention period. A service advertising history must disclose a machine-readable retention policy and must not claim a revision is restorable after its exact bytes or lossless reconstruction expire. The current public revision receipt remains subject to the Registry's disclosed integrity and legal-retention policy.
+6. Semantic risk severity remains implementation policy. Portable diffs standardize objective risk signals and identify any policy/version used to derive a severity.
+
 ## Open questions
 
-1. Should `revision.json` be a standard optional file or only a manifest object?
-2. Should typed source records use URLs only, content hashes, retrieval receipts, or a combination?
-3. Which record types belong in the first schema release beyond existing `claims.json` and visual tokens?
-4. How should a producer communicate an intentional manual projection that cannot be reproduced deterministically?
-5. What minimum history retention may a service advertise without making old content public?
-6. Should semantic diff risk classes be standardized or remain an implementation policy?
+1. Should a later release define a portable approval receipt, or should approval remain service-private while only approval state is projected?
+2. Which external evidence-retrieval receipt formats should typed source records recognize first?
+3. Should a future multi-parent merge revision be standardized, or should portable BCP history remain strictly single-parent?
 
 ## Acceptance direction
 
