@@ -13,6 +13,7 @@ Adds the first executable artifacts for RFC 0018 without changing v0.8 core conf
 - **Typed authority is explicit:** new canonical claims and visual-token schemas apply only when a manifest opts into the canonical model; existing Markdown-first claims companions remain unchanged.
 - **Circular digests are forbidden:** manifests declare revision receipts but do not hash them; revision receipts bind the manifest digest in the opposite direction.
 - **Interoperability vectors:** positive and negative fixtures cover canonical ordering, signing payloads, request-bound idempotency, stale bases, unrelated-field preservation, restore-forward lineage, and privacy-safe public receipts.
+- **Claims projection is fail-closed:** canonical claim proof statuses map normatively into the three public Markdown sections while retaining the original status; deterministic publication fails when canonical records and their projection disagree.
 
 ## v0.8 visual semantics and DESIGN.md boundary, 2026-09-02
 

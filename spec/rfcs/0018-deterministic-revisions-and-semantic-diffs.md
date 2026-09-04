@@ -174,6 +174,17 @@ A conforming deterministic renderer must define:
 
 The renderer must produce byte-identical output for identical canonical state, schema version, and renderer version.
 
+For `bcp.canonical.claims.v1`, deterministic projection targets the structured
+claim blocks inside `claims.md`; it does not make surrounding review notices or
+explanatory prose canonical. The renderer maps proof status to the required
+BCP v0.8 blocks using the safety-preserving table in SPEC.md §7.6: `approved`
+to `approved_at_launch`, `requires_caveat` to `requires_caveat`, and every
+other v1 proof status to `forbidden`. The original `proof_status` remains in
+the rendered record. Renderers must sort records within each block by stable
+record identifier using UTF-8 byte order and must not silently omit a canonical
+field. A renderer version must fix its YAML field ordering, scalar escaping,
+indentation, and newline behavior.
+
 The manifest should record the renderer receipt:
 
 ```json
