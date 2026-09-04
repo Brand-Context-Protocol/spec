@@ -65,6 +65,10 @@ Duplicated representation is permitted. Duplicated authority is not.
 
 Records that may be revised independently must carry stable producer-scoped identifiers. Patches address those identifiers, not a line number or array index. Reordering a rendered list must not turn into a semantic change.
 
+### Version every executable contract
+
+Schema identifiers, canonicalization profiles, renderer names and versions, and patch formats are part of the interoperable contract. A producer must not change the behavior behind an existing identifier or version. A behavior change requires a new version, and a consumer that does not recognize that version must fail the typed operation explicitly while remaining able to consume the projected v0.8 Markdown core.
+
 ### Immutable publication
 
 Every publication creates a new immutable revision of the complete published package. A revision has at most one parent. Published revisions are not edited in place.
@@ -145,6 +149,16 @@ At minimum:
 
 Schemas may add domain-specific required fields. For example, a claim needs proof status and approved language; a color token needs a normalized color value and role; a price needs currency, amount, cadence, market, and effective dates.
 
+Every typed file must declare an immutable schema identifier or resolvable schema URI. Published schema bytes must be content-addressable, and a package manifest should record their digests. A producer must validate canonical records against the declared schema before rendering, diffing, patching, or publication.
+
+### Canonical serialization and hashing
+
+Interoperable digests and signatures must not depend on a runtime's ordinary JSON serializer. This extension uses the JSON Canonicalization Scheme (JCS, RFC 8785) for JSON objects unless a future version explicitly names another profile. Inputs must first pass their declared schema; values that JCS cannot represent are invalid rather than implementation-defined.
+
+Unless a field says otherwise, a `sha256` value in this RFC is lowercase hexadecimal SHA-256 over the UTF-8 bytes of its canonical representation. Record sets whose order is semantically irrelevant must be sorted by stable record identifier before canonicalization. Arrays whose order is meaningful preserve their declared order.
+
+The complete normalized patch request used for idempotency binding includes `schema`, `base_revision_id`, and the ordered `operations` array after schema validation and canonicalization. The external idempotency key is not included in the request digest. A producer stores or can reconstruct the mapping from `(authorized tenant, idempotency_key)` to that digest and must reject a different digest for the same key.
+
 ### Deterministic rendering
 
 A conforming deterministic renderer must define:
@@ -173,6 +187,8 @@ The manifest should record the renderer receipt:
 }
 ```
 
+The renderer version identifies immutable executable behavior, not merely a package release label. A producer must retain the renderer or a reproducible artifact for every revision it claims can be reconstructed. Projection validation compares the exact projected bytes and fails before publication if any declared projection differs.
+
 ### Publication revision descriptor
 
 The current package may publish `/.well-known/brand/revision.json` and declare it in the manifest. The descriptor contains only the receipt needed to identify and verify the current publication:
@@ -197,6 +213,10 @@ The current package may publish `/.well-known/brand/revision.json` and declare i
 
 `revision_id` is an opaque stable identifier. It must not encode an email address, account identifier, or other personal information. `content_sha256` covers a specified canonical package manifest or tree serialization, not an implementation-dependent directory walk.
 
+For `bcp.revision.v1`, `content_sha256` is the SHA-256 digest of the JCS serialization of an array containing one object per published file with exactly these fields: `path`, `media_type`, `byte_length`, and `sha256`. Paths are normalized absolute package paths and the array is sorted by each path's UTF-8 byte sequence. `sha256` is the exact-byte digest of that file. `manifest_sha256` is the exact-byte SHA-256 digest of the published manifest file.
+
+The revision signature covers the JCS serialization of the revision descriptor with the `signature` field omitted. Verification must therefore bind `revision_id`, `parent_revision_id`, tree version, publication time, both digests, and change method. A signature over only `content_sha256`, an implementation-dependent object walk, or a descriptor that still contains its own signature is not conformant.
+
 `change_method` is a bounded machine-readable value such as `owner_edit`, `collaborator_proposal`, `agent_patch`, `research_refresh`, `import`, `restore`, or `migration`. It describes how the change entered the system; it does not prove approval.
 
 The public descriptor must not include reviewer identities, internal comments, rejected changes, or old file contents. A Registry may expose richer history only to authorized owners and collaborators.
@@ -217,6 +237,8 @@ A producer that advertises revision history must retain, for every published rev
 
 The current public package remains available if private history storage is unavailable. A failure to write the immutable revision must fail publication rather than publish untracked bytes.
 
+Publication is a compare-and-append operation against the current revision head. The proposed parent or base revision must still equal the current head when the new immutable revision is committed. Concurrent publication attempts from the same head may not silently create competing current histories: one succeeds and the others fail with an explicit stale-base conflict. A service may retain rejected or abandoned branches privately, but exactly one revision is the public current head.
+
 ### Semantic patch format
 
 An authoring system may accept a typed `bcp.patch.v1` document:
@@ -231,7 +253,7 @@ An authoring system may accept a typed `bcp.patch.v1` document:
       "op": "replace",
       "record_type": "claim",
       "record_id": "claim.free-dns-verification",
-      "field": "scope.markets",
+      "path": "/scope/markets",
       "before_sha256": "...",
       "value": ["US", "GB", "DE"]
     }
@@ -243,7 +265,8 @@ Requirements:
 
 - the patch is bound to one base revision;
 - stale-base conflicts fail explicitly rather than being silently rebased;
-- every operation addresses a stable record and field;
+- `op` is one of `add`, `replace`, or `remove`; unsupported operations fail explicitly;
+- every operation addresses a stable record and a field using RFC 6901 JSON Pointer syntax;
 - destructive changes require the expected prior-value digest;
 - an idempotency key is bound to the complete normalized request;
 - a reused key with different content fails;
@@ -251,6 +274,8 @@ Requirements:
 - applying the same accepted patch more than once cannot create additional revisions or charges.
 
 Normal revisions should use typed operations. Whole-file replacement remains available for import, migration, unsupported extensions, or an explicit expert workflow, but must not masquerade as a surgical semantic patch.
+
+Patch paths may address only schema-declared mutable fields within the selected record. Empty paths, prototype-related segments such as `__proto__`, `prototype`, or `constructor`, and pointers that escape the selected record are invalid. For `replace` and `remove`, `before_sha256` is required and covers the JCS serialization of the exact prior value at `path`. For `add`, `before_sha256` must be JSON `null`, and application fails if a value already exists at `path`. JSON `null` as an existing value is hashed normally and is therefore distinct from absence.
 
 ### Semantic diff
 
@@ -357,12 +382,11 @@ Each slice must be independently reversible. Database migrations land before dep
 ## Open questions
 
 1. Should `revision.json` be a standard optional file or only a manifest object?
-2. Which canonical JSON serialization profile should package and patch hashing use?
-3. Should typed source records use URLs only, content hashes, retrieval receipts, or a combination?
-4. Which record types belong in the first schema release beyond existing `claims.json` and visual tokens?
-5. How should a producer communicate an intentional manual projection that cannot be reproduced deterministically?
-6. What minimum history retention may a service advertise without making old content public?
-7. Should semantic diff risk classes be standardized or remain an implementation policy?
+2. Should typed source records use URLs only, content hashes, retrieval receipts, or a combination?
+3. Which record types belong in the first schema release beyond existing `claims.json` and visual tokens?
+4. How should a producer communicate an intentional manual projection that cannot be reproduced deterministically?
+5. What minimum history retention may a service advertise without making old content public?
+6. Should semantic diff risk classes be standardized or remain an implementation policy?
 
 ## Acceptance direction
 
