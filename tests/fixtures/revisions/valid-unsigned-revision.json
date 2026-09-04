@@ -1,0 +1,10 @@
+{
+  "schema": "bcp.revision.v1",
+  "revision_id": "urn:example:revision:genesis",
+  "parent_revision_id": null,
+  "tree_version": "1.0.0",
+  "published_at": "2026-09-03T20:15:00Z",
+  "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "manifest_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "change_method": "import"
+}

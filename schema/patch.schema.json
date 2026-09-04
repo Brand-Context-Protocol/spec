@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schema.brandcontextprotocol.dev/patch.schema.json",
+  "title": "Brand Context Protocol semantic patch",
+  "description": "Request-bound stable-record operations for bcp.patch.v1. Authorization, current-head comparison, idempotency storage, and schema-declared field mutability remain application checks.",
+  "type": "object",
+  "properties": {
+    "schema": { "const": "bcp.patch.v1" },
+    "base_revision_id": { "$ref": "#/$defs/stableId" },
+    "idempotency_key": { "type": "string", "minLength": 1 },
+    "operations": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/operation" }
+    }
+  },
+  "required": ["schema", "base_revision_id", "idempotency_key", "operations"],
+  "additionalProperties": false,
+  "$defs": {
+    "stableId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "pointer": {
+      "type": "string",
+      "description": "Non-empty RFC 6901 pointer inside the selected record. Prototype-related segments are forbidden.",
+      "pattern": "^(?!.*(?:^|/)(?:__proto__|prototype|constructor)(?:/|$))(?:/(?:[^~/]|~[01])+)+$"
+    },
+    "operation": {
+      "type": "object",
+      "properties": {
+        "op": { "enum": ["add", "replace", "remove"] },
+        "record_type": { "enum": ["claim", "visual_token"] },
+        "record_id": { "$ref": "#/$defs/stableId" },
+        "path": { "$ref": "#/$defs/pointer" },
+        "before_sha256": {
+          "oneOf": [
+            { "$ref": "#/$defs/sha256" },
+            { "type": "null" }
+          ]
+        },
+        "value": true
+      },
+      "required": ["op", "record_type", "record_id", "path", "before_sha256"],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": { "properties": { "op": { "const": "add" } }, "required": ["op"] },
+          "then": {
+            "required": ["value"],
+            "properties": { "before_sha256": { "type": "null" } }
+          }
+        },
+        {
+          "if": { "properties": { "op": { "const": "replace" } }, "required": ["op"] },
+          "then": {
+            "required": ["value"],
+            "properties": { "before_sha256": { "$ref": "#/$defs/sha256" } }
+          }
+        },
+        {
+          "if": { "properties": { "op": { "const": "remove" } }, "required": ["op"] },
+          "then": {
+            "properties": { "before_sha256": { "$ref": "#/$defs/sha256" } },
+            "not": { "required": ["value"] }
+          }
+        }
+      ]
+    }
+  }
+}

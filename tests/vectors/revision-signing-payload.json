@@ -1,0 +1,19 @@
+{
+  "revision": {
+    "schema": "bcp.revision.v1",
+    "revision_id": "01J7A4P4X9V8F6GX7WQ2J9QK4M",
+    "parent_revision_id": "01J78XQ7QBWJY2DVBH5Z75C0ZR",
+    "tree_version": "2.1.0",
+    "published_at": "2026-09-03T20:15:00Z",
+    "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "manifest_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "change_method": "owner_edit",
+    "signature": {
+      "algorithm": "Ed25519",
+      "key_id": "rfc8032-test-key-1",
+      "value": "tFeSf5BTaiZAA+Al7tRcQ0i8epu3s+ZzK2JrtjYXuNor7E8H8YUoxgZpWSKYdq0XaM5JavlaVfyMYHztEjA7Cg=="
+    }
+  },
+  "public_key_hex": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+  "expected_signing_payload_sha256": "6381012376c5b8b35151e544820ffc1e18537a6f36bfed5fd3d680d08eb8ff0f"
+}

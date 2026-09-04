@@ -1,0 +1,19 @@
+{
+  "current_revision_id": "01J7A4P4X9V8F6GX7WQ2J9QK4M",
+  "patch": {
+    "schema": "bcp.patch.v1",
+    "base_revision_id": "01J78XQ7QBWJY2DVBH5Z75C0ZR",
+    "idempotency_key": "stale-client-request",
+    "operations": [
+      {
+        "op": "replace",
+        "record_type": "claim",
+        "record_id": "claim.free-dns-verification",
+        "path": "/approved_language",
+        "before_sha256": "5ae48b2d54a97aa1a3fc8f6357856f3ff6fd4aa1b759fa086a044556d91061fa",
+        "value": "Domain verification is free."
+      }
+    ]
+  },
+  "expected": "stale_base"
+}

@@ -4,6 +4,16 @@ All notable changes to the Brand Context Protocol specification are documented h
 
 ---
 
+## Draft deterministic revisions extension, 2026-09-04
+
+Adds the first executable artifacts for RFC 0018 without changing v0.8 core conformance.
+
+- **Immutable receipts:** `bcp.revision.v1` binds one revision and its parent to canonical content and manifest digests, with an optional Ed25519 signature over the complete unsigned receipt.
+- **Surgical patches:** `bcp.patch.v1` addresses stable records and RFC 6901 fields, binds destructive operations to prior-value digests, and rejects prototype-related paths.
+- **Typed authority is explicit:** new canonical claims and visual-token schemas apply only when a manifest opts into the canonical model; existing Markdown-first claims companions remain unchanged.
+- **Circular digests are forbidden:** manifests declare revision receipts but do not hash them; revision receipts bind the manifest digest in the opposite direction.
+- **Interoperability vectors:** positive and negative fixtures cover canonical ordering, signing payloads, request-bound idempotency, stale bases, unrelated-field preservation, restore-forward lineage, and privacy-safe public receipts.
+
 ## v0.8 visual semantics and DESIGN.md boundary, 2026-09-02
 
 Adds a backward-compatible optional vocabulary for AI-executable visual identity.

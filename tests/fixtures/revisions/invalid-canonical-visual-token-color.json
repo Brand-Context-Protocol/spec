@@ -1,0 +1,15 @@
+{
+  "schema": "bcp.canonical.visual-tokens.v1",
+  "records": [
+    {
+      "id": "token.brand-red",
+      "kind": "color",
+      "value": "#c93212",
+      "role": "primary",
+      "description": null,
+      "source_ids": ["source.brand-guidelines"],
+      "approval_ids": ["approval.design-owner"],
+      "evidence_status": "brand_confirmed"
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schema.brandcontextprotocol.dev/canonical-claims.schema.json",
+  "title": "Brand Context Protocol canonical claims model",
+  "description": "Optional authoritative claim records for deterministic projection under an explicit manifest canonical_model declaration. This does not change claims.schema.json or Markdown-first packages.",
+  "type": "object",
+  "properties": {
+    "schema": { "const": "bcp.canonical.claims.v1" },
+    "records": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/claim" }
+    }
+  },
+  "required": ["schema", "records"],
+  "additionalProperties": false,
+  "$defs": {
+    "stableId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "markets": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[A-Z]{2}$" },
+          "uniqueItems": true
+        },
+        "locales": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$" },
+          "uniqueItems": true
+        }
+      },
+      "minProperties": 1,
+      "additionalProperties": false
+    },
+    "claim": {
+      "type": "object",
+      "properties": {
+        "id": { "$ref": "#/$defs/stableId" },
+        "claim": { "type": "string", "minLength": 1 },
+        "approved_language": { "oneOf": [{ "type": "string" }, { "type": "null" }] },
+        "proof_status": {
+          "enum": ["approved", "requires_caveat", "forbidden", "expired", "aspirational", "unknown"]
+        },
+        "tier": { "enum": ["core", "default", "contextual"] },
+        "scope": { "$ref": "#/$defs/scope" },
+        "source_ids": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/stableId" },
+          "uniqueItems": true
+        },
+        "approval_ids": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/stableId" },
+          "uniqueItems": true
+        },
+        "valid_from": { "oneOf": [{ "type": "string", "format": "date" }, { "type": "null" }] },
+        "valid_until": { "oneOf": [{ "type": "string", "format": "date" }, { "type": "null" }] },
+        "caveat": { "oneOf": [{ "type": "string" }, { "type": "null" }] }
+      },
+      "required": [
+        "id",
+        "claim",
+        "approved_language",
+        "proof_status",
+        "source_ids",
+        "approval_ids",
+        "valid_from",
+        "valid_until",
+        "caveat"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": { "properties": { "proof_status": { "const": "approved" } }, "required": ["proof_status"] },
+          "then": {
+            "properties": {
+              "approved_language": { "type": "string", "minLength": 1 },
+              "source_ids": { "type": "array", "minItems": 1 },
+              "approval_ids": { "type": "array", "minItems": 1 }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "proof_status": { "const": "requires_caveat" } }, "required": ["proof_status"] },
+          "then": { "properties": { "caveat": { "type": "string", "minLength": 1 } } }
+        }
+      ]
+    }
+  }
+}

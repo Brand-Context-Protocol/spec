@@ -1,0 +1,16 @@
+{
+  "schema": "bcp.revision.v1",
+  "revision_id": "01J7A4P4X9V8F6GX7WQ2J9QK4M",
+  "parent_revision_id": null,
+  "tree_version": "2.1.0",
+  "published_at": "2026-09-03T20:15:00Z",
+  "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "manifest_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "change_method": "migration",
+  "actor_email": "private@example.com",
+  "signature": {
+    "algorithm": "Ed25519",
+    "key_id": "registry-key-2026-01",
+    "value": "dGVzdC1zaWduYXR1cmU="
+  }
+}

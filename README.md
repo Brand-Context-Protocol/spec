@@ -12,6 +12,8 @@ AI agents generate content about your brand every day. Without a machine-readabl
 
 - [`SPEC.md`](SPEC.md) — The normative specification text (v0.8).
 - [`schema/`](schema/) — JSON Schema definitions for validation.
+- [`tests/fixtures/revisions/`](tests/fixtures/revisions/) — Positive and negative deterministic-revision fixtures.
+- [`tests/vectors/`](tests/vectors/) — Canonical digest, signing-payload, and idempotency test vectors.
 - [`examples/`](examples/) — Example BCP implementations.
 - [`spec/hypotheses.md`](spec/hypotheses.md) — Open hypotheses and design questions.
 - [`GOVERNANCE.md`](GOVERNANCE.md) — BDFL governance model and RFC process.
@@ -20,6 +22,8 @@ AI agents generate content about your brand every day. Without a machine-readabl
 ## Quick start
 
 Publish a complete root document at `/.well-known/brand.md` on your domain. It can be self-hosted or Registry-backed. A Registry-backed root keeps useful first-read brand context on the domain while declaring an explicit first action and absolute references to its hosted package. Registry hosting does not by itself imply verification or signing; consumers inspect explicit trust metadata. Richer packages may add `manifest.json`, `claims.json`, checksums, signatures, design tokens, assets, examples, components, and motion guidance later.
+
+The draft deterministic-revision extension is specified in [`RFC 0018`](spec/rfcs/0018-deterministic-revisions-and-semantic-diffs.md). Its executable schemas and vectors are additive: existing v0.8 Markdown-only packages remain conformant. Run `bash scripts/test-revision-extension.sh` to validate the extension contracts and canonical vectors.
 
 ## Examples
 

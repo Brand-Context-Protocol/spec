@@ -1,0 +1,34 @@
+{
+  "schema": "bcp.canonical.claims.v1",
+  "records": [
+    {
+      "id": "claim.free-dns-verification",
+      "claim": "Domain verification is available at no charge.",
+      "approved_language": "Verify your domain at no charge.",
+      "proof_status": "approved",
+      "tier": "core",
+      "scope": {
+        "markets": ["GB", "US"],
+        "locales": ["en-GB", "en-US"]
+      },
+      "source_ids": ["source.pricing-page"],
+      "approval_ids": ["approval.owner-2026-08-31"],
+      "valid_from": "2026-08-31",
+      "valid_until": null,
+      "caveat": null
+    },
+    {
+      "id": "claim.reencode-price",
+      "claim": "An AI-assisted re-encode costs 49 US dollars.",
+      "approved_language": null,
+      "proof_status": "requires_caveat",
+      "tier": "default",
+      "scope": { "markets": ["US"], "locales": ["en-US"] },
+      "source_ids": ["source.pricing-page"],
+      "approval_ids": [],
+      "valid_from": "2026-08-31",
+      "valid_until": null,
+      "caveat": "State the currency and current effective date."
+    }
+  ]
+}

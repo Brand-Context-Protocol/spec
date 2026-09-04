@@ -1,0 +1,26 @@
+{
+  "schema": "bcp.canonical.visual-tokens.v1",
+  "records": [
+    {
+      "id": "token.brand-red",
+      "kind": "color",
+      "value": "#C93212",
+      "role": "primary",
+      "description": "Primary emphasis color.",
+      "source_ids": ["source.brand-guidelines"],
+      "approval_ids": ["approval.design-owner"],
+      "evidence_status": "brand_confirmed"
+    },
+    {
+      "id": "token.space-page",
+      "kind": "dimension",
+      "value": { "amount": 4, "unit": "rem" },
+      "role": "page_margin",
+      "description": null,
+      "scope": { "markets": ["GB", "US"] },
+      "source_ids": ["source.design-system"],
+      "approval_ids": ["approval.design-owner"],
+      "evidence_status": "brand_declared"
+    }
+  ]
+}

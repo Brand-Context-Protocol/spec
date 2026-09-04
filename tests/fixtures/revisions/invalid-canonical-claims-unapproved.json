@@ -1,0 +1,16 @@
+{
+  "schema": "bcp.canonical.claims.v1",
+  "records": [
+    {
+      "id": "claim.unsourced",
+      "claim": "This approved claim has no proof or approval receipt.",
+      "approved_language": "Use this exact unsupported language.",
+      "proof_status": "approved",
+      "source_ids": [],
+      "approval_ids": [],
+      "valid_from": null,
+      "valid_until": null,
+      "caveat": null
+    }
+  ]
+}

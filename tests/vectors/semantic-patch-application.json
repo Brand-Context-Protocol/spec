@@ -1,0 +1,32 @@
+{
+  "record_before": {
+    "id": "claim.free-dns-verification",
+    "claim": "Domain verification is available at no charge.",
+    "approved_language": "Verify your domain at no charge.",
+    "proof_status": "approved",
+    "source_ids": ["source.pricing-page"],
+    "approval_ids": ["approval.owner-2026-08-31"],
+    "valid_from": "2026-08-31",
+    "valid_until": null,
+    "caveat": null
+  },
+  "operation": {
+    "op": "replace",
+    "record_type": "claim",
+    "record_id": "claim.free-dns-verification",
+    "path": "/approved_language",
+    "before_sha256": "5ae48b2d54a97aa1a3fc8f6357856f3ff6fd4aa1b759fa086a044556d91061fa",
+    "value": "Domain verification is free."
+  },
+  "record_after": {
+    "id": "claim.free-dns-verification",
+    "claim": "Domain verification is available at no charge.",
+    "approved_language": "Domain verification is free.",
+    "proof_status": "approved",
+    "source_ids": ["source.pricing-page"],
+    "approval_ids": ["approval.owner-2026-08-31"],
+    "valid_from": "2026-08-31",
+    "valid_until": null,
+    "caveat": null
+  }
+}

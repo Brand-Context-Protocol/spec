@@ -1,0 +1,14 @@
+{
+  "bcp_version": "0.8",
+  "tree_version": "2.1.0",
+  "brand_name": "Example Brand",
+  "files": [
+    {
+      "path": "/.well-known/brand/revision.json",
+      "media_type": "application/json",
+      "role": "revision_receipt",
+      "required": false,
+      "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    }
+  ]
+}
