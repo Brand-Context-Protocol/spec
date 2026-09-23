@@ -171,6 +171,7 @@
         "required": ["trust_level"]
       },
       "then": {
+        "required": ["official_brand_source"],
         "properties": { "official_brand_source": { "const": false } }
       }
     },
@@ -192,6 +193,15 @@
           "verification_last_checked_at": { "type": "string" },
           "verification_expires_at": { "type": "string" }
         }
+      }
+    },
+    {
+      "if": {
+        "properties": { "integrity_signed": { "const": true } },
+        "required": ["integrity_signed"]
+      },
+      "then": {
+        "required": ["trust_level", "official_brand_source"]
       }
     }
   ],

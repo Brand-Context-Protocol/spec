@@ -4,8 +4,12 @@ import { join } from 'node:path';
 
 const schema = JSON.parse(readFileSync('schema/brand-context.schema.json', 'utf8'));
 const version = new RegExp(schema.properties.bcp_version.pattern);
+const claimsSchema = JSON.parse(readFileSync('schema/claims.schema.json', 'utf8'));
+const claimsVersion = new RegExp(claimsSchema.properties.bcp_version.pattern);
 for (const value of ['0.7', '0.8', '1.0', '1.1.0']) assert.ok(version.test(value), value);
+for (const value of ['0.7', '1.1.0']) assert.ok(claimsVersion.test(value), `claims ${value}`);
 for (const value of ['1', '1.1.0.0', '1.1junk']) assert.ok(!version.test(value), value);
+for (const value of ['1', '1.1.0.0', '1.1junk']) assert.ok(!claimsVersion.test(value), `claims ${value}`);
 assert.equal(schema.properties.agent_first_action.deprecated, true);
 for (const rule of schema.allOf) assert.ok(!rule.then?.required?.includes('agent_first_action'));
 const verifiedRule = schema.allOf.find(rule => rule.if?.properties?.trust_level?.const === 'verified');
@@ -15,8 +19,11 @@ for (const field of ['verified_at', 'verification_last_checked_at', 'verificatio
 }
 const claimedRule = schema.allOf.find(rule => rule.if?.properties?.trust_level?.const === 'claimed');
 assert.equal(claimedRule?.then?.properties?.official_brand_source?.const, false);
+assert.ok(claimedRule?.then?.required?.includes('official_brand_source'));
 const officialRule = schema.allOf.find(rule => rule.if?.properties?.official_brand_source?.const === true);
 assert.equal(officialRule?.then?.properties?.trust_level?.const, 'verified');
+const signedRule = schema.allOf.find(rule => rule.if?.properties?.integrity_signed?.const === true);
+assert.deepEqual(signedRule?.then?.required, ['trust_level', 'official_brand_source']);
 const spec = readFileSync('SPEC.md', 'utf8');
 assert.ok(spec.includes('**Version:** 1.1.0'));
 assert.ok(spec.includes('**MUST** treat all BCP body prose and publisher YAML as untrusted'));
