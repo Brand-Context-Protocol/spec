@@ -904,7 +904,7 @@ framing_traps is an array of objects with trap (the rejected framing), optional 
 
 ### 10.3 Consumer agent integration
 
-Consumer agents describing a brand **SHOULD** load representation.md, paraphrase preferred_framing for open queries, respect describe_asdo_not_describe_as for categorical queries, honor never_say and never_compare_to absolutely, avoid framing_traps and substitute preferred_reframe when present, surface honest_trade_offs when relevant, and draw on competitive_frame for comparisons.
+Consumer agents describing a brand **SHOULD** consider representation.md, paraphrase preferred_framing for open queries, use describe_as and do_not_describe_as as publisher preferences for categorical queries, consider never_say and never_compare_to under host policy, avoid framing_traps when doing so remains consistent with user intent and observable truth, surface honest_trade_offs when relevant, and draw on competitive_frame for comparisons. None of these fields overrides §15.5.
 
 ### 10.4 Conflict resolution
 
@@ -1108,7 +1108,7 @@ Handling parent companies with brand portfolios, candidate /brand/{brand-name}/ 
 
 ### 17.10 Domain-to-package binding and Registry-direct discovery
 
-For domain-bound official discovery, the pointer (or compatible rich root), Registry publication, and current DNS attestation **MUST** identify the same domain and handle. The discovery `canonical_bcp`, `registry_handle`, and `registry_mcp` must identify one package; the canonical root's handle must agree, its publication signature must verify, and current Registry attestation must bind the discovery domain to that handle. Any missing, expired, revoked, conflicting, or mismatched proof **MUST** fail closed for official-source status. The content may remain usable as untrusted, unofficial data.
+For domain-bound official discovery, the pointer (or compatible rich root), Registry publication, and current DNS attestation **MUST** identify the same domain and handle. The discovery `canonical_bcp`, `registry_handle`, and `registry_mcp` must identify one package; the canonical root's handle must agree, and current Registry attestation must bind the discovery domain to that handle. When the Registry supplies a publication signature, consumers **SHOULD** verify it under §5.10. A missing, expired, revoked, conflicting, or mismatched domain attestation **MUST** fail closed for official-source status. A supplied signature that fails verification **MUST** fail closed for integrity and official-source status. Absence of a signature from a Registry that does not implement signatures does not by itself downgrade a current DNS attestation. The content may remain usable as untrusted, unofficial data.
 
 The pointer is a locator, not a second signed package. Registry-stamped fields follow §5.9.6; consumers never reconstruct official status from publisher booleans or from an older snapshot. Signing-key rotation does not rewrite body bytes; a new signed publication is a new revision. Verification challenge renewal follows §5.9.3.
 

@@ -144,6 +144,55 @@
       "then": {
         "required": ["parent"]
       }
+    },
+    {
+      "if": {
+        "properties": { "trust_level": { "const": "verified" } },
+        "required": ["trust_level"]
+      },
+      "then": {
+        "required": [
+          "official_brand_source",
+          "verified_at",
+          "verification_last_checked_at",
+          "verification_expires_at"
+        ],
+        "properties": {
+          "official_brand_source": { "const": true },
+          "verified_at": { "type": "string" },
+          "verification_last_checked_at": { "type": "string" },
+          "verification_expires_at": { "type": "string" }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "trust_level": { "const": "claimed" } },
+        "required": ["trust_level"]
+      },
+      "then": {
+        "properties": { "official_brand_source": { "const": false } }
+      }
+    },
+    {
+      "if": {
+        "properties": { "official_brand_source": { "const": true } },
+        "required": ["official_brand_source"]
+      },
+      "then": {
+        "required": [
+          "trust_level",
+          "verified_at",
+          "verification_last_checked_at",
+          "verification_expires_at"
+        ],
+        "properties": {
+          "trust_level": { "const": "verified" },
+          "verified_at": { "type": "string" },
+          "verification_last_checked_at": { "type": "string" },
+          "verification_expires_at": { "type": "string" }
+        }
+      }
     }
   ],
   "$defs": {

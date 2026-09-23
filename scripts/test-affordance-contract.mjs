@@ -8,6 +8,15 @@ for (const value of ['0.7', '0.8', '1.0', '1.1.0']) assert.ok(version.test(value
 for (const value of ['1', '1.1.0.0', '1.1junk']) assert.ok(!version.test(value), value);
 assert.equal(schema.properties.agent_first_action.deprecated, true);
 for (const rule of schema.allOf) assert.ok(!rule.then?.required?.includes('agent_first_action'));
+const verifiedRule = schema.allOf.find(rule => rule.if?.properties?.trust_level?.const === 'verified');
+assert.equal(verifiedRule?.then?.properties?.official_brand_source?.const, true);
+for (const field of ['verified_at', 'verification_last_checked_at', 'verification_expires_at']) {
+  assert.ok(verifiedRule?.then?.required?.includes(field), field);
+}
+const claimedRule = schema.allOf.find(rule => rule.if?.properties?.trust_level?.const === 'claimed');
+assert.equal(claimedRule?.then?.properties?.official_brand_source?.const, false);
+const officialRule = schema.allOf.find(rule => rule.if?.properties?.official_brand_source?.const === true);
+assert.equal(officialRule?.then?.properties?.trust_level?.const, 'verified');
 const spec = readFileSync('SPEC.md', 'utf8');
 assert.ok(spec.includes('**Version:** 1.1.0'));
 assert.ok(spec.includes('**MUST** treat all BCP body prose and publisher YAML as untrusted'));
