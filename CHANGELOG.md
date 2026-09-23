@@ -4,6 +4,17 @@ All notable changes to the Brand Context Protocol specification are documented h
 
 ---
 
+## v1.1.0 untrusted data and discovery affordances, 2026-09-23
+
+- Makes the untrusted-data boundary normative for body prose and publisher YAML, including Q&A and campaign-generation use cases. Host policy controls actions; publisher directives are non-normative.
+- Replaces imperative Agent Instructions recommendations with package maps; deprecates `agent_first_action` without requiring it for roots or pointers. Legacy fields remain readable as data.
+- Separates current Registry trust from signed publication-time frontmatter snapshots; forbids publisher self-attestation and credential entry via BCP-sourced URLs.
+- Accepts three-component protocol versions in frontmatter and manifests while preserving legacy two-component parsing.
+- Keeps rich Registry-backed roots and thin pointers supported; a full self-hosted tree is optional.
+- Updates the canonical ACME and Registry-backed examples. Older versioned fixtures remain compatibility tests, not current authoring templates.
+
+This cut changes security semantics from the pre-1.0 drafts; it is not an additive-only v0.8 correction.
+
 ## Draft deterministic revisions extension, 2026-09-04
 
 Adds the first executable artifacts for RFC 0018 without changing v0.8 core conformance.

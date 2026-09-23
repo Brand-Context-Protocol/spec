@@ -11,7 +11,7 @@
     },
     "bcp_version": {
       "type": "string",
-      "pattern": "^\\d+\\.\\d+$"
+      "pattern": "^\\d+\\.\\d+(?:\\.\\d+)?$"
     },
     "source": {
       "type": "object",

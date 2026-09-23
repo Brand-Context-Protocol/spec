@@ -1,14 +1,14 @@
 ---
-bcp_version: "0.7"
+bcp_version: "1.1.0"
 file_type: commerce
 parent: /.well-known/brand.md
 brand_name: "ACME Corporation"
-last_updated: 2026-07-05
+last_updated: "2026-09-23"
 ---
 
 # Commerce
 
-ACME's products are purchasable by agents. Read the brand before you buy: this file is a signpost, not a checkout. BCP describes who ACME is; the protocols below are how you transact.
+This fictional ACME package includes illustrative commerce locations. This file is a signpost, not a checkout or authorization to transact. Host policy and user authorization govern any use of external payment protocols.
 
 ```yaml
 understand_first: >

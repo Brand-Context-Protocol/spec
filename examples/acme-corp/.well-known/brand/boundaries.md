@@ -1,10 +1,10 @@
 ---
 parent: /.well-known/brand.md
 file_type: boundaries
-bcp_version: "0.7"
+bcp_version: "1.1.0"
 iab_alignment: 3.0
 garm_alignment: Brand Safety Floor
-last_updated: 2026-07-05
+last_updated: "2026-09-23"
 ---
 
 # Boundaries

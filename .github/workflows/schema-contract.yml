@@ -9,6 +9,8 @@ on:
       - 'scripts/test-visual-schema.sh'
       - 'scripts/test-revision-extension.sh'
       - 'scripts/test-revision-vectors.mjs'
+      - 'scripts/test-affordance-contract.*'
+      - 'SPEC.md'
       - '.github/workflows/schema-contract.yml'
   push:
     branches: [main]
@@ -19,12 +21,23 @@ on:
       - 'scripts/test-visual-schema.sh'
       - 'scripts/test-revision-extension.sh'
       - 'scripts/test-revision-vectors.mjs'
+      - 'scripts/test-affordance-contract.*'
+      - 'SPEC.md'
       - '.github/workflows/schema-contract.yml'
 
 permissions:
   contents: read
 
 jobs:
+  affordance-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '20'
+      - run: bash scripts/test-affordance-contract.sh
+
   visual-schema:
     runs-on: ubuntu-latest
     steps:
