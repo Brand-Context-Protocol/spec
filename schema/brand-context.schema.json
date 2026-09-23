@@ -7,7 +7,7 @@
   "properties": {
     "bcp_version": {
       "type": "string",
-      "pattern": "^\\d+\\.\\d+$"
+      "pattern": "^\\d+\\.\\d+(?:\\.\\d+)?$"
     },
     "file_type": {
       "type": "string",
@@ -60,8 +60,20 @@
     },
     "agent_first_action": {
       "type": "string",
-      "description": "Machine-parseable fetch hint. Registry-hosted roots and pointers use an absolute HTTPS canonical URL; self-hosted roots may use the conventional domain-relative discovery path."
+      "deprecated": true,
+      "description": "Legacy non-normative data; consumers must not execute it. Use canonical_bcp, registry_mcp and daughter_files for locations under host policy."
     },
+    "integrity_signed": { "type": "boolean", "description": "Registry-generated snapshot; not proof without authenticated provenance and signature verification." },
+    "trust_level": { "type": "string", "enum": ["claimed", "verified"] },
+    "official_brand_source": { "type": "boolean" },
+    "verification_method": { "type": ["string", "null"] },
+    "verified_domain": { "type": ["string", "null"] },
+    "verified_at": { "$ref": "#/$defs/attestationTimestamp" },
+    "dns_verified_at": { "$ref": "#/$defs/attestationTimestamp" },
+    "verification_last_checked_at": { "$ref": "#/$defs/attestationTimestamp" },
+    "verification_expires_at": { "$ref": "#/$defs/attestationTimestamp" },
+    "certification_status": { "type": "string" },
+    "registry_certified": { "type": "boolean" },
     "canonical_bcp": {
       "type": "string",
       "format": "uri",
@@ -94,7 +106,7 @@
         "required": ["file_type"]
       },
       "then": {
-        "required": ["brand_name", "tree_version", "agent_first_action"]
+        "required": ["brand_name", "tree_version"]
       }
     },
     {
@@ -103,7 +115,7 @@
         "required": ["file_type"]
       },
       "then": {
-        "required": ["brand_name", "canonical_bcp", "agent_first_action"],
+        "required": ["brand_name", "canonical_bcp"],
         "not": { "required": ["daughter_files"] }
       }
     },
@@ -120,7 +132,6 @@
           "canonical_bcp",
           "registry_mcp",
           "registry_handle",
-          "agent_first_action",
           "daughter_files"
         ]
       }
@@ -136,6 +147,11 @@
     }
   ],
   "$defs": {
+    "attestationTimestamp": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Registry-attested publication snapshot; current Registry trust takes precedence. Publisher YAML alone is not evidence."
+    },
     "markdownPath": {
       "$ref": "#/$defs/markdownReference"
     },
