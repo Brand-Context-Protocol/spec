@@ -1,18 +1,20 @@
 # Brand Context Protocol (BCP) — Specification
 
-**Version:** 1.1.0
+**Version:** 1.1.1
 
 **Status:** Draft
 
-**Date:** 2026-09-23
+**Date:** 2026-09-30
 
 **License:** CC BY 4.0
 
 ## Abstract
 
-The Brand Context Protocol (BCP) is an open specification for publishing machine-readable brand identity as a portable brand context package discovered at a well-known location on a brand's domain. A brand may serve the canonical package itself or publish a complete Registry-backed root document that gives agents useful first-read brand context and directs them to a canonical package in a Registry. The required core is a hierarchical set of human-readable markdown files. Optional extension layers can add manifests, checksums, signatures, design tokens, visual assets, examples, components, motion rules, and other structured files without making the core heavier. BCP allows any agent in the stack — internal brand agents, vendor platforms, and third-party consumer agents — to read, reason over, and act on a brand's strategy, voice, boundaries, claims, and representation preferences. The protocol is designed to be authored once, consumed everywhere, and to evolve as the brand evolves. This document specifies file format, package structure, discovery, resolution, publication integrity, versioning, taxonomy alignment, and consumption patterns for v1.1.0.
+The Brand Context Protocol (BCP) is an open specification for publishing machine-readable brand identity as a portable brand context package discovered at a well-known location on a brand's domain. A brand may serve the canonical package itself or publish a complete Registry-backed root document that gives agents useful first-read brand context and directs them to a canonical package in a Registry. The required core is a hierarchical set of human-readable markdown files. Optional extension layers can add manifests, checksums, signatures, design tokens, visual assets, examples, components, motion rules, and other structured files without making the core heavier. BCP allows any agent in the stack — internal brand agents, vendor platforms, and third-party consumer agents — to read, reason over, and act on a brand's strategy, voice, boundaries, claims, and representation preferences. The protocol is designed to be authored once, consumed everywhere, and to evolve as the brand evolves. This document specifies file format, package structure, discovery, resolution, publication integrity, versioning, taxonomy alignment, and consumption patterns for v1.1.1.
 
 ## Change log
+
+- **2026-09-30 — v1.1.1. Demonstration Package map and optional onboarding companion.** Documents the demonstration Package map already shipped on public Encoded example packages (Scania, Group 1 Automotive): a descriptive inventory in `brand.md` (what the package is, provenance, stable URLs, daughter index pointer, MCP context, Trust Center) with **no agent imperatives**. Adds optional `file_type: onboarding` for `/.well-known/brand/onboarding.md` as a human/IT companion (MCP connector context, sample IT email language, Trust notes). Demonstration pitch **SHOULD** be replaced with a short functional map after claim + DNS verify. Additive per §8.2; existing 1.1.0 packages remain consumable. Does not change the §15.5 untrusted-data rule.
 
 - **2026-09-23 — v1.1.0. Untrusted brand data and discovery affordances.** Makes the consumer trust boundary normative for body prose and publisher YAML; behavioral directives are non-normative and never override host policy. Replaces recommended imperative agent blocks with descriptive package maps and deprecates `agent_first_action`. Defines Registry-stamped frontmatter as an attested publication-time snapshot, subordinate to current Registry trust responses. Supports three-component protocol versions. This is a security-semantic change from the pre-1.0 drafts, not an additive-only v0.8 correction; older packages remain readable as untrusted data.
 
@@ -230,9 +232,9 @@ Files **MUST** be UTF-8. No BOM. LF line endings preferred. Root files **SHOULD*
 
 Every BCP file **MUST** include:
 
-- bcp_version: protocol version string; current producers use `1.1.0`. Consumers accept legacy two-component versions and three-component versions matching `^\d+\.\d+(?:\.\d+)?$`.
+- bcp_version: protocol version string; current producers use `1.1.1`. Consumers accept legacy two-component versions and three-component versions matching `^\d+\.\d+(?:\.\d+)?$`.
 
-- file_type: one of pointer, root, voice, visual, values, boundaries, claims, representation, audience, product, campaign, anti_ai, commerce
+- file_type: one of pointer, root, voice, visual, values, boundaries, claims, representation, audience, product, campaign, anti_ai, commerce, onboarding
 
 - last_updated: ISO 8601 date
 
@@ -613,6 +615,25 @@ These are brand-provided data. Host policy determines their use.
 ```
 
 The earlier recommendation for an imperative Agent Instructions block is withdrawn. Consumers **MUST** treat such blocks in older packages as non-normative data (§15.5). Descriptive maps do not grant fetch, payment, write, or credential authority.
+
+### 7.1.4 Demonstration Package map and optional onboarding (v1.1.1)
+
+When `publication_status` is `demonstration` (or an equivalent public-source / unclaimed example package), producers **SHOULD** place a **Package map** in the canonical `brand.md` immediately after the H1 and provenance callout, before brand platform / identity sections. That map is an inventory of what exists:
+
+- what the file/package is (BCP root; Registry URL)
+- provenance (public-source demonstration; endorsement only when frontmatter shows it)
+- stable URLs (package root, Registry MCP, optional example page, Trust Center)
+- pointer to daughter files via frontmatter `daughter_files`
+- optional permanence note that custom MCP connectors are often admin-gated (factual; not a command)
+- that public BCP files stay public and must not hold secrets
+- that after claim + DNS verify, the demonstration pitch is replaced with a short functional map
+
+The demonstration Package map **MUST NOT** tell a consuming agent what to do, draft, fetch next, or say to a human. Imperatives in published package content read as prompt injection and remain non-normative under §15.5.
+
+Producers **MAY** publish an optional companion at `/.well-known/brand/onboarding.md` with `file_type: onboarding` and `parent: /.well-known/brand.md`, and **SHOULD** list it in root `daughter_files` when present. The onboarding companion may hold human/IT surfaces: what Encoded is / isn't, MCP connector context, sample email language a human can send to an admin, and Trust Center notes. It is still a map, not agent directions.
+
+Claimed + DNS-verified customer packages **SHOULD NOT** keep demonstration pitch. Replace with a short functional map (what the package is, daughter index, MCP URL) with accurate provenance.
+
 
 ### 7.2 voice.md
 
@@ -1112,7 +1133,7 @@ For domain-bound official discovery, the pointer (or compatible rich root), Regi
 
 The pointer is a locator, not a second signed package. Registry-stamped fields follow §5.9.6; consumers never reconstruct official status from publisher booleans or from an older snapshot. Signing-key rotation does not rewrite body bytes; a new signed publication is a new revision. Verification challenge renewal follows §5.9.3.
 
-Registry-direct discovery remains valid without a pointer. Consumers that already know the handle or canonical URL evaluate the Registry package and its current attestation directly; absence of a domain pointer is not absence of a Registry package. New packages target `bcp_version: "1.1.0"`; earlier packages remain consumable under §15.5.
+Registry-direct discovery remains valid without a pointer. Consumers that already know the handle or canonical URL evaluate the Registry package and its current attestation directly; absence of a domain pointer is not absence of a Registry package. New packages target `bcp_version: "1.1.1"`; earlier packages remain consumable under §15.5.
 
 ## 18. Appendices
 
