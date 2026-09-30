@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.1.1 demonstration Package map and optional onboarding, 2026-09-30
+
+- Documents the demonstration Package map for public-source / unclaimed example packages: descriptive inventory in `brand.md` (URLs, provenance, daughter index, MCP context, Trust Center) with no agent imperatives.
+- Adds optional `file_type: onboarding` for `/.well-known/brand/onboarding.md` as a human/IT companion (connector context, sample IT email language, Trust notes).
+- After claim + DNS verify, demonstration pitch SHOULD be replaced with a short functional map.
+- Additive per §8.2; existing 1.1.0 packages remain consumable. §15.5 untrusted-data rule unchanged.
+
 All notable changes to the Brand Context Protocol specification are documented here. Entries are in reverse chronological order. Each entry covers changes to the spec and its reference schemas.
 
 ---

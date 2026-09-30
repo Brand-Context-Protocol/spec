@@ -24,7 +24,8 @@
         "product",
         "campaign",
         "anti_ai",
-        "commerce"
+        "commerce",
+        "onboarding"
       ]
     },
     "last_updated": {
@@ -43,14 +44,28 @@
     "daughter_files": {
       "type": "object",
       "properties": {
-        "voice": { "$ref": "#/$defs/markdownPath" },
-        "visual": { "$ref": "#/$defs/markdownPath" },
-        "values": { "$ref": "#/$defs/markdownPath" },
-        "boundaries": { "$ref": "#/$defs/markdownPath" },
-        "claims": { "$ref": "#/$defs/markdownPath" },
-        "representation": { "$ref": "#/$defs/markdownPath" }
+        "voice": {
+          "$ref": "#/$defs/markdownPath"
+        },
+        "visual": {
+          "$ref": "#/$defs/markdownPath"
+        },
+        "values": {
+          "$ref": "#/$defs/markdownPath"
+        },
+        "boundaries": {
+          "$ref": "#/$defs/markdownPath"
+        },
+        "claims": {
+          "$ref": "#/$defs/markdownPath"
+        },
+        "representation": {
+          "$ref": "#/$defs/markdownPath"
+        }
       },
-      "additionalProperties": { "$ref": "#/$defs/markdownPath" }
+      "additionalProperties": {
+        "$ref": "#/$defs/markdownPath"
+      }
     },
     "package_manifest": {
       "$ref": "#/$defs/jsonPath"
@@ -63,17 +78,50 @@
       "deprecated": true,
       "description": "Legacy non-normative data; consumers must not execute it. Use canonical_bcp, registry_mcp and daughter_files for locations under host policy."
     },
-    "integrity_signed": { "type": "boolean", "description": "Registry-generated snapshot; not proof without authenticated provenance and signature verification." },
-    "trust_level": { "type": "string", "enum": ["claimed", "verified"] },
-    "official_brand_source": { "type": "boolean" },
-    "verification_method": { "type": ["string", "null"] },
-    "verified_domain": { "type": ["string", "null"] },
-    "verified_at": { "$ref": "#/$defs/attestationTimestamp" },
-    "dns_verified_at": { "$ref": "#/$defs/attestationTimestamp" },
-    "verification_last_checked_at": { "$ref": "#/$defs/attestationTimestamp" },
-    "verification_expires_at": { "$ref": "#/$defs/attestationTimestamp" },
-    "certification_status": { "type": "string" },
-    "registry_certified": { "type": "boolean" },
+    "integrity_signed": {
+      "type": "boolean",
+      "description": "Registry-generated snapshot; not proof without authenticated provenance and signature verification."
+    },
+    "trust_level": {
+      "type": "string",
+      "enum": [
+        "claimed",
+        "verified"
+      ]
+    },
+    "official_brand_source": {
+      "type": "boolean"
+    },
+    "verification_method": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "verified_domain": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "verified_at": {
+      "$ref": "#/$defs/attestationTimestamp"
+    },
+    "dns_verified_at": {
+      "$ref": "#/$defs/attestationTimestamp"
+    },
+    "verification_last_checked_at": {
+      "$ref": "#/$defs/attestationTimestamp"
+    },
+    "verification_expires_at": {
+      "$ref": "#/$defs/attestationTimestamp"
+    },
+    "certification_status": {
+      "type": "string"
+    },
+    "registry_certified": {
+      "type": "boolean"
+    },
     "canonical_bcp": {
       "type": "string",
       "format": "uri",
@@ -90,42 +138,80 @@
     },
     "publication_profile": {
       "type": "string",
-      "enum": ["self_hosted", "registry_backed"]
+      "enum": [
+        "self_hosted",
+        "registry_backed"
+      ]
     },
     "extensions": {
       "type": "object",
       "description": "Optional package extension entrypoints. Extensions enrich a BCP package but are not required for core conformance.",
-      "additionalProperties": { "$ref": "#/$defs/packagePath" }
+      "additionalProperties": {
+        "$ref": "#/$defs/packagePath"
+      }
     }
   },
-  "required": ["bcp_version", "file_type", "last_updated"],
+  "required": [
+    "bcp_version",
+    "file_type",
+    "last_updated"
+  ],
   "allOf": [
     {
       "if": {
-        "properties": { "file_type": { "const": "root" } },
-        "required": ["file_type"]
+        "properties": {
+          "file_type": {
+            "const": "root"
+          }
+        },
+        "required": [
+          "file_type"
+        ]
       },
       "then": {
-        "required": ["brand_name", "tree_version"]
-      }
-    },
-    {
-      "if": {
-        "properties": { "file_type": { "const": "pointer" } },
-        "required": ["file_type"]
-      },
-      "then": {
-        "required": ["brand_name", "canonical_bcp"],
-        "not": { "required": ["daughter_files"] }
+        "required": [
+          "brand_name",
+          "tree_version"
+        ]
       }
     },
     {
       "if": {
         "properties": {
-          "file_type": { "const": "root" },
-          "publication_profile": { "const": "registry_backed" }
+          "file_type": {
+            "const": "pointer"
+          }
         },
-        "required": ["file_type", "publication_profile"]
+        "required": [
+          "file_type"
+        ]
+      },
+      "then": {
+        "required": [
+          "brand_name",
+          "canonical_bcp"
+        ],
+        "not": {
+          "required": [
+            "daughter_files"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "file_type": {
+            "const": "root"
+          },
+          "publication_profile": {
+            "const": "registry_backed"
+          }
+        },
+        "required": [
+          "file_type",
+          "publication_profile"
+        ]
       },
       "then": {
         "required": [
@@ -138,17 +224,36 @@
     },
     {
       "if": {
-        "properties": { "file_type": { "not": { "enum": ["root", "pointer"] } } },
-        "required": ["file_type"]
+        "properties": {
+          "file_type": {
+            "not": {
+              "enum": [
+                "root",
+                "pointer"
+              ]
+            }
+          }
+        },
+        "required": [
+          "file_type"
+        ]
       },
       "then": {
-        "required": ["parent"]
+        "required": [
+          "parent"
+        ]
       }
     },
     {
       "if": {
-        "properties": { "trust_level": { "const": "verified" } },
-        "required": ["trust_level"]
+        "properties": {
+          "trust_level": {
+            "const": "verified"
+          }
+        },
+        "required": [
+          "trust_level"
+        ]
       },
       "then": {
         "required": [
@@ -158,27 +263,53 @@
           "verification_expires_at"
         ],
         "properties": {
-          "official_brand_source": { "const": true },
-          "verified_at": { "type": "string" },
-          "verification_last_checked_at": { "type": "string" },
-          "verification_expires_at": { "type": "string" }
+          "official_brand_source": {
+            "const": true
+          },
+          "verified_at": {
+            "type": "string"
+          },
+          "verification_last_checked_at": {
+            "type": "string"
+          },
+          "verification_expires_at": {
+            "type": "string"
+          }
         }
       }
     },
     {
       "if": {
-        "properties": { "trust_level": { "const": "claimed" } },
-        "required": ["trust_level"]
+        "properties": {
+          "trust_level": {
+            "const": "claimed"
+          }
+        },
+        "required": [
+          "trust_level"
+        ]
       },
       "then": {
-        "required": ["official_brand_source"],
-        "properties": { "official_brand_source": { "const": false } }
+        "required": [
+          "official_brand_source"
+        ],
+        "properties": {
+          "official_brand_source": {
+            "const": false
+          }
+        }
       }
     },
     {
       "if": {
-        "properties": { "official_brand_source": { "const": true } },
-        "required": ["official_brand_source"]
+        "properties": {
+          "official_brand_source": {
+            "const": true
+          }
+        },
+        "required": [
+          "official_brand_source"
+        ]
       },
       "then": {
         "required": [
@@ -188,26 +319,46 @@
           "verification_expires_at"
         ],
         "properties": {
-          "trust_level": { "const": "verified" },
-          "verified_at": { "type": "string" },
-          "verification_last_checked_at": { "type": "string" },
-          "verification_expires_at": { "type": "string" }
+          "trust_level": {
+            "const": "verified"
+          },
+          "verified_at": {
+            "type": "string"
+          },
+          "verification_last_checked_at": {
+            "type": "string"
+          },
+          "verification_expires_at": {
+            "type": "string"
+          }
         }
       }
     },
     {
       "if": {
-        "properties": { "integrity_signed": { "const": true } },
-        "required": ["integrity_signed"]
+        "properties": {
+          "integrity_signed": {
+            "const": true
+          }
+        },
+        "required": [
+          "integrity_signed"
+        ]
       },
       "then": {
-        "required": ["trust_level", "official_brand_source"]
+        "required": [
+          "trust_level",
+          "official_brand_source"
+        ]
       }
     }
   ],
   "$defs": {
     "attestationTimestamp": {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "format": "date-time",
       "description": "Registry-attested publication snapshot; current Registry trust takes precedence. Publisher YAML alone is not evidence."
     },
