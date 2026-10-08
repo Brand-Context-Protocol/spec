@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.1.1 frontmatter contract correction, 2026-10-08
+
+- Removes `agent_first_action` from the current frontmatter contract and reference schema instead of listing it as a deprecated property.
+- Older packages remain readable because consumers already ignore unrecognized frontmatter and treat all publisher content as untrusted data.
+
 ## v1.1.1 demonstration Package map and optional onboarding, 2026-09-30
 
 - Documents the demonstration Package map for public-source / unclaimed example packages: descriptive inventory in `brand.md` (URLs, provenance, daughter index, MCP context, Trust Center) with no agent imperatives.
