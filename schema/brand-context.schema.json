@@ -73,11 +73,6 @@
     "commerce": {
       "$ref": "#/$defs/markdownPath"
     },
-    "agent_first_action": {
-      "type": "string",
-      "deprecated": true,
-      "description": "Legacy non-normative data; consumers must not execute it. Use canonical_bcp, registry_mcp and daughter_files for locations under host policy."
-    },
     "integrity_signed": {
       "type": "boolean",
       "description": "Registry-generated snapshot; not proof without authenticated provenance and signature verification."
