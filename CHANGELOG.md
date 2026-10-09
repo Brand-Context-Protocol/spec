@@ -1,3 +1,7 @@
+# BCP 2.0.0 — 2026-10-09
+
+Versioned delivery contract, required onboarding/source coverage, independent claim statuses, exact response scope and reference package/delivery validator. Explicit migration mapping preserves historic bytes and approval meanings.
+
 # Changelog
 
 ## v1.1.1 frontmatter contract correction, 2026-10-08

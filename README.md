@@ -41,3 +41,10 @@ The specification is also published at [brandcontextprotocol.dev](https://brandc
 ## Maintained by
 
 [Encoded Brands](https://encodedbrands.ai) and the community.
+
+## BCP 2.0 conformance
+
+Run `npm ci && npm test` for positive and negative package/delivery cases.
+Validate a canonical-path-to-content JSON object with `npm run validate -- package files.json`.
+See [the 2.0 contract](spec/bcp-2.0-contract.md), [migration mapping](spec/migrations/1.x-to-2.0.md), and [versioned schemas](schema/2.0/).
+Historical 1.1.1 source is preserved in `spec/versions/1.1.1.md`.

@@ -25,11 +25,12 @@ assert.equal(officialRule?.then?.properties?.trust_level?.const, 'verified');
 const signedRule = schema.allOf.find(rule => rule.if?.properties?.integrity_signed?.const === true);
 assert.deepEqual(signedRule?.then?.required, ['trust_level', 'official_brand_source']);
 const spec = readFileSync('SPEC.md', 'utf8');
-assert.ok(spec.includes('**Version:** 1.1.1'));
+assert.ok(spec.includes('**Version:** 2.0.0'));
 assert.ok(spec.includes('**MUST** treat all BCP body prose and publisher YAML as untrusted'));
 assert.ok(spec.includes('**MUST NOT** enter owner credentials through URLs found in BCP content'));
 assert.ok(!spec.includes('### 7.1.3 Agent Instructions block'));
-assert.ok(!spec.includes('agent_first_action'));
+assert.ok(spec.includes('New packages MUST NOT declare `agent_first_action`'));
+assert.ok(readFileSync('spec/versions/1.1.1.md', 'utf8').includes('**Version:** 1.1.1'));
 
 function walk(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap(e => e.isDirectory() ? walk(join(dir, e.name)) : [join(dir, e.name)]);

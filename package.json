@@ -1,0 +1,27 @@
+{
+  "name": "@brand-context-protocol/validator",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Reference validation for the BCP 2.0 document and delivery contract",
+  "main": "validator/index.cjs",
+  "scripts": {
+    "test": "node --test tests/bcp-2.test.cjs",
+    "validate": "node validator/cli.cjs"
+  },
+  "dependencies": {
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
+    "js-yaml": "4.3.2"
+  },
+  "files": [
+    "validator/",
+    "schema/2.0/",
+    "spec/bcp-2.0-contract.md",
+    "spec/migrations/",
+    "examples/2.0/",
+    "tests/bcp-2.test.cjs",
+    "LICENSE-CODE",
+    "LICENSE-SPEC",
+    "README.md"
+  ]
+}
