@@ -11,6 +11,10 @@ on:
       - 'scripts/test-revision-vectors.mjs'
       - 'scripts/test-affordance-contract.*'
       - 'SPEC.md'
+      - 'spec/**'
+      - 'validator/**'
+      - 'package*.json'
+      - 'tests/bcp-2.test.cjs'
       - '.github/workflows/schema-contract.yml'
   push:
     branches: [main]
@@ -23,6 +27,10 @@ on:
       - 'scripts/test-revision-vectors.mjs'
       - 'scripts/test-affordance-contract.*'
       - 'SPEC.md'
+      - 'spec/**'
+      - 'validator/**'
+      - 'package*.json'
+      - 'tests/bcp-2.test.cjs'
       - '.github/workflows/schema-contract.yml'
 
 permissions:
@@ -55,3 +63,15 @@ jobs:
         with:
           node-version: '20'
       - run: bash scripts/test-revision-extension.sh
+
+  bcp-2-conformance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm test
+      - run: npm run validate -- package examples/2.0/package.json

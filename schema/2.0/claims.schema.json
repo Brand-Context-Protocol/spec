@@ -1,0 +1,253 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://brandcontextprotocol.dev/schema/2.0/claims.schema.json",
+  "title": "BCP 2.0 claims blocks",
+  "type": "object",
+  "required": [
+    "permitted",
+    "requires_caveat",
+    "forbidden"
+  ],
+  "properties": {
+    "permitted": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/claim"
+          },
+          {
+            "properties": {
+              "use_status": {
+                "enum": [
+                  "permitted"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    "requires_caveat": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/claim"
+          },
+          {
+            "properties": {
+              "use_status": {
+                "enum": [
+                  "conditional"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    "forbidden": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/claim"
+          },
+          {
+            "properties": {
+              "use_status": {
+                "enum": [
+                  "prohibited",
+                  "expired",
+                  "aspirational",
+                  "unknown"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "claim": {
+      "type": "object",
+      "required": [
+        "claim",
+        "use_status",
+        "evidence_status",
+        "brand_approval"
+      ],
+      "properties": {
+        "claim": {
+          "type": "string",
+          "minLength": 1
+        },
+        "use_status": {
+          "enum": [
+            "permitted",
+            "conditional",
+            "prohibited",
+            "expired",
+            "aspirational",
+            "unknown"
+          ]
+        },
+        "evidence_status": {
+          "enum": [
+            "supported",
+            "inferred",
+            "unsupported",
+            "unknown"
+          ]
+        },
+        "brand_approval": {
+          "enum": [
+            "approved",
+            "unreviewed",
+            "rejected",
+            "unknown"
+          ]
+        },
+        "evidence": {
+          "type": "string"
+        },
+        "approval_reference": {
+          "type": "string"
+        },
+        "caveat": {
+          "type": "string"
+        },
+        "exact_text": {
+          "type": "boolean"
+        },
+        "approved_language": {
+          "type": "string"
+        },
+        "legacy_proof_status": {
+          "enum": [
+            "approved",
+            "requires_caveat",
+            "forbidden",
+            "expired",
+            "aspirational",
+            "unknown"
+          ]
+        },
+        "valid_from": {
+          "type": "string",
+          "format": "date"
+        },
+        "valid_until": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "not": {
+        "required": [
+          "proof_status"
+        ]
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "use_status": {
+                "const": "conditional"
+              }
+            },
+            "required": [
+              "use_status"
+            ]
+          },
+          "then": {
+            "required": [
+              "caveat"
+            ],
+            "properties": {
+              "caveat": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "evidence_status": {
+                "const": "supported"
+              }
+            },
+            "required": [
+              "evidence_status"
+            ]
+          },
+          "then": {
+            "required": [
+              "evidence"
+            ],
+            "properties": {
+              "evidence": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "brand_approval": {
+                "const": "approved"
+              }
+            },
+            "required": [
+              "brand_approval"
+            ]
+          },
+          "then": {
+            "required": [
+              "approval_reference"
+            ],
+            "properties": {
+              "approval_reference": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "exact_text": {
+                "const": true
+              }
+            },
+            "required": [
+              "exact_text"
+            ]
+          },
+          "then": {
+            "required": [
+              "approved_language"
+            ],
+            "properties": {
+              "approved_language": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
