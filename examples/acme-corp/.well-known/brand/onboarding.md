@@ -2,12 +2,12 @@
 bcp_version: "2.0.0"
 file_type: onboarding
 parent: /.well-known/brand.md
-last_updated: "2026-10-12"
+last_updated: "2026-10-13"
 ---
 
 # Use this reference package
 
-ACME Corporation is fictional. This package is a public BCP 2.0 conformance and consumer-testing example, not a live company account, verified domain, endorsed product, or checkout. Its canonical source is the [ACME example directory](https://github.com/Brand-Context-Protocol/spec/tree/main/examples/acme-corp/.well-known) in the public spec repository. Anyone can read the eight required Markdown files and optional extensions there without signing in. GitHub's Raw view returns the exact source for each file.
+ACME Corporation is fictional. This package is a public BCP 2.0 conformance and consumer-testing example, not a live company account, verified domain, endorsed product, or checkout. Its canonical source is the [ACME example directory](https://github.com/Brand-Context-Protocol/spec/tree/main/examples/acme-corp/.well-known) in the public spec repository. A signed publication of the package is readable at [registry.encodedbrands.ai/brands/acme-corp-reference](https://registry.encodedbrands.ai/brands/acme-corp-reference). The Registry labels it claimed and unverified; its signatures prove publication integrity, not ACME domain control or brand-owner approval. Anyone can read the files without signing in. GitHub's Raw view returns the source bytes, while the Registry supplies public read URLs and signatures.
 
 ## Ordinary browsing
 
@@ -17,7 +17,7 @@ The claim statuses are independent. A `permitted` use classification is not proo
 
 ## Connected use and testing
 
-A custom connector is a separate product connection. Pasting this GitHub URL into a chat does not install a connector, persist brand knowledge, verify a signature, or guarantee that every file was ingested. A tester can give an AI with web access the raw root URL and ask it to fetch a named daughter, cite the exact source path, identify the fictional gaps, and preserve a conditional claim's caveat. A connector test should inspect its actual tool results and permissions; this repository does not grant access to Encoded's authenticated authoring tools. This self-hosted example has no Registry publication signature or DNS attestation to verify.
+A custom connector is a separate product connection. Pasting a GitHub or Registry URL into a chat does not install a connector, persist brand knowledge, verify a signature, or guarantee that every file was ingested. A tester can give an AI with web access the [Registry root](https://registry.encodedbrands.ai/acme-corp-reference/.well-known/brand.md), then ask it to fetch a named daughter, cite the exact source path, identify the fictional gaps, and preserve a conditional claim's caveat. A connector test should inspect its actual tool results and permissions; this public reference does not grant access to Encoded's authenticated authoring tools. Consumers can verify the Registry signatures using its public keyset, but no ACME DNS attestation exists.
 
 For a visual task, first ask which connected libraries or user uploads contain approved assets. The `visual.md` asset URLs under `acme.example.com` are placeholders. If no approved asset is accessible, report the gap instead of inventing or downloading a substitute.
 
