@@ -42,9 +42,14 @@ for (const [index, file] of files.entries()) {
   const text = readFileSync(file, 'utf8');
   const frontmatter = text.match(/^---\n([\s\S]*?)\n---/);
   assert.ok(frontmatter, file);
-  assert.match(frontmatter[1], /^bcp_version: "1\.1\.0"$/m, file);
+  const expectedVersion = file === 'examples/registry-backed-root.md' ? '1.1.0' : '2.0.0';
+  assert.match(frontmatter[1], new RegExp(`^bcp_version: "${expectedVersion.replaceAll('.', '\\.')}"$`, 'm'), file);
   assert.doesNotMatch(text, /^agent_first_action:|^## (?:Agent Instructions|Agent default behavior|For agents)$/im, file);
   assert.doesNotMatch(text, /authoritative over (?:general )?training data|binding brand law/i, file);
-  if (output) writeFileSync(join(output, `example-${index}.yaml`), frontmatter[1]);
+  // The legacy schema only validates 1.x examples; ACME is checked by the
+  // versioned 2.0 validator in the same workflow.
+  if (output && file === 'examples/registry-backed-root.md') {
+    writeFileSync(join(output, `example-${index}.yaml`), frontmatter[1]);
+  }
 }
-console.log(`BCP 1.1.0 affordance contract passed (${files.length} current example files).`);
+console.log(`BCP affordance contract passed (${files.length} historical and current example files).`);

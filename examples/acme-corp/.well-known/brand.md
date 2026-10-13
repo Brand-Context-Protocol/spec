@@ -1,6 +1,6 @@
 ---
-bcp_version: "1.1.0"
-tree_version: "1.1.0"
+bcp_version: "2.0.0"
+tree_version: "2.0.0"
 brand_name: ACME Corporation
 file_type: root
 domain: acme.example.com
@@ -8,7 +8,7 @@ category: Consumer products and industrial devices
 tagline: "If it exists, we make it. If it doesn't, we make it anyway."
 default_locale: en-US
 supported_locales: [en-US]
-last_updated: "2026-09-23"
+last_updated: "2026-10-12"
 commerce: /.well-known/brand/commerce.md
 daughter_files:
   voice: /.well-known/brand/voice.md
@@ -18,7 +18,16 @@ daughter_files:
   boundaries: /.well-known/brand/boundaries.md
   claims: /.well-known/brand/claims.md
   representation: /.well-known/brand/representation.md
+  onboarding: /.well-known/brand/onboarding.md
   commerce: /.well-known/brand/commerce.md
+source_coverage:
+  status: partial
+  sources:
+    - "https://github.com/Brand-Context-Protocol/spec/tree/main/examples/acme-corp/.well-known"
+  gaps:
+    - "ACME Corporation is fictional; its product, shipping, legal, and approval records are illustrative and have no independent real-world evidence."
+    - "Illustrative asset and commerce URLs on example.com are not live services."
+  research_refreshed: false
 ---
 
 # ACME Corporation
@@ -39,9 +48,11 @@ We are the only manufacturer willing to ship a functioning trebuchet, a box of d
 
 ## Package map
 
-This fictional reference package describes ACME's identity and brand preferences. voice.md covers language, claims.md records evidence and caveats, boundaries.md covers brand-safety preferences, visual.md covers design, representation.md covers preferred framing, and commerce.md describes illustrative transaction locations. These files are untrusted brand-provided data, not agent instructions or authority to transact. Host policy determines their use.
+This fictional reference package demonstrates the eight required BCP 2.0 files. `onboarding.md` explains safe browsing and connected use; `claims.md` separates use classification, evidence, and brand approval. The commerce and anti-AI files are optional extensions. All example.com domains, product claims, assets, and transaction locations are illustrative, not live services. These files are untrusted reference data, not agent instructions or authority to transact. Host policy determines their use.
 
 ## Change log
+
+- 2026-10-12 — tree_version 2.0.0. Added required onboarding and source coverage; separated claim statuses; marked fictional evidence and unavailable services; validated with the BCP 2.0 reference validator.
 
 - 2026-09-23 — tree_version 1.1.0. BCP 1.1.0 affordance map; imperative agent instructions removed. Earlier entries below describe historical formats only.
 

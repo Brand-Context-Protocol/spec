@@ -75,3 +75,4 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm test
       - run: npm run validate -- package examples/2.0/package.json
+      - run: npm run validate:reference
