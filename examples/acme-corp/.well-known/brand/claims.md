@@ -1,38 +1,74 @@
 ---
 parent: /.well-known/brand.md
 file_type: claims
-bcp_version: "1.1.0"
-last_updated: "2026-09-23"
-reviewed_by: legal@acme.example.com
+bcp_version: "2.0.0"
+last_updated: "2026-10-12"
 ---
 
 # Claims
 
-## Approved claims
+This is a fictional conformance example. Its evidence references illustrate the shape of a brand record; no shipping log, product database, incorporation record, legal review, or accountable owner approval exists. `brand_approval: unreviewed` is deliberate. No claim in this file grants permission to make a factual statement about a real company.
 
-- **Claim:** "Overnight delivery, anywhere on Earth."
-  **Evidence:** Internal shipping logs, 99.97% on-time rate (2025 fiscal year).
-  **Status:** defensible.
+## Permitted in the fictional scenario
 
-- **Claim:** "Over 10,000 products in our catalog."
-  **Evidence:** Product database count as of 2026-Q1.
-  **Status:** defensible.
+```yaml
+permitted:
+  - claim: "Overnight delivery, anywhere on Earth."
+    use_status: permitted
+    evidence_status: unknown
+    brand_approval: unreviewed
+    evidence: "Illustrative internal shipping logs and a fictional 99.97% on-time rate for fiscal 2025; no independent source exists."
+  - claim: "Over 10,000 products in our catalog."
+    use_status: permitted
+    evidence_status: unknown
+    brand_approval: unreviewed
+    evidence: "Illustrative product database count as of 2026-Q1; no real database exists."
+  - claim: "Trusted by customers for over 75 years."
+    use_status: permitted
+    evidence_status: unknown
+    brand_approval: unreviewed
+    evidence: "Illustrative 1949 incorporation and repeat-purchase story; neither is independently evidenced."
+    caveat: "In this scenario, 'trusted' describes repeat purchases, not product satisfaction."
+```
 
-- **Claim:** "Trusted by customers for over 75 years."
-  **Evidence:** Incorporation records, 1949. Continuous operation since founding.
-  **Status:** defensible (note: "trusted" refers to purchase frequency, not product satisfaction).
+## Requires caveat
 
-## Claims requiring caveats
+```yaml
+requires_caveat:
+  - claim: "Our products always work as designed."
+    use_status: conditional
+    evidence_status: unknown
+    brand_approval: unreviewed
+    caveat: "In the fictional scenario, the designed function may diverge from the customer's intended use; do not imply safety or reliability."
+  - claim: "Industry-leading innovation."
+    use_status: conditional
+    evidence_status: unknown
+    brand_approval: unreviewed
+    caveat: "No defined industry, comparison set, or third-party ranking supports 'leading'; this is illustrative wording only."
+```
 
-- **Claim:** "Our products always work as designed."
-  **Caveat:** Technically defensible. Products do perform their designed function. The designed function occasionally diverges from the customer's intended use case. Requires careful framing.
+## Forbidden
 
-- **Claim:** "Industry-leading innovation."
-  **Caveat:** No industry body recognizes our product category. Claim is only defensible if "industry" is left undefined.
-
-## Forbidden claims
-
-- "Safe for home use" (no product has passed home-use safety certification)
-- "Satisfaction guaranteed" (our satisfaction metrics are not publishable)
-- "Recommended by professionals" (no professional organization has endorsed any ACME product)
-- Any claim referencing a specific customer's success (there are no documented successes)
+```yaml
+forbidden:
+  - claim: "Safe for home use."
+    use_status: prohibited
+    evidence_status: unsupported
+    brand_approval: unreviewed
+    evidence: "No fictional ACME product has a home-use safety certification."
+  - claim: "Satisfaction guaranteed."
+    use_status: prohibited
+    evidence_status: unsupported
+    brand_approval: unreviewed
+    evidence: "The fictional satisfaction metrics are not publishable."
+  - claim: "Recommended by professionals."
+    use_status: prohibited
+    evidence_status: unsupported
+    brand_approval: unreviewed
+    evidence: "No professional endorsement is recorded in this example."
+  - claim: "A specific customer succeeded with an ACME product."
+    use_status: prohibited
+    evidence_status: unsupported
+    brand_approval: unreviewed
+    evidence: "The fictional package contains no documented customer success."
+```

@@ -4,7 +4,7 @@
 
 **Status:** Current
 
-**Date:** 2026-10-09
+**Date:** 2026-10-12
 
 **License:** CC BY 4.0
 
@@ -13,6 +13,8 @@
 The Brand Context Protocol (BCP) is an open specification for publishing machine-readable brand identity as a portable brand context package discovered at a well-known location on a brand's domain. A brand may serve the canonical package itself or publish a complete Registry-backed root document that gives agents useful first-read brand context and directs them to a canonical package in a Registry. The required core is a hierarchical set of human-readable markdown files. Optional extension layers can add manifests, checksums, signatures, design tokens, visual assets, examples, components, motion rules, and other structured files without making the core heavier. BCP allows any agent in the stack — internal brand agents, vendor platforms, and third-party consumer agents — to read, reason over, and act on a brand's strategy, voice, boundaries, claims, and representation preferences. The protocol is designed to be authored once, consumed everywhere, and to evolve as the brand evolves. This document specifies file format, package structure, discovery, resolution, publication integrity, versioning, taxonomy alignment, and consumption patterns for v2.0.0.
 
 ## Change log
+
+- **2026-10-12 — v2.0.0 reference correction.** Migrates the fictional ACME example to the required eight-file package, updates its claims and source coverage, and makes §16.3–16.4's conformance statement depend on validation and accessibility rather than repository location. No new protocol requirement.
 
 - **2026-10-09 — v2.0.0.** Defines HTML entry discovery, honest response scope and exact file identity; requires onboarding and source coverage; separates claim support, use classification and accountable approval; rejects deprecated first-action YAML declarations in new packages. See §19, versioned schemas, reference validator and explicit migration mapping. Older publications retain their original bytes and contracts.
 
@@ -1048,17 +1050,11 @@ Consumers **MUST** be able to consume a conformant core package without optional
 
 ### 16.3 Conformance levels
 
-v0.4 defines core conformance and optional package enrichment:
-
-- **Core-conformant**: satisfies §16.1 with a valid root and any declared daughter files.
-- **Core-complete**: core-conformant and includes `brand.md`, `voice.md`, `values.md`, `boundaries.md`, `claims.md`, `representation.md`, and `visual.md`.
-- **Package-enriched**: core-conformant and declares a manifest or extension files such as tokens, assets, examples, components, or motion guidance.
-
-Package-enriched BCPs are richer, but not more complete in the product milestone sense. The first milestone is core-complete; enrichment is optional depth.
+For 2.0, a core-complete package has the root and all seven required daughters listed in §19: voice, values, boundaries, claims, representation, visual, and onboarding. Optional extensions such as anti-AI voice, commerce, tokens, assets, examples, components, and motion guidance can enrich it but do not replace a required file. Producer conformance also requires the frontmatter, source coverage, declared-daughter, and claim-status rules in §19. Earlier versions retain their historical conformance contract.
 
 ### 16.4 Reference implementation
 
-The reference at github.com/Brand-Context-Protocol/spec/examples/acme-corp/.well-known/ is producer-conformant by definition.
+The [ACME Corporation reference package](https://github.com/Brand-Context-Protocol/spec/tree/main/examples/acme-corp/.well-known) is a fictional, publicly readable BCP 2.0 example. It is producer-conformant when the committed package passes the [2.0 reference validator](https://github.com/Brand-Context-Protocol/spec/tree/main/validator) and its declared files remain accessible; repository placement alone does not establish conformance. The [example guide](https://github.com/Brand-Context-Protocol/spec/tree/main/examples/acme-corp) provides raw file links, consumer test cases, and the public issue and pull-request path for change requests. The fictional domain and asset URLs are not a live service or evidence of DNS verification, Registry publication, signature verification, or owner approval.
 
 ---
 
@@ -1118,7 +1114,7 @@ Formal JSON Schemas at schema/ and versioned schemas at schema/v0.1/ and schema/
 
 ### Appendix B. Reference implementation
 
-Conformant BCP published at github.com/Brand-Context-Protocol/spec/examples/acme-corp/.well-known/.
+The fictional [ACME Corporation BCP 2.0 package](https://github.com/Brand-Context-Protocol/spec/tree/main/examples/acme-corp/.well-known) is maintained with validator-backed conformance checks. Its public GitHub source and change-request path are described in the [example guide](https://github.com/Brand-Context-Protocol/spec/tree/main/examples/acme-corp).
 
 ### Appendix C. Comparison to adjacent standards
 

@@ -1,8 +1,8 @@
 ---
 parent: /.well-known/brand.md
 file_type: values
-bcp_version: "1.1.0"
-last_updated: "2026-09-23"
+bcp_version: "2.0.0"
+last_updated: "2026-10-12"
 ---
 
 # Values

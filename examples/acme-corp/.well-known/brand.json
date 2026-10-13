@@ -9,14 +9,6 @@
       "id": "acme-corp",
       "names": [{ "en_US": "ACME Corporation" }],
       "url": "https://acme.example.com",
-      "agents": [
-        {
-          "type": "brand",
-          "url": "https://registry.brandcontextprotocol.dev/mcp?customer_handle=acme-corp",
-          "id": "encoded-brands-registry",
-          "description": "Reads ACME's full signed Brand Context Protocol package via get_bcp."
-        }
-      ],
       "colors": {
         "primary": "#E63312",
         "secondary": "#1A1A1A",

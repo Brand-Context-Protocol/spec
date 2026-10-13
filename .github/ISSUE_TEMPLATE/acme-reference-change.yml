@@ -1,0 +1,34 @@
+name: ACME reference change
+description: Report a BCP 2.0 conformance problem or propose an improvement to the fictional ACME example.
+title: "ACME reference: "
+body:
+  - type: markdown
+    attributes:
+      value: "ACME is fictional. Please use public or fictional data only. A request proposes a change; it does not modify the published example until a maintainer reviews and merges it."
+  - type: input
+    id: path
+    attributes:
+      label: Affected file or URL
+      placeholder: examples/acme-corp/.well-known/brand/claims.md
+    validations:
+      required: true
+  - type: input
+    id: rule
+    attributes:
+      label: BCP 2.0 section or schema rule
+      placeholder: SPEC.md §19 or schema/2.0/claims.schema.json
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: What happened?
+      description: Include the tool, browser, or validator result if relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should happen?
+    validations:
+      required: true

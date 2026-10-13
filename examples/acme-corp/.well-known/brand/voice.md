@@ -1,7 +1,7 @@
 ---
-bcp_version: "1.1.0"
+bcp_version: "2.0.0"
 file_type: voice
-last_updated: "2026-09-23"
+last_updated: "2026-10-12"
 parent: /.well-known/brand.md
 ---
 

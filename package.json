@@ -6,7 +6,8 @@
   "main": "validator/index.cjs",
   "scripts": {
     "test": "node --test tests/bcp-2.test.cjs",
-    "validate": "node validator/cli.cjs"
+    "validate": "node validator/cli.cjs",
+    "validate:reference": "node scripts/validate-reference-example.cjs"
   },
   "dependencies": {
     "ajv": "8.20.0",

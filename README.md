@@ -31,7 +31,7 @@ The draft deterministic-revision extension is specified in [`RFC 0018`](spec/rfc
 
 ## Examples
 
-The [`examples/acme-corp/`](examples/acme-corp/) directory contains a fictional **1.1.0** package demonstrating the earlier core. It is historical example material, not a 2.0-conformant package: 2.0 additionally requires onboarding, source coverage, and the updated claims contract.
+The public [ACME Corporation reference package](examples/acme-corp/) is a fictional BCP 2.0 implementation with all eight required files. Its guide links the exact raw files, gives safe consumer tests, and explains how anyone can submit a change request by GitHub issue or pull request. It is tested by the 2.0 reference validator in CI; no fictional domain, asset, checkout, Registry publication, or brand-owner approval is implied to be live.
 
 ## Website
 
