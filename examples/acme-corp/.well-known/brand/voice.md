@@ -1,7 +1,7 @@
 ---
 bcp_version: "2.0.0"
 file_type: voice
-last_updated: "2026-10-12"
+last_updated: "2026-10-17"
 parent: /.well-known/brand.md
 ---
 
@@ -12,8 +12,8 @@ parent: /.well-known/brand.md
 ```yaml
 essence:
   mission: "Deliver impossible solutions that work until they don't."
-  vision: "A world where every acme product comes with a smile and zero warranty."
-  tagline: "Confident. Tested in the desert. Guaranteed to fail spectacularly."
+  vision: "A world where every acme product comes with a smile. The warranty is referenced, never explained."
+  tagline: "If it exists, we make it. If it doesn't, we make it anyway."
   brand_promise: "We guarantee everything. Read the refund policy."
 ```
 
@@ -126,7 +126,7 @@ messaging_tiers:
   - topic: "brand"
     blunt: "ACME. Tested in the desert. Guaranteed."
     short: "ACME delivers impossible solutions. We guarantee everything. Read the fine print."
-    long: "ACME has been manufacturing impossible solutions since 1938. Every product is desert-tested, patent-pending, and guaranteed to exceed your expectations—at least until it doesn't. We've been sued more times than we've had successful product launches. We're still here. Your order will be too."
+    long: "ACME has been manufacturing impossible solutions since 1949. Every product is desert-tested, patent-pending, and guaranteed to exceed your expectations—at least until it doesn't. We've been sued more times than we've had successful product launches. We're still here. Your order will be too."
   - topic: "product"
     blunt: "It works. Until it doesn't."
     short: "Designed to solve the impossible. Built to fail spectacularly."
@@ -219,6 +219,6 @@ channels:
     bad: "We're sorry you're experiencing issues with your ACME product. Please try these troubleshooting steps."
   marketing:
     surfaces: ["email", "social", "ads"]
-    good: "ACME. Desert-tested. Guaranteed. Spectacular failure rates since 1938."
+    good: "ACME. Desert-tested. Guaranteed. Impossible solutions since 1949."
     bad: "ACME products are reliable solutions for your daily needs."
 ```
