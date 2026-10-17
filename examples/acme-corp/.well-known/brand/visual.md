@@ -2,7 +2,7 @@
 parent: /.well-known/brand.md
 file_type: visual
 bcp_version: "2.0.0"
-last_updated: "2026-10-12"
+last_updated: "2026-10-17"
 ---
 
 # Visual
@@ -51,14 +51,14 @@ logo:
         background: brand-primary
         purpose: App store and home-screen tile.
   anniversary_2026:
-    description: 80th anniversary mark. Use only in 2026 anniversary campaign assets.
+    description: 77th anniversary mark. Use only in 2026 anniversary campaign assets.
     active_through: 2026-12-31
     fallback: primary
     variants:
       - format: svg
-        url: https://cdn.acme.example.com/brand/logo-80yr.svg
+        url: https://cdn.acme.example.com/brand/logo-77yr.svg
         sha256: f6a7b8c9d0e1f2a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b
-        purpose: 80th anniversary campaign only.
+        purpose: 77th anniversary campaign only.
 ```
 
 ## Logo usage
