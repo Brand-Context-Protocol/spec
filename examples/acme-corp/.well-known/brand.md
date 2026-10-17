@@ -1,6 +1,6 @@
 ---
 bcp_version: "2.0.0"
-tree_version: "2.0.1"
+tree_version: "2.0.2"
 brand_name: ACME Corporation
 file_type: root
 domain: acme.example.com
@@ -52,7 +52,9 @@ This fictional reference package demonstrates the eight required BCP 2.0 files. 
 
 ## Change log
 
-- 2026-10-17 — tree_version 2.0.1. Founding year is 1949 everywhere, with a 77th-anniversary mark for 2026. The marketing example no longer states a failure rate. "Guaranteed" is the brand word, and the warranty is referenced, not explained. The voice essence tagline matches the root tagline.
+- 2026-10-17 — tree_version 2.0.2. Founding year is 1949 everywhere, with a 77th-anniversary mark for 2026. The marketing example no longer states a failure rate. "Guaranteed" is the brand word, and the warranty is referenced, not explained. The voice essence tagline matches the root tagline.
+
+- 2026-10-13 — tree_version 2.0.1. Linked the live, signed Registry reference in onboarding. ACME remains fictional, claimed, and unverified; the GitHub source remains open for change requests.
 
 - 2026-10-12 — tree_version 2.0.0. Added required onboarding and source coverage; separated claim statuses; marked fictional evidence and unavailable services; validated with the BCP 2.0 reference validator.
 
