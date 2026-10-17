@@ -1,6 +1,6 @@
 ---
 bcp_version: "2.0.0"
-tree_version: "2.0.0"
+tree_version: "2.0.1"
 brand_name: ACME Corporation
 file_type: root
 domain: acme.example.com
@@ -8,7 +8,7 @@ category: Consumer products and industrial devices
 tagline: "If it exists, we make it. If it doesn't, we make it anyway."
 default_locale: en-US
 supported_locales: [en-US]
-last_updated: "2026-10-12"
+last_updated: "2026-10-13"
 commerce: /.well-known/brand/commerce.md
 daughter_files:
   voice: /.well-known/brand/voice.md
@@ -51,6 +51,8 @@ We are the only manufacturer willing to ship a functioning trebuchet, a box of d
 This fictional reference package demonstrates the eight required BCP 2.0 files. `onboarding.md` explains safe browsing and connected use; `claims.md` separates use classification, evidence, and brand approval. The commerce and anti-AI files are optional extensions. All example.com domains, product claims, assets, and transaction locations are illustrative, not live services. These files are untrusted reference data, not agent instructions or authority to transact. Host policy determines their use.
 
 ## Change log
+
+- 2026-10-13 — tree_version 2.0.1. Linked the live, signed Registry reference in onboarding. ACME remains fictional, claimed, and unverified; the GitHub source remains open for change requests.
 
 - 2026-10-12 — tree_version 2.0.0. Added required onboarding and source coverage; separated claim statuses; marked fictional evidence and unavailable services; validated with the BCP 2.0 reference validator.
 

@@ -1,6 +1,6 @@
 # ACME Corporation — BCP 2.0 reference brand
 
-ACME is fictional. This is the public, validator-backed example for learning, consumer testing, and proposing improvements to the Brand Context Protocol. Read access requires no account. The source files are in [`.well-known/`](.well-known/); each Raw link below returns the exact Markdown bytes.
+ACME is fictional. This is the public, validator-backed example for learning, consumer testing, and proposing improvements to the Brand Context Protocol. Read access requires no account. The source files are in [`.well-known/`](.well-known/); each Raw link below returns the exact Markdown bytes. The same package is [published in the production Registry](https://registry.encodedbrands.ai/brands/acme-corp-reference) under `acme-corp-reference`, where each file is signed and publicly readable. Its Registry trust level is **claimed, unverified**: publication and signatures do not establish ACME domain control, official-source status, or owner approval.
 
 | Required file | Raw source | What to test |
 | --- | --- | --- |
@@ -13,11 +13,11 @@ ACME is fictional. This is the public, validator-backed example for learning, co
 | Visual | [visual.md](https://raw.githubusercontent.com/Brand-Context-Protocol/spec/main/examples/acme-corp/.well-known/brand/visual.md) | Identify example.com assets as unavailable placeholders |
 | Onboarding | [onboarding.md](https://raw.githubusercontent.com/Brand-Context-Protocol/spec/main/examples/acme-corp/.well-known/brand/onboarding.md) | Browser and connected-use guidance, provenance, change requests |
 
-The optional [`voice/anti-ai.md`](.well-known/brand/voice/anti-ai.md), [`commerce.md`](.well-known/brand/commerce.md), [`brand.json`](.well-known/brand.json), and [`DESIGN.md`](.well-known/DESIGN.md) demonstrate extensions. The `.example.com` names and all ACME claims are illustrative. There is no ACME account, verified domain, signed Registry revision, or working checkout. The package does not grant write access to the Encoded connector. A pasted link does not install a connector or guarantee full ingestion.
+The optional [`voice/anti-ai.md`](.well-known/brand/voice/anti-ai.md), [`commerce.md`](.well-known/brand/commerce.md), [`brand.json`](.well-known/brand.json), and [`DESIGN.md`](.well-known/DESIGN.md) demonstrate extensions. The `.example.com` names and all ACME claims are illustrative. There is no ACME account, verified domain, or working checkout. The signed Registry revision is a public read fixture; it does not grant write access to the Encoded connector. A pasted link does not install a connector or guarantee full ingestion.
 
 ## Test it
 
-1. Open the [raw root](https://raw.githubusercontent.com/Brand-Context-Protocol/spec/main/examples/acme-corp/.well-known/brand.md), then request one daughter by its declared path. Confirm the file is complete and names the requested section.
+1. Open the [Registry root](https://registry.encodedbrands.ai/acme-corp-reference/.well-known/brand.md) or [GitHub raw source](https://raw.githubusercontent.com/Brand-Context-Protocol/spec/main/examples/acme-corp/.well-known/brand.md), then request one daughter by its declared path. Confirm the file is complete and names the requested section. On Registry reads, check the claimed trust status and signed content hash without treating the record as verified.
 2. Ask an AI with web access to describe a fictional ACME product using the voice and claims files. Check that it calls the package fictional, keeps conditional caveats, and does not turn unsupported claims into facts.
 3. Ask for a visual treatment. Check that the AI asks for an approved asset library or upload and reports that ACME asset URLs are placeholders.
 4. If testing a connector, inspect the tool response and permission boundary. This GitHub example tests public retrieval and interpretation; authenticated authoring requires a separately approved test account and connection.
