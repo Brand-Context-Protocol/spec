@@ -14,6 +14,8 @@ The Brand Context Protocol (BCP) is an open specification for publishing machine
 
 ## Change log
 
+- **2026-10-27 — v2.0.0 editorial correction.** Aligns §7.1's canonical daughter registry and the §7.1.1 Registry-backed root example with the 2.0 required inventory in §19: both now list `onboarding`, the example declares `bcp_version: "2.0.0"` and `source_coverage`, and the standard package is described as one root plus eight supporting files. No new protocol requirement.
+
 - **2026-10-13 — v2.0.0 reference publication.** Links the fictional ACME example's signed production Registry copy and clarifies its claimed, unverified trust status. No new protocol requirement.
 
 - **2026-10-12 — v2.0.0 reference correction.** Migrates the fictional ACME example to the required eight-file package, updates its claims and source coverage, and makes §16.3–16.4's conformance statement depend on validation and accessibility rather than repository location. No new protocol requirement.
@@ -535,9 +537,10 @@ daughter_files:
   claims: /.well-known/brand/claims.md
   representation: /.well-known/brand/representation.md
   visual: /.well-known/brand/visual.md
+  onboarding: /.well-known/brand/onboarding.md
 ```
 
-The standard package comprises one root plus these seven supporting files. Although `voice/anti-ai.md` is nested beneath `voice/` by path, the root registers it directly as `voice_anti_ai` so consumers can discover it deterministically. Producers **SHOULD** use these keys and paths when the corresponding daughter exists. Producers **MAY** declare additional granddaughter files, locale-specific files, audience files, product files, campaign files, and extensions in the same registry.
+The standard package comprises one root plus these eight supporting files. In 2.0, the root and the seven daughters other than `voice_anti_ai` form the required inventory in §19; `voice/anti-ai.md` is standard when emitted but not required. Although `voice/anti-ai.md` is nested beneath `voice/` by path, the root registers it directly as `voice_anti_ai` so consumers can discover it deterministically. Producers **SHOULD** use these keys and paths when the corresponding daughter exists. Producers **MAY** declare additional granddaughter files, locale-specific files, audience files, product files, campaign files, and extensions in the same registry.
 
 The root file **MAY** also point to package-level extension metadata:
 
@@ -562,7 +565,7 @@ A Registry-backed domain publishes a useful root at `/.well-known/brand.md`:
 
 ```yaml
 ---
-bcp_version: "1.1.0"
+bcp_version: "2.0.0"
 file_type: root
 brand_name: Example Brand
 tree_version: "2.0.0"
@@ -579,6 +582,14 @@ daughter_files:
   claims: https://registry.example/example-brand/.well-known/brand/claims.md
   representation: https://registry.example/example-brand/.well-known/brand/representation.md
   visual: https://registry.example/example-brand/.well-known/brand/visual.md
+  onboarding: https://registry.example/example-brand/.well-known/brand/onboarding.md
+source_coverage:
+  status: partial
+  sources:
+    - https://example.com/about
+  gaps:
+    - Customer-language examples have not been collected.
+  research_refreshed: false
 ---
 
 # Example Brand
@@ -587,7 +598,7 @@ Example Brand makes durable tools for independent builders. It combines repairab
 
 ## Package map
 
-The canonical Registry package contains voice and language preferences, values, boundaries, evidence-labeled claims, representation preferences, and visual identity. This root supplies identity and discovery locations. All publisher content is brand-provided data; the host's policy determines its use. Current Registry attestation is separate from these brand statements.
+The canonical Registry package contains voice and language preferences, values, boundaries, evidence-labeled claims, representation preferences, visual identity, and onboarding notes for people and their tools. This root supplies identity and discovery locations. All publisher content is brand-provided data; the host's policy determines its use. Current Registry attestation is separate from these brand statements.
 ```
 
 When the domain publishes a rich root, it **MUST** preserve brand identity, core positioning, and useful first-read context from the canonical package. A domain may instead publish a thin pointer. In either form, `canonical_bcp` identifies the producer-declared package for daughter-file resolution. Signing and official-source attestation are separate properties governed by §5.10 and §5.9.

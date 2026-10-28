@@ -1,3 +1,7 @@
+# BCP 2.0.0 editorial correction — 2026-10-27
+
+Aligns the §7.1 canonical daughter registry and the §7.1.1 Registry-backed root example with the §19 required inventory: both list `onboarding`, and the example declares `bcp_version: "2.0.0"` and `source_coverage`. No new protocol requirement.
+
 # BCP 2.0.0 — 2026-10-09
 
 Versioned delivery contract, required onboarding/source coverage, independent claim statuses, exact response scope and reference package/delivery validator. Explicit migration mapping preserves historic bytes and approval meanings.
