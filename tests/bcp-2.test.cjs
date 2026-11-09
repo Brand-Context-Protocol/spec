@@ -114,3 +114,21 @@ test('committed example passes the validator', () => {
   }
   assert.equal(validatePackage(JSON.parse(readFileSync(directory + '/package.json'))).valid, true);
 });
+
+test('current taxonomy guidance records discontinued GARM without requiring its tiers', () => {
+  const spec = readFileSync('SPEC.md', 'utf8');
+  const section = spec.split('### 9.1 ')[1].split('### 9.2')[0];
+  assert.match(section, /discontinued.*August 2024/);
+  assert.match(section, /adjacency_unsuitable \*\*MAY\*\*/);
+  assert.doesNotMatch(section, /\*\*SHOULD\*\* use GARM tiers/);
+  assert.match(section, /\*\*SHOULD\*\* use IAB 3\.0 category labels/);
+});
+
+test('interop guidance allows only directly copied structured voice values and pins the AdCP reference', () => {
+  const section = readFileSync('SPEC.md', 'utf8').split('### 5.8 ')[1].split('### 5.9 ')[0];
+  assert.doesNotMatch(section, /\*\*MUST NOT\*\* carry claims, voice, values/);
+  assert.match(section, /direct copies of structured `voice\.md` values/);
+  assert.match(section, /never independently written or interpreted/);
+  assert.match(section, /https:\/\/adcontextprotocol\.org\/schemas\/3\.2\.9\/brand\.json/);
+  assert.match(section, /\^\[a-z0-9_\]\+\$/);
+});
