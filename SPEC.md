@@ -14,6 +14,8 @@ The Brand Context Protocol (BCP) is an open specification for publishing machine
 
 ## Change log
 
+- **2026-11-09: v2.0.0 reference correction.** Updates §9 for the discontinuation of GARM by the WFA in August 2024. The GARM-derived Brand Safety Floor and risk tiers remain a referenced vocabulary with no maintaining body. Their contextual use relaxes from SHOULD to MAY, and IAB Content Taxonomy 3.0 governs category structure. Adds an editorial note to §5.8 on AdCP brand.json identifier and agent shapes. Resolves the voice/tone wording conflict by limiting projection to direct copies of structured voice.md values. No new protocol requirement. Existing packages that use GARM labels remain valid.
+
 - **2026-10-13 — v2.0.0 reference publication.** Links the fictional ACME example's signed production Registry copy and clarifies its claimed, unverified trust status. No new protocol requirement.
 
 - **2026-10-12 — v2.0.0 reference correction.** Migrates the fictional ACME example to the required eight-file package, updates its claims and source coverage, and makes §16.3–16.4's conformance statement depend on validation and accessibility rather than repository location. No new protocol requirement.
@@ -118,7 +120,7 @@ BCP draws architectural inspiration from several existing standards:
 
 - **OpenAPI**: a specification for describing HTTP APIs in a machine-readable format. BCP follows the pattern of a human-authorable document that generates machine-parseable output through consistent structure.
 
-- **IAB Content Taxonomy 3.0** and **GARM Brand Safety Floor + Suitability Framework**: industry-standard taxonomies for content categorization and brand safety.
+- **IAB Content Taxonomy 3.0** and **GARM Brand Safety Floor + Suitability Framework**: reference vocabularies for content categorization and brand safety. GARM was discontinued in August 2024; its framework remains in industry use without a maintaining body.
 
 ### 1.4 How to read this document
 
@@ -384,9 +386,11 @@ Consumers **MUST** ignore extension files they do not understand. Producers **SH
 
 BCP's position on adjacent standards is to interoperate, not compete: a narrow, single-purpose external format that already has real tooling adoption is a projection target, not a rival to replace BCP's evidence-bound daughter files. This section documents optional, deterministically-derived root-level files (siblings to `brand.md`, not nested under `/.well-known/brand/`) that re-express a BCP's already-compiled data in an external ecosystem's native schema, so that ecosystem's tools can discover and read a brand without needing to understand BCP at all.
 
-An interoperability artifact **MUST** be generated deterministically from the same structured data behind the corresponding BCP daughter file (for example, `visual.md`'s already-computed colors, fonts, and logos) — never authored or re-derived independently, so the two can never silently drift apart. An interoperability artifact **MUST NOT** carry claims, voice, values, boundaries, or representation content; those are BCP's evidence-bound depth and are deliberately out of scope for commodity external schemas. Producers **MAY** omit an interoperability artifact entirely; a BCP without one remains fully valid.
+An interoperability artifact **MUST** be generated deterministically from the same structured data behind the corresponding BCP daughter file (for example, `visual.md`'s already-computed colors, fonts, and logos) — never authored or re-derived independently, so the two can never silently drift apart. An interoperability artifact **MUST NOT** carry claims, values, boundaries, or representation content; those are BCP's evidence-bound depth and are deliberately out of scope for commodity external schemas. Voice/tone may be carried only as direct copies of structured `voice.md` values, never independently written or interpreted. Fields that cannot be copied without interpretation are omitted. Producers **MAY** omit an interoperability artifact entirely; a BCP without one remains fully valid.
 
 **`brand.json`** — projects a BCP's compiled colors, fonts, logos, and voice/tone into the schema used by the [Ad Context Protocol](https://github.com/adcontextprotocol/adcp) (AdCP)'s `brand_agent` house/brands shape, so AdCP-native ad-buying agents can discover a brand's identity without reading BCP's markdown tree. Canonical location: `/.well-known/brand.json`. Producers **SHOULD** include an `agents[]` entry pointing at a live MCP endpoint capable of answering AdCP's `get_brand_identity` contract.
+
+Editorial note (2026-11-09): AdCP schema [3.2.9](https://adcontextprotocol.org/schemas/3.2.9/brand.json) constrains brand and agent identifiers to `^[a-z0-9_]+$`. In the house portfolio form, a `brands[]` entry can declare an `agents[]` array. Each declared agent requires `type`, `url` and `id`; agent IDs are limited to 100 characters. Agents are optional in that schema, which also supports house-level and other declaration forms. Producers SHOULD pin `$schema` to an exact AdCP schema version rather than a major-version alias, because the alias resolves to newer schemas over time.
 
 A registry or MCP surface that already serves `get_bcp` **MAY** extend it, additively, to also answer AdCP-shaped requests: an optional `fields` (array of AdCP identity field names) and `use_case` argument, answered from the same published `brand.json` rather than a second parser. Core identity fields (house, names, logos) **MUST** be returned regardless of trust level; authorized-only fields (colors, fonts, visual guidelines, tone, tagline, voice synthesis, assets, rights, per AdCP's schema) **MUST** be gated behind the same `official_brand_source` trust signal defined in §5.9 — never a second, weaker authorization path. This **MUST NOT** introduce a second tool name or change `get_bcp`'s existing full-tree response when `fields` is absent.
 
@@ -864,15 +868,17 @@ Deprecate in a minor release; remove in a subsequent major release.
 
 BCP aligns its structured adjacency and boundary signals with established industry taxonomies where they exist, to maximize interoperability with consuming systems that already map to those vocabularies.
 
-### 9.1 Current reference alignments (v0.1)
+### 9.1 Current reference alignments
 
-v0.1 names two reference alignments for the boundaries.md adjacency fields:
+BCP names two reference alignments for the boundaries.md adjacency fields:
 
 - **IAB Content Taxonomy 3.0** for content category structure. Producers **SHOULD** use IAB 3.0 category labels in adjacency_acceptable and adjacency_unsuitable where direct mappings exist.
 
-- **GARM Brand Safety Floor + Suitability Framework** for suitability tiers (Floor, High, Medium, Low risk). adjacency_unsuitable aligns with GARM Floor; contextual fields **SHOULD** use GARM tiers where applicable.
+- **GARM-derived Brand Safety Floor and suitability risk tiers** (Floor, High, Medium, Low risk) for suitability level. adjacency_unsuitable **MAY** align with the GARM-derived Floor, and contextual fields **MAY** use the GARM-derived tiers where applicable.
 
-Where the two diverge, follow GARM for suitability tier assignment and IAB for category structure.
+Status of GARM: the Global Alliance for Responsible Media was discontinued by the World Federation of Advertisers in August 2024, and the WFA has stated it will not revive it. No body maintains the Brand Safety Floor and Suitability Framework. Its categories and risk tiers remain in use in platform and vendor controls, each under that operator's own policy. BCP references these tiers as a widely deployed vocabulary, not as a maintained standard, and implies no endorsement by GARM, the WFA, or any successor.
+
+Where the two diverge, use IAB 3.0 for category structure and the GARM-derived tiers for suitability level. A tier label carries the meaning the consuming platform assigns to it; producers should not assume vendors share one current definition of any tier.
 
 ### 9.2 Extensions block
 
@@ -884,7 +890,7 @@ v0.1 names reference alignments only for vendor-platform brand-safety signals. F
 
 ### 9.4 Known gaps
 
-Emerging content types that neither IAB 3.0 nor GARM fully address, edge cases in political content, and vendor-proprietary rule sets that route around taxonomy gaps are candidate additions to future versions. Producers encountering gaps **SHOULD** document them in the extensions: block and **SHOULD** file an issue against this specification.
+Emerging content types that neither IAB 3.0 nor the GARM-derived tiers fully address, edge cases in political content, and vendor-proprietary rule sets that route around taxonomy gaps are candidate additions to future versions. Producers encountering gaps **SHOULD** document them in the extensions: block and **SHOULD** file an issue against this specification.
 
 ---
 
@@ -1130,7 +1136,7 @@ The fictional [ACME Corporation BCP 2.0 package](https://github.com/Brand-Contex
 | JSON-LD | Complementary; structured blocks parseable as JSON-LD-adjacent |
 | OpenAPI | Pattern inspiration for human-authorable, machine-parseable |
 | IAB Content Taxonomy 3.0 | Referenced in Section 9 as one of v0.1's current reference alignments |
-| GARM Brand Safety Framework | Referenced in Section 9 as one of v0.1's current reference alignments |
+| GARM Brand Safety Framework | Referenced in Section 9 as a GARM-derived tier vocabulary. GARM was discontinued in August 2024. |
 
 ### Appendix D. Glossary
 
@@ -1148,7 +1154,7 @@ See Section 2.
 
 - IAB Tech Lab Content Taxonomy 3.0
 
-- GARM Brand Safety Floor and Suitability Framework
+- GARM Brand Safety Floor and Suitability Framework (discontinued August 2024; WFA notice: https://wfanet.org/knowledge/item/2024/08/09/wfa-discontinues-garm)
 
 - CommonMark Specification
 
