@@ -1,6 +1,6 @@
 {
   "name": "@brand-context-protocol/validator",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "private": true,
   "description": "Reference validation for the BCP 2.0 document and delivery contract",
   "main": "validator/index.cjs",
