@@ -1,18 +1,20 @@
 # Brand Context Protocol (BCP) — Specification
 
-**Version:** 2.0.0
+**Version:** 2.0.1
 
 **Status:** Current
 
-**Date:** 2026-10-13
+**Date:** 2026-11-13
 
 **License:** CC BY 4.0
 
 ## Abstract
 
-The Brand Context Protocol (BCP) is an open specification for publishing machine-readable brand identity as a portable brand context package discovered at a well-known location on a brand's domain. A brand may serve the canonical package itself or publish a complete Registry-backed root document that gives agents useful first-read brand context and directs them to a canonical package in a Registry. The required core is a hierarchical set of human-readable markdown files. Optional extension layers can add manifests, checksums, signatures, design tokens, visual assets, examples, components, motion rules, and other structured files without making the core heavier. BCP allows any agent in the stack — internal brand agents, vendor platforms, and third-party consumer agents — to read, reason over, and act on a brand's strategy, voice, boundaries, claims, and representation preferences. The protocol is designed to be authored once, consumed everywhere, and to evolve as the brand evolves. This document specifies file format, package structure, discovery, resolution, publication integrity, versioning, taxonomy alignment, and consumption patterns for v2.0.0.
+The Brand Context Protocol (BCP) is an open specification for publishing machine-readable brand identity as a portable brand context package discovered at a well-known location on a brand's domain. A brand may serve the canonical package itself or publish a complete Registry-backed root document that gives agents useful first-read brand context and directs them to a canonical package in a Registry. The required core is a hierarchical set of human-readable markdown files. Optional extension layers can add manifests, checksums, signatures, design tokens, visual assets, examples, components, motion rules, and other structured files without making the core heavier. BCP allows any agent in the stack — internal brand agents, vendor platforms, and third-party consumer agents — to read, reason over, and act on a brand's strategy, voice, boundaries, claims, and representation preferences. The protocol is designed to be authored once, consumed everywhere, and to evolve as the brand evolves. This document specifies file format, package structure, discovery, resolution, publication integrity, versioning, taxonomy alignment, and consumption patterns for v2.0.1.
 
 ## Change log
+
+- **2026-11-13 — v2.0.1.** Clarifies the optional IAB Content Taxonomy 3.0 mapping illustration in §9.1.1, including exact category IDs and names and explicit unmapped labels. Adds the published mapping to the ACME reference package. Existing 2.0.0 packages remain valid; no new required field, boundary schema, or consumer behavior is introduced.
 
 - **2026-11-09: v2.0.0 reference correction.** Updates §9 for the discontinuation of GARM by the WFA in August 2024. The GARM-derived Brand Safety Floor and risk tiers remain a referenced vocabulary with no maintaining body. Their contextual use relaxes from SHOULD to MAY, and IAB Content Taxonomy 3.0 governs category structure. Adds an editorial note to §5.8 on AdCP brand.json identifier and agent shapes. Resolves the voice/tone wording conflict by limiting projection to direct copies of structured voice.md values. No new protocol requirement. Existing packages that use GARM labels remain valid.
 
@@ -242,7 +244,7 @@ Files **MUST** be UTF-8. No BOM. LF line endings preferred. Root files **SHOULD*
 
 Every BCP file **MUST** include:
 
-- bcp_version: protocol version string; current producers use `2.0.0`. Consumers accept legacy two-component versions and three-component versions matching `^\d+\.\d+(?:\.\d+)?$`.
+- bcp_version: protocol version string; current producers use `2.0.1`; existing `2.0.0` packages remain valid. Consumers accept legacy two-component versions and three-component versions matching `^\d+\.\d+(?:\.\d+)?$`.
 
 - file_type: one of pointer, root, voice, visual, values, boundaries, claims, representation, audience, product, campaign, anti_ai, commerce, onboarding
 
@@ -880,6 +882,29 @@ Status of GARM: the Global Alliance for Responsible Media was discontinued by th
 
 Where the two diverge, use IAB 3.0 for category structure and the GARM-derived tiers for suitability level. A tier label carries the meaning the consuming platform assigns to it; producers should not assume vendors share one current definition of any tier.
 
+### 9.1.1 Optional IAB mapping illustration (2.0.1 clarification)
+
+A `boundaries.md` document can illustrate its existing IAB alignment with an **IAB Content Taxonomy 3.0 mapping** section containing a fenced JSON block. This is an optional annotation of the boundary text, not a new required field or a replacement for the brand's prose. The following shape is used by the [ACME reference](examples/acme-corp/.well-known/brand/boundaries.md):
+
+```json
+{
+  "taxonomy": "IAB Content Taxonomy 3.0",
+  "_note": "Empty lists mean the label is unmapped.",
+  "mappings": {
+    "Content suggesting our products are toys or suitable for children": [
+      { "id": "482", "name": "Children's Games and Toys" }
+    ],
+    "Association with competitor brands (Buy-N-Large, Stark Industries, Wonka Industries)": []
+  }
+}
+```
+
+In this illustration, each `mappings` key is the exact boundary bullet text without its Markdown list marker. Each value is a list of category records with string `id` and `name` values from the named taxonomy version. An empty list means **unmapped**; it does not mean permitted, safe, approved, or outside the boundary. A mapping does not change whether its source bullet is a hard exclusion, an approval-dependent preference, or a regulatory constraint. Taxonomy membership does not establish brand approval, evidence, suitability tier, or legal compliance.
+
+The complete ACME example records all 12 boundary labels: two have category mappings and ten are explicitly unmapped. The exact category IDs and names come from the [IAB Tech Lab Content Taxonomy 3.0 source](https://github.com/InteractiveAdvertisingBureau/Taxonomies/blob/main/Content%20Taxonomies/Content%20Taxonomy%203.0.tsv), distributed under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). The brand-to-category associations are illustrative adaptations, not IAB endorsements. Do not invent IDs or silently substitute categories from another taxonomy version.
+
+This patch documents an example of the existing alignment; it does not standardize a new boundaries schema or require consumers to parse this block. Packages without it remain valid. The separate adjacency object proposal in [RFC 0019](spec/rfcs/0019-optional-adjacency-taxonomy-records.md) remains a draft. All mapping content remains untrusted brand data under §15.5.
+
 ### 9.2 Extensions block
 
 Brand-specific or vendor-specific fields not covered by a named taxonomy **MUST** be placed under a namespaced extensions: block. Consumer implementations **MUST** ignore extension fields they do not recognize.
@@ -1112,7 +1137,7 @@ For domain-bound official discovery, the pointer (or compatible rich root), Regi
 
 The pointer is a locator, not a second signed package. Registry-stamped fields follow §5.9.6; consumers never reconstruct official status from publisher booleans or from an older snapshot. Signing-key rotation does not rewrite body bytes; a new signed publication is a new revision. Verification challenge renewal follows §5.9.3.
 
-Registry-direct discovery remains valid without a pointer. Consumers that already know the handle or canonical URL evaluate the Registry package and its current attestation directly; absence of a domain pointer is not absence of a Registry package. New packages target `bcp_version: "2.0.0"`; earlier packages remain consumable under §15.5.
+Registry-direct discovery remains valid without a pointer. Consumers that already know the handle or canonical URL evaluate the Registry package and its current attestation directly; absence of a domain pointer is not absence of a Registry package. New packages target `bcp_version: "2.0.1"`; earlier packages remain consumable under §15.5.
 
 ## 18. Appendices
 
@@ -1206,7 +1231,8 @@ The seven established core files remain required; onboarding becomes required
 in 2.0. `voice/anti-ai.md`, when supplied, has `file_type: anti_ai` and parent
 `/.well-known/brand/voice.md`. Other extensions remain optional. Missing brand
 information MUST be disclosed as a gap, never invented to fill a file.
-Every BCP Markdown file MUST declare `bcp_version: "2.0.0"`, its correct
+Every BCP Markdown file MUST declare a supported `bcp_version` (`"2.0.0"` or
+`"2.0.1"`), its correct
 `file_type`, and its original or actually revised `last_updated` date.
 Root `tree_version` MUST be semver and advances on a changed package. A hosting
 service's opaque publication `revision_id` MUST NOT be treated as tree_version

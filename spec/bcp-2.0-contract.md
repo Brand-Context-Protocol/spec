@@ -30,7 +30,8 @@ The seven established core files remain required; onboarding becomes required
 in 2.0. `voice/anti-ai.md`, when supplied, has `file_type: anti_ai` and parent
 `/.well-known/brand/voice.md`. Other extensions remain optional. Missing brand
 information MUST be disclosed as a gap, never invented to fill a file.
-Every BCP Markdown file MUST declare `bcp_version: "2.0.0"`, its correct
+Every BCP Markdown file MUST declare a supported `bcp_version` (`"2.0.0"` or
+`"2.0.1"`), its correct
 `file_type`, and its original or actually revised `last_updated` date.
 Root `tree_version` MUST be semver and advances on a changed package. A hosting
 service's opaque publication `revision_id` MUST NOT be treated as tree_version

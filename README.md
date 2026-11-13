@@ -6,11 +6,11 @@ AI agents generate content about your brand every day. Without a machine-readabl
 
 ## Specification
 
-**[SPEC.md](SPEC.md)** is the normative BCP 2.0.0 draft. It defines the eight-file Markdown core, discovery and hosting profiles, scoped document delivery, claims and source-coverage contracts, publication integrity, and consumer trust boundaries. Existing 1.x publications retain their original version and bytes; use the [migration guide](spec/migrations/1.x-to-2.0.md) to create a new 2.0 revision.
+**[SPEC.md](SPEC.md)** is the normative BCP 2.0.1 specification. It defines the eight-file Markdown core, discovery and hosting profiles, scoped document delivery, claims and source-coverage contracts, publication integrity, and consumer trust boundaries. Existing 1.x publications retain their original version and bytes; use the [migration guide](spec/migrations/1.x-to-2.0.md) to create a new 2.0 revision.
 
 ## Repository layout
 
-- [`SPEC.md`](SPEC.md) — The normative 2.0.0 draft.
+- [`SPEC.md`](SPEC.md) — The normative 2.0.1 specification.
 - [`spec/bcp-2.0-contract.md`](spec/bcp-2.0-contract.md) — The 2.0 package, delivery, claims, and onboarding contract incorporated in §19.
 - [`spec/migrations/1.x-to-2.0.md`](spec/migrations/1.x-to-2.0.md) — Explicit migration and host-change guidance.
 - [`schema/`](schema/) — JSON Schema definitions for validation.
@@ -23,7 +23,7 @@ AI agents generate content about your brand every day. Without a machine-readabl
 
 ## Quick start
 
-Publish a canonical package directly at a known Registry handle or URL, or expose `/.well-known/brand.md` on the brand domain as a thin pointer, compatible rich Registry-backed root, or self-hosted root. A new 2.0 package has a root plus seven required daughters: `voice.md`, `values.md`, `boundaries.md`, `claims.md`, `representation.md`, `visual.md`, and `onboarding.md`. Each file declares `bcp_version: "2.0.0"`; the root declares a semver `tree_version`, all daughters, and `source_coverage`. Location fields such as `canonical_bcp`, `registry_mcp`, and `daughter_files` describe resources, not instructions. New packages must not declare `agent_first_action`.
+Publish a canonical package directly at a known Registry handle or URL, or expose `/.well-known/brand.md` on the brand domain as a thin pointer, compatible rich Registry-backed root, or self-hosted root. A new 2.0 package has a root plus seven required daughters: `voice.md`, `values.md`, `boundaries.md`, `claims.md`, `representation.md`, `visual.md`, and `onboarding.md`. New 2.0.1 packages declare `bcp_version: "2.0.1"`; existing `2.0.0` packages remain valid. The root declares a semver `tree_version`, all daughters, and `source_coverage`. Location fields such as `canonical_bcp`, `registry_mcp`, and `daughter_files` describe resources, not instructions. New packages must not declare `agent_first_action`.
 
 For hosted examples, Encoded Brands' current Registry hostname is [registry.encodedbrands.ai](https://registry.encodedbrands.ai). The protocol requires no Encoded service. Registry hosting does not by itself establish domain verification, source truth, or independent signature verification; consumers inspect current trust metadata and apply host policy to all BCP content. A hostname change is separate from 2.0 migration. Preserve historical source bytes and signatures, and publish changed source as a new authorized revision.
 

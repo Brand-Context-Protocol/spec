@@ -29,3 +29,38 @@ last_updated: "2026-10-12"
 - FTC truth-in-advertising rules on all speed, altitude, and detonation-radius claims
 - FAA restrictions on marketing jet-propelled consumer products as "personal aircraft"
 - EPA constraints on marketing portable holes as "waste disposal solutions"
+
+## IAB Content Taxonomy 3.0 mapping
+
+Each bullet above, mapped to IAB Content Taxonomy 3.0 IDs and names from the vendored taxonomy file.
+
+```json
+{
+  "taxonomy": "IAB Content Taxonomy 3.0",
+  "_note": "Empty lists mean the label is unmapped.",
+  "mappings": {
+    "Content depicting harm to roadrunners (our top customer's target demographic; we remain neutral in predator-prey disputes but will not assist the prey)": [],
+    "Association with competitor brands (Buy-N-Large, Stark Industries, Wonka Industries)": [],
+    "Content suggesting our products are toys or suitable for children": [
+      {
+        "id": "482",
+        "name": "Children's Games and Toys"
+      }
+    ],
+    "Explicit acknowledgment of product failure rates in marketing materials (GARM Floor: Debated Sensitive Social Issues)": [
+      {
+        "id": "Z7rJBM",
+        "name": "Debated Sensitive Social Issues"
+      }
+    ],
+    "Testimonials from customers (most customer experiences are not suitable for marketing use)": [],
+    "Before-and-after demonstrations (the \"after\" is typically a crater, a pile of feathers, or a hospitalization)": [],
+    "Environmental claims about our manufacturing process (our desert factory has an unaudited carbon footprint)": [],
+    "Comparative advertising against Road Runner Brand Birdseed (ongoing litigation)": [],
+    "CPSC product safety disclaimers required on all items exceeding 50 pounds of thrust": [],
+    "FTC truth-in-advertising rules on all speed, altitude, and detonation-radius claims": [],
+    "FAA restrictions on marketing jet-propelled consumer products as \"personal aircraft\"": [],
+    "EPA constraints on marketing portable holes as \"waste disposal solutions\"": []
+  }
+}
+```

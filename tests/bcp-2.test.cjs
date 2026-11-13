@@ -41,7 +41,7 @@ test('independent unsigned package passes with explicit gaps and no vendor domai
 test('required inventory, file identity, schema versions, dates and tree versions are enforced', () => {
   const cases = [
     [f => delete f['/.well-known/brand/onboarding.md'], /required file missing/],
-    [f => f[ROOT] = f[ROOT].replace('2.0.0', '1.1.1'), /constant/],
+    [f => f[ROOT] = f[ROOT].replace('2.0.0', '1.1.1'), /allowed values/],
     [f => f[ROOT] = f[ROOT].replace('"1.0.0"', '"latest"'), /pattern/],
     [f => f[ROOT] = f[ROOT].replace('2026-10-09', '2026-02-30'), /format/],
     [f => f[ROOT] = f[ROOT].replace('file_type: root', 'file_type: pointer'), /file_type root/],
@@ -131,4 +131,18 @@ test('interop guidance allows only directly copied structured voice values and p
   assert.match(section, /never independently written or interpreted/);
   assert.match(section, /https:\/\/adcontextprotocol\.org\/schemas\/3\.2\.9\/brand\.json/);
   assert.match(section, /\^\[a-z0-9_\]\+\$/);
+});
+
+// Patch declarations preserve the 2.0 contract without accepting unknown releases.
+test('2.0.1 packages validate alongside 2.0.0; unknown versions fail', () => {
+  for (const version of ['2.0.0', '2.0.1']) {
+    const files = Object.fromEntries(Object.entries(fixture()).map(([path, content]) =>
+      [path, content.replace('bcp_version: "2.0.0"', `bcp_version: "${version}"`)]));
+    assert.equal(validatePackage(files).valid, true);
+  }
+  for (const version of ['2.0.2', '2.1.0', '3.0.0']) {
+    const files = fixture();
+    files[ROOT] = files[ROOT].replace('bcp_version: "2.0.0"', `bcp_version: "${version}"`);
+    fails(files, /allowed values/);
+  }
 });

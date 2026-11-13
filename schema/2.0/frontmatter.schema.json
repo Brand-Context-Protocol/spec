@@ -6,7 +6,7 @@
   "type": "object",
   "properties": {
     "bcp_version": {
-      "const": "2.0.0"
+      "enum": ["2.0.0", "2.0.1"]
     },
     "file_type": {
       "type": "string",
